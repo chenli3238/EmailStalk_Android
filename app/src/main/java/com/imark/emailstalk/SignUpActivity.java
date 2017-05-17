@@ -1,5 +1,6 @@
 package com.imark.emailstalk;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +13,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by User on 5/17/2017.
- */
+public class SignUpActivity extends Activity {
 
-public class LoginActivity extends Activity {
+    @BindView(R.id.userNameText)
+    EditText userNameText;
 
-   @BindView(R.id.emailEditText)
+    @BindView(R.id.emailEditText)
     EditText emailEditText;
 
     @BindView(R.id.passwordEditText)
@@ -33,22 +33,14 @@ public class LoginActivity extends Activity {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-    @BindView(R.id.forgotPasswordTextView)
-    TextView forgotPasswordTextView;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.signup_activity);
         ButterKnife.bind(this);
     }
-    @OnClick(R.id.signUpBtn)
-    public void setSignUpBtn(){
-        startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
+    @OnClick(R.id.loginBtn)
+    public void setLoginBtn(){
+        startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
     }
-    @OnClick(R.id.forgotPasswordTextView)
-    public void setResetPassword(){
-       startActivity(new Intent(LoginActivity.this,ForgotPassword.class));
-    }
-
 }
