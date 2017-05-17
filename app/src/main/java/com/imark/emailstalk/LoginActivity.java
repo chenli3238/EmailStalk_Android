@@ -50,5 +50,9 @@ public class LoginActivity extends Activity {
     public void setResetPassword(){
        startActivity(new Intent(LoginActivity.this,ForgotPassword.class));
     }
+    @OnClick(R.id.loginBtn)
+    public void setLoginBtn(){
+        startActivity(new Intent(LoginActivity.this,AllMail.class));
+    }
 
 }

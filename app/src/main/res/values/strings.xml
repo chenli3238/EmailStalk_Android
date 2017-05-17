@@ -7,5 +7,5 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="submit">submit</string>
-    <string name="rightArrow"><![CDATA[&#xf105;]]></string>
+    <string name="rightArrow">&#xf105;</string>
 </resources>

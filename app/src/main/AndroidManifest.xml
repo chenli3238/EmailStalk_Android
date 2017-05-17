@@ -20,6 +20,7 @@
         <activity android:name=".SignUpActivity"/>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".ForgotPassword"/>
+        <activity android:name=".AllMail"/>
     </application>
 
 </manifest>
