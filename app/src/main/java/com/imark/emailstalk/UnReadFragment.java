@@ -1,18 +1,14 @@
 package com.imark.emailstalk;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.imark.emailstalk.Adapter.MailAdapter;
 import com.imark.emailstalk.Response.CommonRowResponse;
@@ -23,10 +19,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by User on 5/17/2017.
+ * Created by User on 5/18/2017.
  */
 
-public class AllMail extends Fragment {
+public class UnReadFragment extends Fragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
 
@@ -45,7 +41,7 @@ public class AllMail extends Fragment {
         setData();
         layoutManager = new LinearLayoutManager(getContext());
         recycleView.setLayoutManager(layoutManager);
-        mailAdapter = new MailAdapter(AllMail.this,commonRowArray);
+        mailAdapter = new MailAdapter(UnReadFragment.this,commonRowArray);
         recycleView.setAdapter(mailAdapter);
         return v;
     }
@@ -73,5 +69,4 @@ public class AllMail extends Fragment {
         commonRowArray.add(new CommonRowResponse("Test Mail","Read twice","10:10 AM Feb 22","To: Adam smith"));
         commonRowArray.add(new CommonRowResponse("Test Mail","Read twice","10:10 AM Feb 22","To: Adam smith"));
         commonRowArray.add(new CommonRowResponse("Test Mail","Read twice","10:10 AM Feb 22","To: Adam smith"));
-    }
-}
+    }}

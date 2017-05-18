@@ -52,7 +52,7 @@ public class LoginActivity extends Activity {
     }
     @OnClick(R.id.loginBtn)
     public void setLoginBtn(){
-        startActivity(new Intent(LoginActivity.this,AllMail.class));
+        startActivity(new Intent(LoginActivity.this,Home.class));
     }
 
 }
