@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/lightGreen"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="25dp"
+            android:paddingRight="20dp"
+            android:id="@+id/left"
+            android:visibility="invisible" />
+
+        <CustomControl.TextViewLatoBolt
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/toolbarText"
+            android:textSize="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            android:id="@+id/right"
+            android:layout_marginRight="10dp"
+            />
+
+    </android.support.v7.widget.Toolbar>
+</RelativeLayout>
