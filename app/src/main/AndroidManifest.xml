@@ -21,6 +21,12 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".ForgotPassword"/>
         <activity android:name=".AllMail"/>
+        <activity android:name=".Home"/>
+        <activity android:name=".PreferenceActivity"/>
+        <activity android:name=".ReportaBugActivity"/>
+        <activity android:name=".HowItWorksActivity"/>
+        <activity android:name=".SettingActivity"/>
+        <activity android:name=".FAQ"/>
     </application>
 
 </manifest>

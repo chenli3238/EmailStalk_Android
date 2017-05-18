@@ -8,4 +8,53 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="submit">submit</string>
     <string name="rightArrow">&#xf105;</string>
+    <string name="home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="delivery_time">Delivery time</string>
+    <string name="preference_text">Tell us at what time you would like to receive our daily reports</string>
+    <string name="save_preference">SAVE PREFERENCE</string>
+    <string name="preference">Preferences</string>
+    <string name="account">Accounts</string>
+    <string name="how">How It Works</string>
+    <string name="faq">FAQ</string>
+    <string name="support">Support</string>
+    <string name="report">Report a bug</string>
+    <string-array name="deliveryArray">
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+    </string-array>
+    <string name="report_text">We take product bugs very seriously and appreciate you taking the time to report them.If you believe you have found an error, please submit it below</string>
+    <string name="what_happening">What"'"s happening</string>
+    <string name="reuired_error">Required error message details</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="full_name">Full Name</string>
+    <string name="browser_text">Browser and Operating System</string>
+    <string name="submit_bug">SUBMIT BUG REPORT</string>
+    <string name="php">php echo $browser></string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="time_zone">Time Zone</string>
+    <string name="preferred_lang">Preferred language</string>
+    <string name="country">Country</string>
+    <string-array name="timeZone">
+        <item>America/Cuiaba</item>
+        <item>Asia/Calcutta</item>
+    </string-array>
+    <string-array name="language">
+        <item>English</item>
+        <item>Hindi</item>
+    </string-array>
+    <string-array name="country">
+        <item>USA</item>
+        <item>India</item>
+    </string-array>
+    <string name="save_setting">SAVE SETTINGS</string>
+    <string name="setting">Settings</string>
+    <string name="faq1">I Forgot My Password. How Do I Reset It?</string>
+    <string name="faq2">How Do I Change My Account Info?</string>
+    <string name="faq3">What are Tags?</string>
+    <string name="faq4">I Want tiOrganize My Tags.How Do I Do It?</string>
 </resources>
