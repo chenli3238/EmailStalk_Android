@@ -10,6 +10,10 @@ public class PreferenceModel {
         this.info = info;
     }
 
+    public  PreferenceModel(String heading){
+        this.heading = heading;
+    }
+
     public String getHeading() {
         return heading;
     }

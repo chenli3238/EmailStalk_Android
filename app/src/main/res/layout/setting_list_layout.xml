@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/child_information_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_toLeftOf="@+id/pushNotificationSwitch"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <CustomControl.TextViewLatoBolt
+            android:id="@+id/settingTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="John Martin"
+            android:textColor="@color/black_font"
+            android:textSize="@dimen/heading_text_size" />
+
+    </LinearLayout>
+
+
+    <Switch
+        android:id="@+id/pushNotificationSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
+
+    <CustomControl.TextViewIconStyle
+        android:id="@+id/arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:text="@string/rightArrow"
+        android:layout_centerVertical="true"
+        android:textStyle="bold"
+        android:textColor="@color/grayFount"
+        android:textSize="20sp" />
+
+</RelativeLayout>

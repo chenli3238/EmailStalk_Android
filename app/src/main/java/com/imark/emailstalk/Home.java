@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Home extends AppCompatActivity{
+public class Home extends AppCompatActivity {
     @BindView(R.id.recyclerViewNavigation)
     RecyclerView recyclerViewNavigation;
     @BindView(R.id.toolbar)
@@ -38,7 +38,7 @@ public class Home extends AppCompatActivity{
     @BindView(R.id.left)
     ImageView imageViewLeft;
 
-  //////////////////
+    //////////////////
     @BindView(R.id.readBtn)
     ImageView readBtn;
 
@@ -57,12 +57,12 @@ public class Home extends AppCompatActivity{
         setContentView(R.layout.home_layout);
         ButterKnife.bind(this);
         textViewtoolbar.setText(R.string.home);
-        navigationAdapter = new NavigationAdapter(navigationModelArrayList,this);
+        navigationAdapter = new NavigationAdapter(navigationModelArrayList, this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewNavigation.setLayoutManager(layoutManager);
         recyclerViewNavigation.setAdapter(navigationAdapter);
-      //  recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
+        //  recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -71,7 +71,10 @@ public class Home extends AppCompatActivity{
     }
 
     private void setUpNavigationdrawer() {
-        NavigationModel navigationModel = new NavigationModel(R.drawable.account, "Account");
+        NavigationModel navigationModel = new NavigationModel(R.drawable.account, "Home");
+        navigationModelArrayList.add(navigationModel);
+
+        navigationModel = new NavigationModel(R.drawable.account, "Account");
         navigationModelArrayList.add(navigationModel);
 
         navigationModel = new NavigationModel(R.drawable.how, "How it works");
@@ -87,6 +90,12 @@ public class Home extends AppCompatActivity{
         navigationModelArrayList.add(navigationModel);
 
         navigationModel = new NavigationModel(R.drawable.report, "Report a Bug");
+        navigationModelArrayList.add(navigationModel);
+
+        navigationModel = new NavigationModel(R.drawable.report, "Settings");
+        navigationModelArrayList.add(navigationModel);
+
+        navigationModel = new NavigationModel(R.drawable.report, "Logout");
         navigationModelArrayList.add(navigationModel);
 
     }
@@ -148,6 +157,7 @@ public class Home extends AppCompatActivity{
         transaction.commit();
 
     }
+
     @Override
     protected void onPause() {
         super.onPause();

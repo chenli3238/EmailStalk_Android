@@ -11,6 +11,5 @@
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:textSize="@dimen/detail_text_size"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="10dp" />
 </LinearLayout>
