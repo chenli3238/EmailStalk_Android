@@ -30,12 +30,12 @@ public interface EmailStalkService {
 
     @GET("updateDeviceToken")
     Call<UpdateDeviceTokenResponse> updateDeviceTokenCall(
-            @Query("userID") int userId,
+            @Query("userID") String userId,
             @Query("tokenID") String tokenId
     );
 
     @GET("")
     Call<UnRegisterTokenResponse> unRegisterTokenResponseCall(
-            @Query("userId") int userId
+            @Query("userId") String userId
     );
 }

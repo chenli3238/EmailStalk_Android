@@ -66,5 +66,7 @@
     <string name="logout_text">Do you really want to logout this Application ?</string>
     <string name="secondary_email">Add Secondary Email</string>
     <string name="enter_email">Enter Email</string>
+    <string name="connectionFail">Connection Failed !</string>
+    <string name="serverError">Server Error</string>
 
 </resources>

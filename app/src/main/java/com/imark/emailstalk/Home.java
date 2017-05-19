@@ -21,10 +21,16 @@ import com.imark.emailstalk.Model.NavigationModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import API.EmailStalkService;
+import API.ServiceGenerator;
+import APIResponse.UpdateDeviceTokenResponse;
 import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Home extends AppCompatActivity {
     @BindView(R.id.recyclerViewNavigation)
@@ -38,7 +44,6 @@ public class Home extends AppCompatActivity {
     @BindView(R.id.left)
     ImageView imageViewLeft;
 
-    //////////////////
     @BindView(R.id.readBtn)
     ImageView readBtn;
 
@@ -50,6 +55,7 @@ public class Home extends AppCompatActivity {
     Fragment selectFragment = null;
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
     NavigationAdapter navigationAdapter;
+    boolean flag;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,28 +80,28 @@ public class Home extends AppCompatActivity {
         NavigationModel navigationModel = new NavigationModel(R.drawable.account, "Home");
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.account, "Account");
+        navigationModel = new NavigationModel(R.drawable.account, getResources().getString(R.string.account));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.how, "How it works");
+        navigationModel = new NavigationModel(R.drawable.how, getResources().getString(R.string.how));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.prefference, "Preferences");
+        navigationModel = new NavigationModel(R.drawable.prefference, getResources().getString(R.string.preference));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.faq, "FAQ");
+        navigationModel = new NavigationModel(R.drawable.faq, getResources().getString(R.string.faq));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.support, "Support");
+        navigationModel = new NavigationModel(R.drawable.support, getResources().getString(R.string.support));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.report, "Report a Bug");
+        navigationModel = new NavigationModel(R.drawable.report, getResources().getString(R.string.report));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.report, "Settings");
+        navigationModel = new NavigationModel(R.drawable.report, getResources().getString(R.string.setting));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.report, "Logout");
+        navigationModel = new NavigationModel(R.drawable.report, getResources().getString(R.string.logout_text));
         navigationModelArrayList.add(navigationModel);
 
     }
@@ -165,5 +171,32 @@ public class Home extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
         } else {
         }
+    }
+
+    public boolean callUnRegisterToken() {
+
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call call = emailStalkService.unRegisterTokenResponseCall(AppCommon.getInstance(this).getUserId());
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    UpdateDeviceTokenResponse updateDeviceTokenResponse = (UpdateDeviceTokenResponse) response.body();
+                    if (updateDeviceTokenResponse.getSuccess() == 1) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    AppCommon.getInstance(Home.this).showDialog(Home.this, getResources().getString(R.string.serverError));
+                }
+            });
+        } else {
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.connectionFail));
+        }
+        return  flag;
     }
 }

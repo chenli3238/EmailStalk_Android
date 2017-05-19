@@ -39,6 +39,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
     private Activity context;
     public DrawerLayout drawerLayout;
 
+
     public NavigationAdapter(List<NavigationModel> list, Activity activity) {
         this.navList = list;
         this.context = activity;
@@ -74,6 +75,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
         TextView navTitle;
         NavigationAdapter NavigationAdapter;
         DrawerLayout drawerLayout;
+        Home home = new Home();
 
         public ListViewHolder(View itemView) {
             super(itemView);
@@ -124,14 +126,20 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(context, LoginActivity.class);
-                            context.startActivity(intent);
-                            SharedPreferences.Editor editorLogin = context.getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
-                            editorLogin.clear();
-                            editorLogin.apply();
-                            SharedPreferences.Editor editor = context.getSharedPreferences("Theme", MODE_PRIVATE).edit();
-                            editor.clear();
-                            editor.apply();
+                            boolean flag =home.callUnRegisterToken();
+                            if(flag){
+                                Intent intent = new Intent(context, LoginActivity.class);
+                                context.startActivity(intent);
+                                SharedPreferences.Editor editorLogin = context.getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
+                                editorLogin.clear();
+                                editorLogin.apply();
+                                SharedPreferences.Editor editor = context.getSharedPreferences("Theme", MODE_PRIVATE).edit();
+                                editor.clear();
+                                editor.apply();
+                            }else {
+                                dialog.cancel();
+                            }
+
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
