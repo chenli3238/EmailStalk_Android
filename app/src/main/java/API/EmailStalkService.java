@@ -12,18 +12,16 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-/**
- * Created by User on 5/19/2017.
- */
+
 
 public interface EmailStalkService {
 
-    @POST("Login")
+    @POST("Login/")
     Call<LoginResponse> loginResponseCall(
             @Body LoginEntity loginEntity
     );
 
-    @POST("Register")
+    @POST("Register/")
     Call<RegistrationResponse> registrationResponseCall(
             @Body RegistrationEntity registrationEntity
     );

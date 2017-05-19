@@ -2,6 +2,7 @@ package com.imark.emailstalk;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,15 +11,24 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import API.EmailStalkService;
+import API.ServiceGenerator;
+import APIEntity.RegistrationEntity;
+import APIResponse.LoginResponse;
+import APIResponse.RegistrationResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpActivity extends Activity {
 
@@ -42,6 +52,9 @@ public class SignUpActivity extends Activity {
 
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    TimeZone tz;
+    private ProgressDialog progress;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,8 +62,10 @@ public class SignUpActivity extends Activity {
         setContentView(R.layout.signup_activity);
         ButterKnife.bind(this);
         Calendar cal = Calendar.getInstance();
-        TimeZone tz = cal.getTimeZone();
+        tz = cal.getTimeZone();
         Log.d("Time zone","tz"+tz.getID());
+        progress = new ProgressDialog(this);
+        progress.setMessage("Please Wait!");
     }
 
     @OnClick(R.id.loginBtn)
@@ -75,11 +90,35 @@ public class SignUpActivity extends Activity {
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
         } else {
-            SharedPreferences.Editor editor = getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
-            editor.putBoolean("login", true);
-            editor.apply();
-            startActivity(new Intent(SignUpActivity.this, Home.class));
-            finish();
+            progress.show();
+            RegistrationEntity registrationEntity = new RegistrationEntity(fName,lName,email,tz,password,"","");
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<RegistrationResponse> responseModelCall = emailStalkService.registrationResponseCall(registrationEntity);
+            responseModelCall.enqueue(new Callback<RegistrationResponse>() {
+                @Override
+                public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
+                    if (response.code() == 200) {
+                        progress.dismiss();
+                        int success = response.body().getSuccess();
+                        if (success == 1) {
+                            int userId = response.body().getRegistrationObject().getUserID();
+                            SharedPreferences.Editor editor = getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
+                            editor.putBoolean("login", true);
+                            editor.putInt("userId", userId);
+                            editor.apply();
+                            startActivity(new Intent(SignUpActivity.this, Home.class));
+                            finish();
+                        } else {
+                            Toast.makeText(SignUpActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<RegistrationResponse> call, Throwable t) {
+                    progress.dismiss();
+                    Toast.makeText(SignUpActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
