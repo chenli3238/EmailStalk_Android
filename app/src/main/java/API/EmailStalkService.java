@@ -1,0 +1,41 @@
+package API;
+
+import APIEntity.LoginEntity;
+import APIEntity.RegistrationEntity;
+import APIResponse.LoginResponse;
+import APIResponse.RegistrationResponse;
+import APIResponse.UnRegisterTokenResponse;
+import APIResponse.UpdateDeviceTokenResponse;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
+/**
+ * Created by User on 5/19/2017.
+ */
+
+public interface EmailStalkService {
+
+    @POST("Login")
+    Call<LoginResponse> loginResponseCall(
+            @Body LoginEntity loginEntity
+    );
+
+    @POST("Register")
+    Call<RegistrationResponse> registrationResponseCall(
+            @Body RegistrationEntity registrationEntity
+    );
+
+    @GET("updateDeviceToken")
+    Call<UpdateDeviceTokenResponse> updateDeviceTokenCall(
+            @Query("userID") int userId,
+            @Query("tokenID") String tokenId
+    );
+
+    @GET("")
+    Call<UnRegisterTokenResponse> unRegisterTokenResponseCall(
+            @Query("userId") int userId
+    );
+}
