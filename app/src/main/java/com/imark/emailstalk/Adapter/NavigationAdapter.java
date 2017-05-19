@@ -3,8 +3,11 @@ package com.imark.emailstalk.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.imark.emailstalk.AccountsActivity;
 import com.imark.emailstalk.FAQ;
+import com.imark.emailstalk.Home;
 import com.imark.emailstalk.HowItWorksActivity;
+import com.imark.emailstalk.LoginActivity;
 import com.imark.emailstalk.Model.NavigationModel;
 import com.imark.emailstalk.PreferenceActivity;
 import com.imark.emailstalk.R;
@@ -25,6 +31,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.ListViewHolder> {
     private List<NavigationModel> navList;
@@ -79,25 +87,63 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
             int position = getAdapterPosition();
             switch (position) {
                 case 0:
-             //       context.startActivity(new Intent(context, MainActivity.class));
+                    context.startActivity(new Intent(context, Home.class));
                     break;
                 case 1:
-                    context.startActivity(new Intent(context, HowItWorksActivity.class));
+                    context.startActivity(new Intent(context, AccountsActivity.class));
                     break;
                 case 2:
+                    context.startActivity(new Intent(context, HowItWorksActivity.class));
+                    break;
+                case 3:
                     Intent intentArr = new Intent(context, PreferenceActivity.class);
                     context.startActivity(intentArr);
                     break;
-                case 3:
+                case 4:
                     Intent intentNet = new Intent(context, FAQ.class);
                     context.startActivity(intentNet);
                     break;
-                case 4:
-                    context.startActivity(new Intent(context, SettingActivity.class));
-                    break;
                 case 5:
+//                    context.startActivity(new Intent(context, AccountsActivity.class));
+                    break;
+                case 6:
                     context.startActivity(new Intent(context, ReportaBugActivity.class));
                     break;
+                case 7:
+                    context.startActivity(new Intent(context, SettingActivity.class));
+                    break;
+                case 8:
+                    buttonLogout();
+                    break;
             }
+        }
+
+        void buttonLogout() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(R.string.logout_text)
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(context, LoginActivity.class);
+                            context.startActivity(intent);
+                            SharedPreferences.Editor editorLogin = context.getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
+                            editorLogin.clear();
+                            editorLogin.apply();
+                            SharedPreferences.Editor editor = context.getSharedPreferences("Theme", MODE_PRIVATE).edit();
+                            editor.clear();
+                            editor.apply();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //  Action for 'NO' Button
+                            dialog.cancel();
+                        }
+                    });
+            //Creating dialog box
+            AlertDialog alert = builder.create();
+            //Setting the title manually
+            alert.setTitle("Email Stalk");
+            alert.show();
         }
     }}

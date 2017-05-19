@@ -44,7 +44,7 @@
                     android:layout_marginRight="50dp">
 
                     <CustomControl.EditTextRegular
-                        android:id="@+id/userNameText"
+                        android:id="@+id/userFNameText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
@@ -53,7 +53,7 @@
                         android:background="@android:color/transparent"
                         android:drawableLeft="@drawable/user"
                         android:drawablePadding="10dip"
-                        android:hint="@string/name"
+                        android:hint="@string/first_name"
                         android:singleLine="true"
                         android:textColor="@color/black_font"
                         android:textColorHint="@color/black_font"
@@ -62,7 +62,38 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_alignBottom="@+id/userNameText"
+                        android:layout_alignBottom="@+id/userFNameText"
+                        android:background="@drawable/line" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="20dp">
+
+                    <CustomControl.EditTextRegular
+                        android:id="@+id/userLNameText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/user"
+                        android:drawablePadding="10dip"
+                        android:hint="@string/last_name"
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true"
+                        android:textColor="@color/black_font"
+                        android:textColorHint="@color/black_font"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignBottom="@+id/userLNameText"
                         android:background="@drawable/line" />
                 </RelativeLayout>
 
@@ -175,11 +206,12 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
     <ProgressBar
         android:id="@+id/progressBar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -56,5 +56,15 @@
     <string name="faq1">I Forgot My Password. How Do I Reset It?</string>
     <string name="faq2">How Do I Change My Account Info?</string>
     <string name="faq3">What are Tags?</string>
-    <string name="faq4">I Want tiOrganize My Tags.How Do I Do It?</string>
+    <string name="faq4">I Want to Organize My Tags.How Do I Do It?</string>
+    <string name="fname">First Name</string>
+    <string name="lname">Last Name</string>
+    <string name="change_password">Change Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="logout_text">Do you really want to logout this Application ?</string>
+    <string name="secondary_email">Add Secondary Email</string>
+    <string name="enter_email">Enter Email</string>
+
 </resources>

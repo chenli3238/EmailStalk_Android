@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <CustomControl.EditTextRegular
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="@string/enter_email"
+            android:textColor="@color/black_font"
+            android:textColorHint="@color/black_font"
+            android:textSize="@dimen/detail_text_size" />
+
+
+        <CustomControl.ButtonLatoRegular
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/green_button"
+            android:text="@string/submit"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/heading_text_size" />
+
+
+    </LinearLayout>
+</LinearLayout>
