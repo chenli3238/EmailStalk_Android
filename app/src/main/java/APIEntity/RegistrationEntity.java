@@ -3,6 +3,8 @@ package APIEntity;
 import com.google.android.gms.common.stats.StatsEvent;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.TimeZone;
+
 /**
  * Created by User on 5/19/2017.
  */
@@ -18,7 +20,7 @@ public class RegistrationEntity {
     String emailID;
 
     @SerializedName("timezone")
-    String timezone;
+    TimeZone timezone;
 
     @SerializedName("password")
     String password;
@@ -29,7 +31,7 @@ public class RegistrationEntity {
     @SerializedName("deviceType")
     String deviceType;
 
-    public RegistrationEntity(String first_name, String last_name, String emailID, String timezone, String password, String tokenID, String deviceType) {
+    public RegistrationEntity(String first_name, String last_name, String emailID, TimeZone timezone, String password, String tokenID, String deviceType) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.emailID = emailID;
@@ -63,11 +65,11 @@ public class RegistrationEntity {
         this.emailID = emailID;
     }
 
-    public String getTimezone() {
+    public TimeZone getTimezone() {
         return timezone;
     }
 
-    public void setTimezone(String timezone) {
+    public void setTimezone(TimeZone timezone) {
         this.timezone = timezone;
     }
 

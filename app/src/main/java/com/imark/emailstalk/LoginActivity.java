@@ -1,20 +1,30 @@
 package com.imark.emailstalk;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import API.EmailStalkService;
+import API.ServiceGenerator;
+import APIEntity.LoginEntity;
+import APIResponse.LoginResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends Activity {
 
@@ -36,11 +46,15 @@ public class LoginActivity extends Activity {
     @BindView(R.id.forgotPasswordTextView)
     TextView forgotPasswordTextView;
 
+    private ProgressDialog progress;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         ButterKnife.bind(this);
+        progress = new ProgressDialog(this);
+        progress.setMessage("Authenticating");
     }
 
     @OnClick(R.id.signUpBtn)
@@ -65,13 +79,37 @@ public class LoginActivity extends Activity {
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
         } else {
-            SharedPreferences.Editor editor = getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
-            editor.putBoolean("login", true);
-            editor.apply();
-            startActivity(new Intent(LoginActivity.this, Home.class));
-            finish();
+            progress.show();
+            LoginEntity loginEntity = new LoginEntity(email, password, "", "");
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<LoginResponse> responseModelCall = emailStalkService.loginResponseCall(loginEntity);
+            responseModelCall.enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if (response.code() == 200) {
+                        progress.dismiss();
+                        int success = response.body().getSuccess();
+                        if (success == 1) {
+                            int userId = response.body().getLoginObject().getUserID();
+                            SharedPreferences.Editor editor = getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
+                            editor.putBoolean("login", true);
+                            editor.putInt("userId", userId);
+                            editor.apply();
+                            startActivity(new Intent(LoginActivity.this, Home.class));
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                    @Override
+                    public void onFailure (Call < LoginResponse > call, Throwable t){
+                        progress.dismiss();
+                        Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
-    }
 
     public static boolean isEmailValid(String email) {
         boolean isValid = false;

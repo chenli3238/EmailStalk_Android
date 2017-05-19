@@ -13,10 +13,6 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.List;
 
-/**
- * Created by User on 2/20/2017.
- */
-
 public class FireBaseMsgService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
     NotificationManager mManager;
