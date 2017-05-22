@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.imark.emailstalk.Infrastructure.AppCommon;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +49,7 @@ public class LoginActivity extends Activity {
     TextView forgotPasswordTextView;
 
     private ProgressDialog progress;
+    FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +83,8 @@ public class LoginActivity extends Activity {
             passwordEditText.setError("Password must be filled");
         } else {
             progress.show();
-            LoginEntity loginEntity = new LoginEntity(email, password, "", "");
+            firebaseInstanceIDService.onTokenRefresh();
+            LoginEntity loginEntity = new LoginEntity(email, password, AppCommon.getInstance(this).getTokenId(), getResources().getString(R.string.android));
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<LoginResponse> responseModelCall = emailStalkService.loginResponseCall(loginEntity);
             responseModelCall.enqueue(new Callback<LoginResponse>() {
@@ -102,14 +106,15 @@ public class LoginActivity extends Activity {
                         }
                     }
                 }
-                    @Override
-                    public void onFailure (Call < LoginResponse > call, Throwable t){
-                        progress.dismiss();
-                        Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    progress.dismiss();
+                    Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
+    }
 
     public static boolean isEmailValid(String email) {
         boolean isValid = false;

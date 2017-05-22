@@ -7,4 +7,6 @@ package com.imark.emailstalk.Interface;
 public class MYPerference {
     public static String mPREFS_NAME="mPREFS_NAME";
     public static String USER_ID = "userId";
+    public static String tokenId = "tokenId";
+    public static String TokenId = "mTokenId";
 }
