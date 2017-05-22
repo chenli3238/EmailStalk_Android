@@ -68,5 +68,6 @@
     <string name="enter_email">Enter Email</string>
     <string name="connectionFail">Connection Failed !</string>
     <string name="serverError">Server Error</string>
+    <string name="android">android</string>
 
 </resources>

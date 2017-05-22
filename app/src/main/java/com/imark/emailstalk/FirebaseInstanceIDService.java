@@ -16,24 +16,28 @@ import retrofit2.Response;
 public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
+    String refreshedToken;
 
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-        callUpdateDeviceToken(refreshedToken);
+        AppCommon.getInstance(this).setTokenId(refreshedToken);
+        if (!(AppCommon.getInstance(this).getUserId().isEmpty())) {
+            callUpdateDeviceToken(refreshedToken);
+        }
     }
 
     private void callUpdateDeviceToken(String refreshedToken) {
-        if(AppCommon.getInstance(this).isConnectingToInternet(this)){
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call call = emailStalkService.updateDeviceTokenCall(AppCommon.getInstance(this).getUserId(),refreshedToken);
+            Call call = emailStalkService.updateDeviceTokenCall(AppCommon.getInstance(this).getUserId(), refreshedToken);
             call.enqueue(new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     UpdateDeviceTokenResponse updateDeviceTokenResponse = (UpdateDeviceTokenResponse) response.body();
-                    if(updateDeviceTokenResponse.getSuccess() == 1){
+                    if (updateDeviceTokenResponse.getSuccess() == 1) {
 
                     }
                 }

@@ -50,6 +50,22 @@ public class AppCommon {
         SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
         return mSharedPreferences.getString(MYPerference.USER_ID, "");
     }
+
+    public void setTokenId(String tokenId) {
+       SharedPreferences mSharedPreferences = mContext.getSharedPreferences("TokenId",Context.MODE_APPEND);
+        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+        mEditor.putString(MYPerference.tokenId, tokenId);
+        mEditor.apply();
+        /*SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+        mEditor.putString(MYPerference.tokenId, tokenId);
+        mEditor.apply();*/
+    }
+
+    public String getTokenId() {
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
+        return mSharedPreferences.getString(MYPerference.tokenId, "");
+    }
     public boolean isConnectingToInternet(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
