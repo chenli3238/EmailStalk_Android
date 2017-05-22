@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,14 +36,21 @@ import retrofit2.Response;
 public class Home extends AppCompatActivity {
     @BindView(R.id.recyclerViewNavigation)
     RecyclerView recyclerViewNavigation;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+
     @BindView(R.id.toolbarText)
     TextView textViewtoolbar;
+
     @BindView(R.id.left)
     ImageView imageViewLeft;
+
+    @BindView(R.id.right)
+    ImageView imageViewRight;
 
     @BindView(R.id.readBtn)
     ImageView readBtn;
@@ -51,6 +59,7 @@ public class Home extends AppCompatActivity {
     ImageView unreadBtn;
 
     @BindView(R.id.allMailBtn)
+
     ImageView allMailBtn;
     Fragment selectFragment = null;
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
@@ -74,10 +83,12 @@ public class Home extends AppCompatActivity {
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         setUpNavigationdrawer();
+        imageViewRight.setVisibility(View.VISIBLE);
+        imageViewRight.setImageResource(R.drawable.notification);
     }
 
     private void setUpNavigationdrawer() {
-        NavigationModel navigationModel = new NavigationModel(R.drawable.account, "Home");
+        NavigationModel navigationModel = new NavigationModel(R.drawable.home, getResources().getString(R.string.home));
         navigationModelArrayList.add(navigationModel);
 
         navigationModel = new NavigationModel(R.drawable.account, getResources().getString(R.string.account));
@@ -98,10 +109,10 @@ public class Home extends AppCompatActivity {
         navigationModel = new NavigationModel(R.drawable.report, getResources().getString(R.string.report));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.report, getResources().getString(R.string.setting));
+        navigationModel = new NavigationModel(R.drawable.setting, getResources().getString(R.string.setting));
         navigationModelArrayList.add(navigationModel);
 
-        navigationModel = new NavigationModel(R.drawable.report, getResources().getString(R.string.logout_text));
+        navigationModel = new NavigationModel(R.drawable.logout, getResources().getString(R.string.logout));
         navigationModelArrayList.add(navigationModel);
 
     }
@@ -197,6 +208,6 @@ public class Home extends AppCompatActivity {
         } else {
             AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.connectionFail));
         }
-        return  flag;
+        return flag;
     }
 }

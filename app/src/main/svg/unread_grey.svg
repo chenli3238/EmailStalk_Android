@@ -4,13 +4,13 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="416px" height="208.485px" viewBox="0.75 0.75 416 208.485" enable-background="new 0.75 0.75 416 208.485"
 	 xml:space="preserve">
-<path fill="#439959" d="M318.018,50.25c-26.754-30.349-65.914-49.5-109.554-49.5c-43.639,0-82.798,19.151-109.552,49.5H318.018z"/>
-<image display="none" overflow="visible" enable-background="new    " width="1242" height="2208" xlink:href="71F622AB.jpeg"  transform="matrix(1 0 0 1 -413.5002 -1999.75)">
+<path fill="#FFFFFF" d="M318.018,50.25c-26.754-30.349-65.914-49.5-109.554-49.5c-43.639,0-82.798,19.151-109.552,49.5H318.018z"/>
+<image display="none" overflow="visible" enable-background="new    " width="1242" height="2208" xlink:href="A2BAF82D.jpeg"  transform="matrix(1 0 0 1 -413.5002 -1999.75)">
 </image>
-<rect x="0.5" y="45.25" fill="#439959" width="416" height="163.985"/>
-<text transform="matrix(1 0 0 1 131.1609 185)" fill="#FFFFFF" font-family="'Lato-Regular'" font-size="40">Un-Read</text>
+<rect x="0.5" y="45.25" fill="#EAEAEA" width="416" height="163.985"/>
+<text transform="matrix(1 0 0 1 131.1609 185)" fill="#439959" font-family="'Lato-Regular'" font-size="40">Un-Read</text>
 <g transform="translate(0,-952.36218)">
-	<path fill="#FFFFFF" d="M241.606,1018.229c-0.413,0.06-0.804,0.26-1.093,0.561l-69.933,69.933c-0.726,0.69-0.746,1.986-0.042,2.699
+	<path fill="#439959" d="M241.606,1018.229c-0.413,0.06-0.804,0.26-1.093,0.561l-69.933,69.933c-0.726,0.69-0.746,1.986-0.042,2.699
 		c0.705,0.712,2,0.707,2.699-0.012l16.627-16.627c5.328,1.944,11.044,3.013,17.011,3.013c16.909,0,31.913-8.511,41.228-21.588
 		c0.463-0.639,0.463-1.576,0-2.215c-5.241-7.358-12.295-13.229-20.466-16.981l15.534-15.534c0.581-0.546,0.755-1.48,0.409-2.198
 		C243.234,1018.561,242.395,1018.115,241.606,1018.229z M206.876,1032.434c-16.909,0-31.913,8.481-41.228,21.559

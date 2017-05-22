@@ -20,6 +20,7 @@
     <string name="faq">FAQ</string>
     <string name="support">Support</string>
     <string name="report">Report a bug</string>
+    <string name="logout">Logout</string>
     <string-array name="deliveryArray">
         <item>06:00</item>
         <item>07:00</item>

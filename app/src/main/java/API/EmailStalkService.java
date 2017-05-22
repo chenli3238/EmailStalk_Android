@@ -13,7 +13,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 
-
 public interface EmailStalkService {
 
     @POST("Login/")
@@ -36,4 +35,9 @@ public interface EmailStalkService {
     Call<UnRegisterTokenResponse> unRegisterTokenResponseCall(
             @Query("userId") String userId
     );
+
+//    @GET("forgotPassword")
+//    Call<ForgotPasswordResponse> forgotPasswordTokenCall(
+//            @Body RegistrationEntity registrationEntity
+//    );
 }
