@@ -1,5 +1,6 @@
 package com.imark.emailstalk;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -17,41 +18,20 @@ public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
     String refreshedToken;
+    Context context;
 
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-        AppCommon.getInstance(this).setTokenId(refreshedToken);
-        if (!(AppCommon.getInstance(this).getUserId().isEmpty())) {
-            callUpdateDeviceToken(refreshedToken);
-        }
+//        AppCommon.getInstance(context).setTokenId(refreshedToken);
     }
 
-    private void callUpdateDeviceToken(String refreshedToken) {
-        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call call = emailStalkService.updateDeviceTokenCall(AppCommon.getInstance(this).getUserId(), refreshedToken);
-            call.enqueue(new Callback() {
-                @Override
-                public void onResponse(Call call, Response response) {
-                    UpdateDeviceTokenResponse updateDeviceTokenResponse = (UpdateDeviceTokenResponse) response.body();
-                    if (updateDeviceTokenResponse.getSuccess() == 1) {
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call call, Throwable t) {
-
-                }
-            });
-        }
+    public String getDeviceToken() {
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "Refreshed token: " + refreshedToken);
+        return refreshedToken;
     }
 
-    private void sendRegistrationToServer(String token) {
-        //You can implement this method to store the token on your server
-        //Not required for current project
-    }
 }

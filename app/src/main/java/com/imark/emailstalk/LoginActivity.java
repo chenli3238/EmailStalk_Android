@@ -20,7 +20,9 @@ import java.util.regex.Pattern;
 import API.EmailStalkService;
 import API.ServiceGenerator;
 import APIEntity.LoginEntity;
+import APIEntity.TokenEntity;
 import APIResponse.LoginResponse;
+import APIResponse.UpdateDeviceTokenResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,6 +60,7 @@ public class LoginActivity extends Activity {
         ButterKnife.bind(this);
         progress = new ProgressDialog(this);
         progress.setMessage("Authenticating");
+        progress.setCancelable(false);
     }
 
     @OnClick(R.id.signUpBtn)
@@ -83,8 +86,8 @@ public class LoginActivity extends Activity {
             passwordEditText.setError("Password must be filled");
         } else {
             progress.show();
-            firebaseInstanceIDService.onTokenRefresh();
-            LoginEntity loginEntity = new LoginEntity(email, password, AppCommon.getInstance(this).getTokenId(), getResources().getString(R.string.android));
+            final String token = firebaseInstanceIDService.getDeviceToken();
+            LoginEntity loginEntity = new LoginEntity(email, password, token, getResources().getString(R.string.android));
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<LoginResponse> responseModelCall = emailStalkService.loginResponseCall(loginEntity);
             responseModelCall.enqueue(new Callback<LoginResponse>() {
@@ -95,10 +98,9 @@ public class LoginActivity extends Activity {
                         int success = response.body().getSuccess();
                         if (success == 1) {
                             int userId = response.body().getLoginObject().getUserID();
-                            SharedPreferences.Editor editor = getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
-                            editor.putBoolean("login", true);
-                            editor.putInt("userId", userId);
-                            editor.apply();
+                            AppCommon.getInstance(LoginActivity.this).setUserId(userId);
+                            AppCommon.getInstance(LoginActivity.this).setTokenId(token);
+                            callUpdateTokenAPI(token, userId);
                             startActivity(new Intent(LoginActivity.this, Home.class));
                             finish();
                         } else {
@@ -131,4 +133,30 @@ public class LoginActivity extends Activity {
     }
 
 
+    public void callUpdateTokenAPI(String refreshedToken, int userId) {
+
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            TokenEntity tokenEntity = new TokenEntity(userId,refreshedToken);
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<UpdateDeviceTokenResponse> call = emailStalkService.updateDeviceTokenCall(tokenEntity);
+            call.enqueue(new Callback<UpdateDeviceTokenResponse>() {
+                @Override
+                public void onResponse(Call<UpdateDeviceTokenResponse> call, Response<UpdateDeviceTokenResponse> response) {
+                   UpdateDeviceTokenResponse updateDeviceTokenResponse = response.body();
+                        //int success = response.body().getSuccess();
+                        if (updateDeviceTokenResponse.getSuccess() == 1) {
+                            Log.d("Email", "Updated");
+                        } else {
+                            Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                        }
+
+                }
+
+                @Override
+                public void onFailure(Call<UpdateDeviceTokenResponse> call, Throwable t) {
+
+                }
+            });
+        }
+    }
 }

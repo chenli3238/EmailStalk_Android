@@ -2,20 +2,24 @@ package com.imark.emailstalk.Infrastructure;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.Preference;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.imark.emailstalk.Interface.MYPerference;
 import com.imark.emailstalk.R;
 
-/**
- * Created by User on 5/18/2017.
- */
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class AppCommon {
     public static AppCommon mInstance = null;
@@ -39,32 +43,38 @@ public class AppCommon {
         //textView1.setTextColor(mContext.getResources().getColor(R.color.gray_font));
       //  textView2.setTextColor(mContext.getResources().getColor(R.color.gray_font));
     }
-    public void setUserId(String userId) {
-        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-        mEditor.putString(MYPerference.USER_ID, userId);
-        mEditor.apply();
+    public void setUserId(int userId) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
+        editor.putBoolean(MYPerference.Login, true);
+        editor.putInt(MYPerference.userId, userId);
+        editor.apply();
     }
 
-    public String getUserId() {
-        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
-        return mSharedPreferences.getString(MYPerference.USER_ID, "");
+    public int getUserId() {
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
+        return mSharedPreferences.getInt(MYPerference.userId,0);
     }
 
     public void setTokenId(String tokenId) {
-       SharedPreferences mSharedPreferences = mContext.getSharedPreferences("TokenId",Context.MODE_APPEND);
-        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-        mEditor.putString(MYPerference.tokenId, tokenId);
-        mEditor.apply();
-        /*SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-        mEditor.putString(MYPerference.tokenId, tokenId);
-        mEditor.apply();*/
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mDeviceToken, MODE_PRIVATE).edit();
+        editor.putString(MYPerference.tokenId, tokenId);
+        editor.apply();
+
+    }
+
+    public void clearPreference(){
+        SharedPreferences.Editor editorLogin = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
+        editorLogin.clear();
+        editorLogin.apply();
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mDeviceToken, MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
     }
 
     public String getTokenId() {
-        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPREFS_NAME, Context.MODE_PRIVATE);
-        return mSharedPreferences.getString(MYPerference.tokenId, "");
+        SharedPreferences prefs = mContext.getSharedPreferences(MYPerference.mDeviceToken, MODE_PRIVATE);
+        String token = prefs.getString(MYPerference.tokenId, null);
+        return token;
     }
     public boolean isConnectingToInternet(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -93,6 +103,18 @@ public class AppCommon {
         }
 
     }
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
 
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
+    }
 
 }

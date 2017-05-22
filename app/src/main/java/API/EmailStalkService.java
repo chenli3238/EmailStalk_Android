@@ -1,7 +1,11 @@
 package API;
 
+import APIEntity.ChangePasswordEntity;
+import APIEntity.ForgotPasswordEntity;
 import APIEntity.LoginEntity;
 import APIEntity.RegistrationEntity;
+import APIEntity.TokenEntity;
+import APIResponse.PasswordResponse;
 import APIResponse.LoginResponse;
 import APIResponse.RegistrationResponse;
 import APIResponse.UnRegisterTokenResponse;
@@ -25,19 +29,23 @@ public interface EmailStalkService {
             @Body RegistrationEntity registrationEntity
     );
 
-    @GET("updateDeviceToken")
+    @POST("updateDeviceToken/")
     Call<UpdateDeviceTokenResponse> updateDeviceTokenCall(
-            @Query("userID") String userId,
-            @Query("tokenID") String tokenId
+            @Body TokenEntity tokenEntity
     );
 
-    @GET("")
+    @POST("unRegisterToken/")
     Call<UnRegisterTokenResponse> unRegisterTokenResponseCall(
-            @Query("userId") String userId
+            @Body TokenEntity tokenEntity
     );
 
-//    @GET("forgotPassword")
-//    Call<ForgotPasswordResponse> forgotPasswordTokenCall(
-//            @Body RegistrationEntity registrationEntity
-//    );
+    @POST("forgotPassword/")
+    Call<PasswordResponse> forgotPasswordCall(
+            @Body ForgotPasswordEntity forgotPasswordEntity
+    );
+
+    @POST("changePassword/")
+    Call<PasswordResponse> changePasswordCall(
+            @Body ChangePasswordEntity changePasswordEntity
+    );
 }

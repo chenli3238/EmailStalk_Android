@@ -77,7 +77,7 @@ public class Home extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewNavigation.setLayoutManager(layoutManager);
         recyclerViewNavigation.setAdapter(navigationAdapter);
-        //  recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
+         recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -184,30 +184,5 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    public boolean callUnRegisterToken() {
 
-        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call call = emailStalkService.unRegisterTokenResponseCall(AppCommon.getInstance(this).getUserId());
-            call.enqueue(new Callback() {
-                @Override
-                public void onResponse(Call call, Response response) {
-                    UpdateDeviceTokenResponse updateDeviceTokenResponse = (UpdateDeviceTokenResponse) response.body();
-                    if (updateDeviceTokenResponse.getSuccess() == 1) {
-                        flag = true;
-                    } else {
-                        flag = false;
-                    }
-                }
-
-                @Override
-                public void onFailure(Call call, Throwable t) {
-                    AppCommon.getInstance(Home.this).showDialog(Home.this, getResources().getString(R.string.serverError));
-                }
-            });
-        } else {
-            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.connectionFail));
-        }
-        return flag;
-    }
 }

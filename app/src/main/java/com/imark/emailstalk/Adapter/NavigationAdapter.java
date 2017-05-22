@@ -9,16 +9,19 @@ import android.content.SharedPreferences;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.imark.emailstalk.AccountsActivity;
 import com.imark.emailstalk.FAQ;
 import com.imark.emailstalk.Home;
 import com.imark.emailstalk.HowItWorksActivity;
+import com.imark.emailstalk.Infrastructure.AppCommon;
 import com.imark.emailstalk.LoginActivity;
 import com.imark.emailstalk.Model.NavigationModel;
 import com.imark.emailstalk.PreferenceActivity;
@@ -28,21 +31,28 @@ import com.imark.emailstalk.SettingActivity;
 
 import java.util.List;
 
+import API.EmailStalkService;
+import API.ServiceGenerator;
+import APIEntity.TokenEntity;
+import APIResponse.UpdateDeviceTokenResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.ListViewHolder> {
     private List<NavigationModel> navList;
-    private Activity context;
+    public Activity activity;
     public DrawerLayout drawerLayout;
 
 
     public NavigationAdapter(List<NavigationModel> list, Activity activity) {
         this.navList = list;
-        this.context = activity;
+        this.activity = activity;
     }
 
 
@@ -76,6 +86,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
         NavigationAdapter NavigationAdapter;
         DrawerLayout drawerLayout;
         Home home = new Home();
+        Activity activity;
 
         public ListViewHolder(View itemView) {
             super(itemView);
@@ -126,20 +137,14 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            boolean flag =home.callUnRegisterToken();
-                            if(flag){
+//                            boolean flag = callUnRegisterToken();
+//                            if (flag) {
                                 Intent intent = new Intent(context, LoginActivity.class);
                                 context.startActivity(intent);
-                                SharedPreferences.Editor editorLogin = context.getSharedPreferences("UserLogin", MODE_PRIVATE).edit();
-                                editorLogin.clear();
-                                editorLogin.apply();
-                                SharedPreferences.Editor editor = context.getSharedPreferences("Theme", MODE_PRIVATE).edit();
-                                editor.clear();
-                                editor.apply();
-                            }else {
-                                dialog.cancel();
-                            }
-
+                                AppCommon.getInstance(context).clearPreference();
+//                            } else {
+//                                dialog.cancel();
+//                            }
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -151,7 +156,39 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Li
             //Creating dialog box
             AlertDialog alert = builder.create();
             //Setting the title manually
-            alert.setTitle("Email Stalk");
+            alert.setTitle(context.getResources().getString(R.string.app_name));
             alert.show();
         }
+
+    public boolean callUnRegisterToken() {
+        final boolean[] flag = new boolean[1];
+        if (AppCommon.getInstance(context).isConnectingToInternet(context)) {
+
+            final TokenEntity[] tokenEntity = {new TokenEntity(AppCommon.getInstance(context).getUserId())};
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<UpdateDeviceTokenResponse> call = emailStalkService.updateDeviceTokenCall(tokenEntity[0]);
+            call.enqueue(new Callback<UpdateDeviceTokenResponse>() {
+                @Override
+                public void onResponse(Call<UpdateDeviceTokenResponse> call, Response<UpdateDeviceTokenResponse> response) {
+                    UpdateDeviceTokenResponse updateDeviceTokenResponse = response.body();
+                    //int success = response.body().getSuccess();
+                    if (updateDeviceTokenResponse.getSuccess() == 1) {
+                        Log.d("Email", "Updated");
+                        flag[0] = true;
+                    } else {
+                        flag[0] = false;
+                       AppCommon.getInstance(context).showDialog(activity,response.body().getError());
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<UpdateDeviceTokenResponse> call, Throwable t) {
+
+                }
+            });
+        }
+        return flag[0];
+
     }}
+}
