@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -74,8 +75,27 @@ public class PreferenceActivity extends AppCompatActivity {
         preferenceModelList.add(preferenceModel);
 
         preferenceModel = new PreferenceModel("Daily report",
-                "Get analysis everyday on your emailopens.See what strategies works bvest and get rid of the ones that don't.");
+                "Get analysis everyday on your email opens. See what strategies works best and get rid of the ones that don't.");
         preferenceModelList.add(preferenceModel);
 
+    }
+
+    public void setAction(int position, Button button) {
+        switch (position){
+            case 0:
+                if(button.isSelected()){
+                    button.setSelected(false);
+                }else {
+                    button.setSelected(true);
+                }
+                break;
+            case 1:
+                if(button.isSelected()){
+                    button.setSelected(false);
+                }else {
+                    button.setSelected(true);
+                }
+                break;
+        }
     }
 }

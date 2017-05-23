@@ -62,7 +62,7 @@ public class ForgotPassword extends Activity {
                         if (success == 1) {
                             finish();
                         } else {
-                            Toast.makeText(ForgotPassword.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                            AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,response.body().getError());
                         }
                     }
                 }

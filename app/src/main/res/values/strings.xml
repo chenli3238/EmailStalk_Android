@@ -41,15 +41,17 @@
     <string name="preferred_lang">Preferred language</string>
     <string name="country">Country</string>
     <string-array name="timeZone">
+        <item>Select TimeZone</item>
         <item>America/Cuiaba</item>
-        <item>Asia/Calcutta</item>
+        <item>Asia/Kolkata (GMT+5:30)</item>
     </string-array>
     <string-array name="language">
         <item>English</item>
         <item>Hindi</item>
     </string-array>
     <string-array name="country">
-        <item>USA</item>
+        <item>Select Region</item>
+        <item>Asia</item>
         <item>India</item>
     </string-array>
     <string name="save_setting">SAVE SETTINGS</string>
@@ -70,5 +72,7 @@
     <string name="connectionFail">Connection Failed !</string>
     <string name="serverError">Server Error</string>
     <string name="android">android</string>
+    <string name="please_wait">Please Wait...</string>
+    <string name="authenticating">Authenticating...</string>
 
 </resources>

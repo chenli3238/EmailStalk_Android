@@ -3,13 +3,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:minHeight="40dp"
+    android:id="@+id/preferenceLayout"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:id="@+id/preferenceLayout"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -35,14 +35,15 @@
             android:layout_height="wrap_content"
             android:text="Jan 17 ,2017"/>
     </LinearLayout>
-    <ImageView
+    <Button
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:layout_alignParentStart="true"
         android:textColor="@color/colorBlack"
         android:id="@+id/prefIndicator"
-        android:background="@drawable/check"
+        android:clickable="true"
+        android:background="@drawable/prefernces_button"
         android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

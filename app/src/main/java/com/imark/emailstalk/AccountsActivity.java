@@ -1,20 +1,33 @@
 package com.imark.emailstalk;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.imark.emailstalk.Infrastructure.AppCommon;
+
+import API.EmailStalkService;
+import API.ServiceGenerator;
+import APIEntity.ProfileEntity;
+import APIResponse.ProfileResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class AccountsActivity extends AppCompatActivity{
+public class AccountsActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.toolbarText)
@@ -25,10 +38,15 @@ public class AccountsActivity extends AppCompatActivity{
     ImageView imageViewRight;
     @BindView(R.id.spinnerTimeZone)
     Spinner spinnerTimeZone;
-    @BindView(R.id.spinnerLanguage)
-    Spinner spinnerLanguage;
     @BindView(R.id.spinnerCountry)
     Spinner spinnerCountry;
+    @BindView(R.id.firstName)
+    EditText editTextFirstName;
+    @BindView(R.id.lastName)
+    EditText editTextLastName;
+    @BindView(R.id.saveProfile)
+    Button buttonSaveprofile;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,22 +59,63 @@ public class AccountsActivity extends AppCompatActivity{
 
         ArrayAdapter<CharSequence> adaptertime = ArrayAdapter.createFromResource(this, R.array.timeZone, R.layout.spinner_layout);
         spinnerTimeZone.setAdapter(adaptertime);
-        ArrayAdapter<CharSequence> adapterlang = ArrayAdapter.createFromResource(this, R.array.language, R.layout.spinner_layout);
-        spinnerLanguage.setAdapter(adapterlang);
         ArrayAdapter<CharSequence> adaptercoun = ArrayAdapter.createFromResource(this, R.array.country, R.layout.spinner_layout);
         spinnerCountry.setAdapter(adaptercoun);
-
-
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
     }
 
     @OnClick(R.id.left)
-    void leftButton(){
+    void leftButton() {
         onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @OnClick(R.id.saveProfile)
+    void setButtonSaveprofile() {
+        String fName = editTextFirstName.getText().toString().trim();
+        String lName = editTextLastName.getText().toString().trim();
+        String region = spinnerCountry.getSelectedItem().toString().trim();
+        String timeZone = spinnerTimeZone.getSelectedItem().toString().trim();
+        if (fName.isEmpty()) {
+            editTextFirstName.setError("First Name must be filled");
+        } else if (lName.isEmpty()) {
+            editTextLastName.setError("Last Name must be filled");
+        } else if (region.equals("Select Region")) {
+            Toast.makeText(this, "Please Select Region", Toast.LENGTH_SHORT).show();
+        } else if (timeZone.equals("Select TimeZone")) {
+            Toast.makeText(this, "Please Select TimeZone", Toast.LENGTH_SHORT).show();
+        } else {
+            progressDialog.show();
+            int userId = AppCommon.getInstance(this).getUserId();
+            ProfileEntity profileEntity = new ProfileEntity(userId, fName, lName, region, timeZone);
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<ProfileResponse> profileResponseCall = emailStalkService.setProfile(profileEntity);
+            profileResponseCall.enqueue(new Callback<ProfileResponse>() {
+                @Override
+                public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                    progressDialog.dismiss();
+                    int success = response.body().getSuccess();
+                    if (success == 1) {
+                        Toast.makeText(AccountsActivity.this, response.body().getResult(), Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, response.body().getError());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                    progressDialog.dismiss();
+                }
+            });
+
+        }
     }
 }
 

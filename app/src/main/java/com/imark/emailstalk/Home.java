@@ -1,5 +1,7 @@
 package com.imark.emailstalk;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,10 +9,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +28,8 @@ import java.util.List;
 
 import API.EmailStalkService;
 import API.ServiceGenerator;
+import APIEntity.TokenEntity;
+import APIResponse.UnRegisterTokenResponse;
 import APIResponse.UpdateDeviceTokenResponse;
 import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
@@ -77,7 +83,7 @@ public class Home extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewNavigation.setLayoutManager(layoutManager);
         recyclerViewNavigation.setAdapter(navigationAdapter);
-         recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
+        recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -85,6 +91,7 @@ public class Home extends AppCompatActivity {
         setUpNavigationdrawer();
         imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
+        setReadBtn();
     }
 
     private void setUpNavigationdrawer() {
@@ -134,7 +141,7 @@ public class Home extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, selectFragment);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.addToBackStack(AllMail.class.getName());
+        //  transaction.addToBackStack(AllMail.class.getName());
         transaction.commit();
 
     }
@@ -150,7 +157,7 @@ public class Home extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, selectFragment);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.addToBackStack(ReadFragment.class.getName());
+        //   transaction.addToBackStack(ReadFragment.class.getName());
         transaction.commit();
 
     }
@@ -170,7 +177,7 @@ public class Home extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, selectFragment);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.addToBackStack(AllMail.class.getName());
+        // transaction.addToBackStack(AllMail.class.getName());
         transaction.commit();
 
     }
@@ -185,4 +192,99 @@ public class Home extends AppCompatActivity {
     }
 
 
+    public void setClickAction(int position) {
+        switch (position) {
+            case 0:
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                break;
+            case 1:
+                startActivity(new Intent(this, AccountsActivity.class));
+                break;
+            case 2:
+                startActivity(new Intent(this, HowItWorksActivity.class));
+                break;
+            case 3:
+                Intent intentArr = new Intent(this, PreferenceActivity.class);
+                startActivity(intentArr);
+                break;
+            case 4:
+                Intent intentNet = new Intent(this, FAQ.class);
+                startActivity(intentNet);
+                break;
+            case 5:
+//                    this.startActivity(new Intent(this, AccountsActivity.class));
+                break;
+            case 6:
+                startActivity(new Intent(this, ReportaBugActivity.class));
+                break;
+            case 7:
+                startActivity(new Intent(this, SettingActivity.class));
+                break;
+            case 8:
+                buttonLogout();
+                break;
+        }
+    }
+
+    void buttonLogout() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.logout_text)
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        boolean flag = callUnRegisterToken();
+                        if (flag) {
+                            Intent intent = new Intent(Home.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                            AppCommon.getInstance(Home.this).clearPreference();
+                        } else {
+                            dialog.cancel();
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Action for 'NO' Button
+                        dialog.cancel();
+                    }
+                });
+        //Creating dialog box
+        AlertDialog alert = builder.create();
+        //Setting the title manually
+        alert.setTitle(this.getResources().getString(R.string.app_name));
+        alert.show();
+    }
+
+    public boolean callUnRegisterToken() {
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            TokenEntity tokenEntity = new TokenEntity(AppCommon.getInstance(this).getUserId());
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<UnRegisterTokenResponse> call = emailStalkService.unRegisterTokenResponseCall(tokenEntity);
+            call.enqueue(new Callback<UnRegisterTokenResponse>() {
+                @Override
+                public void onResponse(Call<UnRegisterTokenResponse> call, Response<UnRegisterTokenResponse> response) {
+                    UnRegisterTokenResponse unRegisterTokenResponse = response.body();
+                    //int success = response.body().getSuccess();
+                    if (unRegisterTokenResponse.getSuccess() == 1) {
+                        Log.d("Email", "Updated");
+                    } else {
+                        //                     AppCommon.getInstance(this).showDialog(activity, response.body().getError());
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<UnRegisterTokenResponse> call, Throwable t) {
+
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }

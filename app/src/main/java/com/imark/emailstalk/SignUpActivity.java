@@ -52,9 +52,12 @@ public class SignUpActivity extends Activity {
 
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+
     TimeZone tz;
+
     private ProgressDialog progress;
 
+    FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +66,7 @@ public class SignUpActivity extends Activity {
         ButterKnife.bind(this);
         Calendar cal = Calendar.getInstance();
         tz = cal.getTimeZone();
-        Log.d("Time zone","tz"+tz.getID());
+        Log.d("Time zone", "tz" + tz.getID());
         progress = new ProgressDialog(this);
         progress.setMessage("Please Wait!");
     }
@@ -71,6 +74,7 @@ public class SignUpActivity extends Activity {
     @OnClick(R.id.loginBtn)
     public void setLoginBtn() {
         startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+        finish();
     }
 
     @OnClick(R.id.signUpBtn)
@@ -91,7 +95,8 @@ public class SignUpActivity extends Activity {
             passwordEditText.setError("Password must be filled");
         } else {
             progress.show();
-            RegistrationEntity registrationEntity = new RegistrationEntity(fName,lName,email,tz,password,"","");
+            final String token = firebaseInstanceIDService.getDeviceToken();
+            RegistrationEntity registrationEntity = new RegistrationEntity(fName, lName, email, tz, password, token, getResources().getString(R.string.android));
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<RegistrationResponse> responseModelCall = emailStalkService.registrationResponseCall(registrationEntity);
             responseModelCall.enqueue(new Callback<RegistrationResponse>() {
@@ -113,6 +118,7 @@ public class SignUpActivity extends Activity {
                         }
                     }
                 }
+
                 @Override
                 public void onFailure(Call<RegistrationResponse> call, Throwable t) {
                     progress.dismiss();

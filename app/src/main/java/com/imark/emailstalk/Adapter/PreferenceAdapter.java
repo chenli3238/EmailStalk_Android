@@ -8,11 +8,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.imark.emailstalk.Model.PreferenceModel;
+import com.imark.emailstalk.PreferenceActivity;
 import com.imark.emailstalk.R;
 
 import java.util.List;
@@ -54,13 +58,21 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.Li
         @BindView(R.id.preferenceInfo)
         TextView textViewInfo;
         @BindView(R.id.preferenceLayout)
-        LinearLayout linearLayoutNoti;
+        RelativeLayout relativeLayout;
+        @BindView(R.id.prefIndicator)
+        Button button;
 
         public ListViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
         }
-        
+
+        @OnClick(R.id.preferenceLayout)
+        void ToggleButton() {
+            int position = getAdapterPosition();
+            ((PreferenceActivity) context).setAction(position,button);
+
+        }
     }
 }
