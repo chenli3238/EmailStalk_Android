@@ -3,7 +3,6 @@ package com.imark.emailstalk;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,9 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imark.emailstalk.Infrastructure.AppCommon;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import API.EmailStalkService;
 import API.ServiceGenerator;
@@ -80,7 +76,7 @@ public class LoginActivity extends Activity {
         String password = passwordEditText.getText().toString().trim();
         if (email.isEmpty()) {
             emailEditText.setError("Email must be filled");
-        } else if (!isEmailValid(email)) {
+        } else if (AppCommon.getInstance(LoginActivity.this).isEmailValid(email)) {
             emailEditText.setError("Please enter valid Email");
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
@@ -101,7 +97,7 @@ public class LoginActivity extends Activity {
                             AppCommon.getInstance(LoginActivity.this).setUserId(userId);
                             AppCommon.getInstance(LoginActivity.this).setTokenId(token);
                             callUpdateTokenAPI(token, userId);
-                            startActivity(new Intent(LoginActivity.this, Home.class));
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             finish();
                         } else {
                             Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
@@ -117,21 +113,6 @@ public class LoginActivity extends Activity {
             });
         }
     }
-
-    public static boolean isEmailValid(String email) {
-        boolean isValid = false;
-
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        CharSequence inputStr = email;
-
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(inputStr);
-        if (matcher.matches()) {
-            isValid = true;
-        }
-        return isValid;
-    }
-
 
     public void callUpdateTokenAPI(String refreshedToken, int userId) {
 

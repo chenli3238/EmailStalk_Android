@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.imark.emailstalk.Adapter.EmailAdapter;
 import com.imark.emailstalk.Adapter.NavigationAdapter;
 import com.imark.emailstalk.Infrastructure.AppCommon;
 import com.imark.emailstalk.Model.NavigationModel;
@@ -29,8 +30,10 @@ import java.util.List;
 import API.EmailStalkService;
 import API.ServiceGenerator;
 import APIEntity.TokenEntity;
+import APIResponse.LinkedEmailResponse;
+import APIResponse.SecondaryEmailObject;
+import APIResponse.SecondaryEmailResponse;
 import APIResponse.UnRegisterTokenResponse;
-import APIResponse.UpdateDeviceTokenResponse;
 import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,9 +42,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Home extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.recyclerViewNavigation)
     RecyclerView recyclerViewNavigation;
+
+    @BindView(R.id.recyclerViewEmail)
+    RecyclerView recyclerViewEmail;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -65,12 +71,16 @@ public class Home extends AppCompatActivity {
     ImageView unreadBtn;
 
     @BindView(R.id.allMailBtn)
-
     ImageView allMailBtn;
+
     Fragment selectFragment = null;
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
     NavigationAdapter navigationAdapter;
-    boolean flag;
+    private List<SecondaryEmailObject> secondaryEmailResponseList = new ArrayList<>();
+    EmailAdapter emailAdapter;
+
+    FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,12 +88,20 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.home_layout);
         ButterKnife.bind(this);
         textViewtoolbar.setText(R.string.home);
+        //firebaseInstanceIDService.onTokenRefresh();
         navigationAdapter = new NavigationAdapter(navigationModelArrayList, this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewNavigation.setLayoutManager(layoutManager);
         recyclerViewNavigation.setAdapter(navigationAdapter);
         recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
+
+        final LinearLayoutManager layoutManagerEmail = new LinearLayoutManager(this);
+        layoutManagerEmail.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewEmail.setLayoutManager(layoutManagerEmail);
+
+         recyclerViewEmail.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -92,6 +110,30 @@ public class Home extends AppCompatActivity {
         imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
         setReadBtn();
+        getAllEmail();
+    }
+
+    private void getAllEmail() {
+        int userId = AppCommon.getInstance(this).getUserId();
+        final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+        Call<LinkedEmailResponse> secondaryEmailResponseCall = emailStalkService.getLinkedEmail(userId);
+        secondaryEmailResponseCall.enqueue(new Callback<LinkedEmailResponse>() {
+            @Override
+            public void onResponse(Call<LinkedEmailResponse> call, Response<LinkedEmailResponse> response) {
+                int success = response.body().getSuccess();
+                if (success == 1) {
+                    secondaryEmailResponseList = response.body().getSecondaryEmailObjects();
+                    emailAdapter = new EmailAdapter(secondaryEmailResponseList,HomeActivity.this);
+                    recyclerViewEmail.setAdapter(emailAdapter);
+                    emailAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void setUpNavigationdrawer() {
@@ -122,6 +164,17 @@ public class Home extends AppCompatActivity {
         navigationModel = new NavigationModel(R.drawable.logout, getResources().getString(R.string.logout));
         navigationModelArrayList.add(navigationModel);
 
+    }
+
+    @OnClick(R.id.relativeLayoutEmail)
+    void relativeLayoutEmail() {
+        if (recyclerViewEmail.getVisibility() == View.VISIBLE) {
+            recyclerViewEmail.setVisibility(View.GONE);
+            recyclerViewNavigation.setVisibility(View.VISIBLE);
+        } else {
+            recyclerViewEmail.setVisibility(View.VISIBLE);
+            recyclerViewNavigation.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.readBtn)
@@ -195,6 +248,7 @@ public class Home extends AppCompatActivity {
     public void setClickAction(int position) {
         switch (position) {
             case 0:
+                getAllEmail();
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 }
@@ -236,10 +290,10 @@ public class Home extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         boolean flag = callUnRegisterToken();
                         if (flag) {
-                            Intent intent = new Intent(Home.this, LoginActivity.class);
+                            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
-                            AppCommon.getInstance(Home.this).clearPreference();
+                            AppCommon.getInstance(HomeActivity.this).clearPreference();
                         } else {
                             dialog.cancel();
                         }
@@ -285,6 +339,10 @@ public class Home extends AppCompatActivity {
         } else {
             return false;
         }
+
+    }
+
+    public void setEmailClickAction(int position) {
 
     }
 }

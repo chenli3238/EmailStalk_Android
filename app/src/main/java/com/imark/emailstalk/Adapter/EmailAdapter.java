@@ -9,51 +9,46 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.imark.emailstalk.Model.PreferenceModel;
+import com.imark.emailstalk.HomeActivity;
 import com.imark.emailstalk.R;
 import com.imark.emailstalk.SettingActivity;
 
 import java.util.List;
 
+import APIResponse.SecondaryEmailObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ListViewHolder> {
-    private List<PreferenceModel> preferenceModelList;
+public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ListViewHolder> {
+    private List<SecondaryEmailObject> secondaryEmailObjectList;
     Activity activity;
 
-    public SettingsAdapter(List<PreferenceModel> list, Activity activity) {
-        this.preferenceModelList = list;
+    public EmailAdapter(List<SecondaryEmailObject> list, Activity activity) {
+        this.secondaryEmailObjectList = list;
         this.activity = activity;
     }
 
     @Override
-    public SettingsAdapter.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EmailAdapter.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.setting_list_layout, parent, false);
-        return new SettingsAdapter.ListViewHolder(view);
+        return new EmailAdapter.ListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(SettingsAdapter.ListViewHolder holder, int position) {
-        holder.textViewTitle.setText(preferenceModelList.get(position).getHeading());
-        if (position == preferenceModelList.size() - 1 || position == preferenceModelList.size() - 2) {
-            holder.notificationSwitch.setVisibility(View.VISIBLE);
-            holder.textViewArrow.setVisibility(View.INVISIBLE);
-        }
+    public void onBindViewHolder(EmailAdapter.ListViewHolder holder, int position) {
+        holder.textViewTitle.setText(secondaryEmailObjectList.get(position).getEmail());
     }
 
     @Override
     public int getItemCount() {
-        return preferenceModelList.size();
+        return secondaryEmailObjectList.size();
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder {
         private final Context context;
         @BindView(R.id.settingTitle)
         TextView textViewTitle;
-        @BindView(R.id.pushNotificationSwitch)
-        Switch notificationSwitch;
         @BindView(R.id.arrow)
         TextView textViewArrow;
 
@@ -66,7 +61,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ListVi
         @OnClick(R.id.settingTitle)
         void clickOnNavItems() {
             int position = getAdapterPosition();
-            ((SettingActivity) context).setClickAction(position,notificationSwitch);
+            ((HomeActivity) context).setEmailClickAction(position);
         }
     }
 }

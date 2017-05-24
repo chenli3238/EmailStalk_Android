@@ -18,10 +18,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by User on 5/18/2017.
- */
-
 public class ReadFragment extends Fragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -45,19 +41,7 @@ public class ReadFragment extends Fragment {
         recycleView.setAdapter(mailAdapter);
         return v;
     }
-   /* @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.all_mail);
-        ButterKnife.bind(this);
-        setData();
-        layoutManager = new LinearLayoutManager(AllMail.this);
-        recycleView.setLayoutManager(layoutManager);
-        mailAdapter = new MailAdapter(AllMail.this,commonRowArray);
-        recycleView.setAdapter(mailAdapter);
 
-
-    }*/
 
     private void setData() {
         commonRowArray.add(new CommonRowResponse("Test Mail","Read twice","10:10 AM Feb 22","To: Adam smith"));

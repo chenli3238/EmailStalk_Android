@@ -1,16 +1,15 @@
 package APIResponse;
 
+
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class EmailResponse {
+public class PreferenceResponse {
 
     @SerializedName("success")
     int success;
 
     @SerializedName("result")
-    List<EmailObject> emailObjectList;
+    String result;
 
     @SerializedName("error")
     String error;
@@ -23,14 +22,13 @@ public class EmailResponse {
         this.success = success;
     }
 
-    public List<EmailObject> getEmailObjectList() {
-        return emailObjectList;
+    public String getResult() {
+        return result;
     }
 
-    public void setEmailObjectList(List<EmailObject> emailObjectList) {
-        this.emailObjectList = emailObjectList;
+    public void setResult(String result) {
+        this.result = result;
     }
-
 
     public String getError() {
         return error;

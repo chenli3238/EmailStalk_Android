@@ -1,5 +1,6 @@
 package com.imark.emailstalk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,18 +9,27 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.imark.emailstalk.Adapter.SettingsAdapter;
+import com.imark.emailstalk.Infrastructure.AppCommon;
 import com.imark.emailstalk.Model.PreferenceModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import API.EmailStalkService;
+import API.ServiceGenerator;
+import APIEntity.NotificationEntity;
+import APIResponse.NotificationResponse;
 import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
@@ -63,6 +73,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void setUpEventsData() {
+
         PreferenceModel preferenceModel = new PreferenceModel("Account");
         preferenceModelList.add(preferenceModel);
 
@@ -77,5 +88,49 @@ public class SettingActivity extends AppCompatActivity {
 
         preferenceModel = new PreferenceModel("Multiple Push Notification");
         preferenceModelList.add(preferenceModel);
+    }
+
+    public void setClickAction(int position, Switch notificationSwitch) {
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this, AccountsActivity.class));
+                break;
+            case 1:
+                startActivity(new Intent(this, ChangePassword.class));
+                break;
+            case 2:
+                startActivity(new Intent(this, AddEmailActivity.class));
+                break;
+            case 3:
+          //      enablePushNotification(1);
+                break;
+            case 4:
+           //     enablePushNotification(2);
+                break;
+        }
+    }
+
+    private void enablePushNotification(int type) {
+        int userId = AppCommon.getInstance(this).getUserId();
+        NotificationEntity notificationEntity = new NotificationEntity(userId, type);
+        EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+        Call<NotificationResponse> notificationResponseCall = emailStalkService.Notification(notificationEntity);
+        notificationResponseCall.enqueue(new Callback<NotificationResponse>() {
+            @Override
+            public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                int success = response.body().getSuccess();
+                if (success == 1) {
+                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+
+                } else {
+                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

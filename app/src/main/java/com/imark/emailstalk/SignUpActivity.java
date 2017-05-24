@@ -13,15 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.imark.emailstalk.Infrastructure.AppCommon;
+
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import API.EmailStalkService;
 import API.ServiceGenerator;
 import APIEntity.RegistrationEntity;
-import APIResponse.LoginResponse;
 import APIResponse.RegistrationResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +67,8 @@ public class SignUpActivity extends Activity {
         tz = cal.getTimeZone();
         Log.d("Time zone", "tz" + tz.getID());
         progress = new ProgressDialog(this);
-        progress.setMessage("Please Wait!");
+        progress.setMessage(getResources().getString(R.string.please_wait));
+        progress.setCancelable(false);
     }
 
     @OnClick(R.id.loginBtn)
@@ -89,7 +89,7 @@ public class SignUpActivity extends Activity {
             userLNameText.setError("Last Name must be filled");
         } else if (email.isEmpty()) {
             emailEditText.setError("Email must be filled");
-        } else if (!isEmailValid(email)) {
+        } else if (!AppCommon.getInstance(SignUpActivity.this).isEmailValid(email)) {
             emailEditText.setError("Please enter valid Email");
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
@@ -111,7 +111,7 @@ public class SignUpActivity extends Activity {
                             editor.putBoolean("login", true);
                             editor.putInt("userId", userId);
                             editor.apply();
-                            startActivity(new Intent(SignUpActivity.this, Home.class));
+                            startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
                             finish();
                         } else {
                             Toast.makeText(SignUpActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
@@ -127,19 +127,4 @@ public class SignUpActivity extends Activity {
             });
         }
     }
-
-    public static boolean isEmailValid(String email) {
-        boolean isValid = false;
-
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        CharSequence inputStr = email;
-
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(inputStr);
-        if (matcher.matches()) {
-            isValid = true;
-        }
-        return isValid;
-    }
-
 }

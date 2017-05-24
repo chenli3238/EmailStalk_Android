@@ -60,7 +60,7 @@ public class ForgotPassword extends Activity {
                         progress.dismiss();
                         int success = response.body().getSuccess();
                         if (success == 1) {
-                            finish();
+                            AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,response.body().getResult());
                         } else {
                             AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,response.body().getError());
                         }

@@ -42,6 +42,13 @@
             {
               "client_id": "1022733286616-dgm7259l3c32grauo5uq7csug6g6865c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1022733286616-1u47leq8l9fi0vjjm8h48nf8n5oko7h2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.techtouch.EmailStalk"
+              }
             }
           ]
         },

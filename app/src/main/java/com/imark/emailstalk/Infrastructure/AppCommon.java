@@ -76,6 +76,12 @@ public class AppCommon {
         String token = prefs.getString(MYPerference.tokenId, null);
         return token;
     }
+
+    public boolean isUserLogIn(){
+        SharedPreferences prefs = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
+        return prefs.getBoolean("login", false);
+    }
+
     public boolean isConnectingToInternet(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -103,7 +109,7 @@ public class AppCommon {
         }
 
     }
-    public static boolean isEmailValid(String email) {
+    public boolean isEmailValid(String email) {
         boolean isValid = false;
 
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
