@@ -31,13 +31,14 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ListViewHold
 
     @Override
     public EmailAdapter.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.setting_list_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.email_list_layout, parent, false);
         return new EmailAdapter.ListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(EmailAdapter.ListViewHolder holder, int position) {
         holder.textViewTitle.setText(secondaryEmailObjectList.get(position).getEmail());
+      //  holder.textViewTitle.setTextColor(get);
     }
 
     @Override

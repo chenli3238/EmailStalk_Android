@@ -6,10 +6,16 @@
 
     <include layout="@layout/toolbar_layout" />
 
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/webViewFAQ"></WebView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorDarkGrey"
+        android:visibility="gone"
         android:padding="@dimen/activity_horizontal_margin">
 
         <SearchView
@@ -23,6 +29,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:padding="20dp">
 
         <ExpandableListView

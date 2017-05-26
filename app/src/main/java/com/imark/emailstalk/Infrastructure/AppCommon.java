@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -32,17 +33,16 @@ public class AppCommon {
         mContext = _Context;
         return mInstance;
     }
+
     public static void btn_click(ImageView textView) {
         textView.setSelected(true);
-        //textView.setTextColor(mContext.getResources().getColor(R.color.white));
     }
 
     public void btn_click1(ImageView textView1, ImageView textView2) {
         textView1.setSelected(false);
         textView2.setSelected(false);
-        //textView1.setTextColor(mContext.getResources().getColor(R.color.gray_font));
-      //  textView2.setTextColor(mContext.getResources().getColor(R.color.gray_font));
     }
+
     public void setUserId(int userId) {
         SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
         editor.putBoolean(MYPerference.Login, true);
@@ -52,7 +52,7 @@ public class AppCommon {
 
     public int getUserId() {
         SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
-        return mSharedPreferences.getInt(MYPerference.userId,0);
+        return mSharedPreferences.getInt(MYPerference.userId, 0);
     }
 
     public void setTokenId(String tokenId) {
@@ -62,13 +62,16 @@ public class AppCommon {
 
     }
 
-    public void clearPreference(){
+    public void clearPreference() {
         SharedPreferences.Editor editorLogin = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
         editorLogin.clear();
         editorLogin.apply();
         SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mDeviceToken, MODE_PRIVATE).edit();
         editor.clear();
         editor.apply();
+        SharedPreferences.Editor editorPreferences = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE).edit();
+        editorPreferences.clear();
+        editorPreferences.apply();
     }
 
     public String getTokenId() {
@@ -77,7 +80,7 @@ public class AppCommon {
         return token;
     }
 
-    public boolean isUserLogIn(){
+    public boolean isUserLogIn() {
         SharedPreferences prefs = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
         return prefs.getBoolean("login", false);
     }
@@ -94,7 +97,8 @@ public class AppCommon {
         }
         return false;
     }
-    public void showDialog(Activity mActivity, String error) {
+
+    public void showDialog(final Activity mActivity, String error) {
         if (!mActivity.isFinishing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setCancelable(false);
@@ -109,6 +113,7 @@ public class AppCommon {
         }
 
     }
+
     public boolean isEmailValid(String email) {
         boolean isValid = false;
 
@@ -123,4 +128,60 @@ public class AppCommon {
         return isValid;
     }
 
+    public void savePreferences(int isDailyReportEnabled, int isPushNotificationsEnabled, String dailyReportTime) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE).edit();
+        editor.putInt(MYPerference.isDailyReportEnabled, isDailyReportEnabled);
+        editor.putInt(MYPerference.isPushNotificationsEnabled, isPushNotificationsEnabled);
+        editor.putString(MYPerference.dailyReportTime, dailyReportTime);
+        editor.apply();
+    }
+
+    public void setNotificationType(int notificationType) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE).edit();
+        editor.putInt(MYPerference.notificationType, notificationType);
+        editor.apply();
+
+    }
+
+    public int getNotificationType() {
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE);
+        return mSharedPreferences.getInt(MYPerference.notificationType, 0);
+    }
+
+    public int getpushNotification() {
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE);
+        return mSharedPreferences.getInt(MYPerference.isPushNotificationsEnabled, 0);
+    }
+
+    public int getDailyReport() {
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE);
+        return mSharedPreferences.getInt(MYPerference.isDailyReportEnabled, 0);
+    }
+
+    public String getDailyReportTime() {
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE);
+        return mSharedPreferences.getString(MYPerference.dailyReportTime, null);
+    }
+
+    public String getUserName(){
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
+        return mSharedPreferences.getString(MYPerference.userName, null);
+    }
+
+    public String getEmail(){
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
+        return mSharedPreferences.getString(MYPerference.email, null);
+    }
+
+    public void setUserName(String userName) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
+        editor.putString(MYPerference.userName, userName);
+        editor.apply();
+    }
+
+    public void setEmail(String email) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
+        editor.putString(MYPerference.email, email);
+        editor.apply();
+    }
 }

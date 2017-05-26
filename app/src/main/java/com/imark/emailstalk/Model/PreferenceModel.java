@@ -4,15 +4,18 @@ public class PreferenceModel {
 
     private String heading;
     private String info;
+    boolean checkBox;
 
-    public PreferenceModel(String heading, String info){
+    public PreferenceModel(String heading, String info, boolean checkBox) {
         this.heading = heading;
         this.info = info;
+        this.checkBox = checkBox;
     }
 
-    public  PreferenceModel(String heading){
+    public PreferenceModel(String heading) {
         this.heading = heading;
     }
+
 
     public String getHeading() {
         return heading;
@@ -28,6 +31,14 @@ public class PreferenceModel {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public boolean isCheckBox() {
+        return checkBox;
+    }
+
+    public void setCheckBox(boolean checkBox) {
+        this.checkBox = checkBox;
     }
 
 }

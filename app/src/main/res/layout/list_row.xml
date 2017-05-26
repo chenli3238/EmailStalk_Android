@@ -54,7 +54,7 @@
                     android:singleLine="true"
                     android:text="10:10 Feb 22"
                     android:textColor="@color/grayFount"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
 
                 <CustomControl.TextViewIconStyle
                     android:id="@+id/rightArrow"

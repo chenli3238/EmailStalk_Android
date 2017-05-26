@@ -69,7 +69,8 @@ public class ForgotPassword extends Activity {
                 @Override
                 public void onFailure(Call<PasswordResponse> call, Throwable t) {
                     progress.dismiss();
-                    Toast.makeText(ForgotPassword.this, t.toString(), Toast.LENGTH_SHORT).show();
+                    AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,getResources().getString(R.string.network_error));
+
                 }
             });
         }

@@ -44,6 +44,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.Li
     public void onBindViewHolder(PreferenceAdapter.ListViewHolder holder, int position) {
         holder.textViewHeading.setText(PreferenceModelList.get(position).getHeading());
         holder.textViewInfo.setText(PreferenceModelList.get(position).getInfo());
+        holder.button.setSelected(PreferenceModelList.get(position).isCheckBox());
     }
 
     @Override
@@ -71,7 +72,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.Li
         @OnClick(R.id.preferenceLayout)
         void ToggleButton() {
             int position = getAdapterPosition();
-            ((PreferenceActivity) context).setAction(position,button);
+            ((PreferenceActivity) context).setAction(position, button);
 
         }
     }

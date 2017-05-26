@@ -1,9 +1,5 @@
 package com.imark.emailstalk.Response;
 
-/**
- * Created by User on 5/17/2017.
- */
-
 public class CommonRowResponse {
     String emailTitle, emailStatus,date,reciverName;
 

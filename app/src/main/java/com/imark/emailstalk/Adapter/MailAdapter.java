@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.imark.emailstalk.AllMail;
+import com.imark.emailstalk.AllMailFragment;
 import com.imark.emailstalk.R;
 import com.imark.emailstalk.ReadFragment;
-import com.imark.emailstalk.Response.CommonRowResponse;
 import com.imark.emailstalk.UnReadFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import APIResponse.EmailObject;
+import APIResponse.ToCcResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -25,42 +27,45 @@ import butterknife.ButterKnife;
 public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
     Context context;
     Fragment fragment;
-    ArrayList<CommonRowResponse> commonRowArray;
- /*   public MailAdapter(Context context, ArrayList<CommonRowResponse> commonRowArray) {
-       this.context = context;
-        this.commonRowArray = commonRowArray;
-    }*/
+    List<EmailObject> commonRowArray;
 
-    public MailAdapter(Fragment fragment, ArrayList<CommonRowResponse> commonRowArray) {
+    public MailAdapter(Fragment fragment, List<EmailObject> commonRowArray) {
         this.fragment = fragment;
         this.commonRowArray = commonRowArray;
     }
 
     @Override
     public MailHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row, parent, false);
         return new MailHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MailHolder holder, int position) {
-        CommonRowResponse commonRowResponse = commonRowArray.get(position);
-        holder.emailTitleTextView.setText(commonRowResponse.getEmailTitle());
-        holder.datetextView.setText(commonRowResponse.getDate());
-        holder.readStatusTextView.setText(commonRowResponse.getEmailStatus());
-        holder.reciverNameTextView.setText(commonRowResponse.getReciverName());
-        if(fragment instanceof ReadFragment){
-            holder.eyeImag.setSelected(true);
-            holder.emailTitleTextView.setTextColor(Color.BLACK);
-        }else if(fragment instanceof AllMail){
-        if(position%2 == 0) {
-            holder.eyeImag.setSelected(true);
-            holder.emailTitleTextView.setTextColor(Color.BLACK);
-        }else {
-            holder.emailTitleTextView.setTextColor(Color.GRAY);
+        EmailObject emailObject = commonRowArray.get(position);
+        holder.emailTitleTextView.setText(emailObject.getEmailTitle());
+        holder.datetextView.setText(emailObject.getDateTime());
+        holder.readStatusTextView.setText("Read " + emailObject.getEmailRead());
+        List<ToCcResponse> toCcResponseList = emailObject.getToResponses();
+        String toNames;
+        List<String> ids = new ArrayList<String>();
+        for (int i = 0; i < toCcResponseList.size(); i++) {
+            toNames = toCcResponseList.get(i).getUserName();
+            ids.add(toNames);
         }
-        }else if(fragment instanceof UnReadFragment){
+        holder.reciverNameTextView.setText("To: "+android.text.TextUtils.join(",", ids));
+        if (fragment instanceof ReadFragment) {
+            holder.eyeImag.setSelected(true);
             holder.emailTitleTextView.setTextColor(Color.GRAY);
+        } else if (fragment instanceof AllMailFragment) {
+            if (position % 2 == 0) {
+                holder.eyeImag.setSelected(true);
+                holder.emailTitleTextView.setTextColor(Color.GRAY);
+            } else {
+                holder.emailTitleTextView.setTextColor(Color.BLACK);
+            }
+        } else if (fragment instanceof UnReadFragment) {
+            holder.emailTitleTextView.setTextColor(Color.BLACK);
         }
     }
 
@@ -90,9 +95,8 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
 
         public MailHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
-            if(fragment instanceof ReadFragment)
-            {
+            ButterKnife.bind(this, itemView);
+            if (fragment instanceof ReadFragment) {
                 emailTitleTextView.setTextColor(R.color.black_font);
             }
         }

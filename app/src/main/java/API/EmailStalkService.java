@@ -9,6 +9,7 @@ import APIEntity.PreferencesEntity;
 import APIEntity.ProfileEntity;
 import APIEntity.RegistrationEntity;
 import APIEntity.TokenEntity;
+import APIResponse.EmailResponse;
 import APIResponse.LinkedEmailResponse;
 import APIResponse.NotificationResponse;
 import APIResponse.PasswordResponse;
@@ -59,19 +60,19 @@ public interface EmailStalkService {
     );
 
     @POST("getListOfEmails/")
-    Call<PasswordResponse> getListOfEmails(
-            @Body ChangePasswordEntity changePasswordEntity
+    Call<EmailResponse> getListOfEmails(
+            @Query("userID") int userId, @Query("type") int type, @Query("offset") int offset, @Query("emailID") String emailID
     );
 
     @POST("setProfile/")
     Call<ProfileResponse> setProfile(
             @Body ProfileEntity profileEntity
-            );
+    );
 
     @POST("savePreferences/")
     Call<PreferenceResponse> savePreferences(
             @Body PreferencesEntity preferencesEntity
-            );
+    );
 
     @POST("Notification/")
     Call<NotificationResponse> Notification(
@@ -81,7 +82,7 @@ public interface EmailStalkService {
     @POST("addNewEmailAccount/")
     Call<SecondaryEmailResponse> addNewEmailAccount(
             @Body EmailEntity emailEntity
-            );
+    );
 
     @GET("getLinkedEmail/")
     Call<LinkedEmailResponse> getLinkedEmail(

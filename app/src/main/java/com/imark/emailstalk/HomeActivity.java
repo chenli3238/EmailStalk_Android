@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.imark.emailstalk.Adapter.EmailAdapter;
@@ -32,7 +33,6 @@ import API.ServiceGenerator;
 import APIEntity.TokenEntity;
 import APIResponse.LinkedEmailResponse;
 import APIResponse.SecondaryEmailObject;
-import APIResponse.SecondaryEmailResponse;
 import APIResponse.UnRegisterTokenResponse;
 import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
@@ -58,6 +58,12 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.toolbarText)
     TextView textViewtoolbar;
 
+    @BindView(R.id.userName)
+    TextView textViewuserName;
+
+    @BindView(R.id.email)
+    TextView textViewemail;
+
     @BindView(R.id.left)
     ImageView imageViewLeft;
 
@@ -73,14 +79,15 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.allMailBtn)
     ImageView allMailBtn;
 
+    @BindView(R.id.addEmail)
+    RelativeLayout addEmail;
+
     Fragment selectFragment = null;
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
     NavigationAdapter navigationAdapter;
     private List<SecondaryEmailObject> secondaryEmailResponseList = new ArrayList<>();
     EmailAdapter emailAdapter;
-
     FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,9 +106,7 @@ public class HomeActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManagerEmail = new LinearLayoutManager(this);
         layoutManagerEmail.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewEmail.setLayoutManager(layoutManagerEmail);
-
-         recyclerViewEmail.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
-
+        recyclerViewEmail.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -109,6 +114,10 @@ public class HomeActivity extends AppCompatActivity {
         setUpNavigationdrawer();
         imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
+        String email = AppCommon.getInstance(this).getEmail();
+        String userName = AppCommon.getInstance(this).getUserName();
+        textViewemail.setText(email);
+        textViewuserName.setText(userName);
         setReadBtn();
         getAllEmail();
     }
@@ -123,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
                 int success = response.body().getSuccess();
                 if (success == 1) {
                     secondaryEmailResponseList = response.body().getSecondaryEmailObjects();
-                    emailAdapter = new EmailAdapter(secondaryEmailResponseList,HomeActivity.this);
+                    emailAdapter = new EmailAdapter(secondaryEmailResponseList, HomeActivity.this);
                     recyclerViewEmail.setAdapter(emailAdapter);
                     emailAdapter.notifyDataSetChanged();
                 }
@@ -131,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
-
+//                AppCommon.getInstance(HomeActivity.this).showDialog(HomeActivity.this, "No Network Connection");
             }
         });
     }
@@ -170,40 +179,35 @@ public class HomeActivity extends AppCompatActivity {
     void relativeLayoutEmail() {
         if (recyclerViewEmail.getVisibility() == View.VISIBLE) {
             recyclerViewEmail.setVisibility(View.GONE);
+            addEmail.setVisibility(View.GONE);
             recyclerViewNavigation.setVisibility(View.VISIBLE);
         } else {
             recyclerViewEmail.setVisibility(View.VISIBLE);
+            addEmail.setVisibility(View.VISIBLE);
             recyclerViewNavigation.setVisibility(View.GONE);
         }
+    }
+
+    @OnClick(R.id.addEmail)
+    void addEmail() {
+        startActivity(new Intent(HomeActivity.this, AddEmailActivity.class));
     }
 
     @OnClick(R.id.readBtn)
     public void setReadBtn() {
         AppCommon.getInstance(this).btn_click(readBtn);
-       /* if (readBtn.isSelected()) {
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(readBtn.getLayoutParams());
-            // readBtn.setPadding(0,0,0,0);
-            lp.setMargins(0, 0, 0, 0);
-
-        } else {
-            unreadBtn.setPadding(0, 10, 0, 0);
-            allMailBtn.setPadding(0, 10, 0, 0);
-        }*/
         AppCommon.getInstance(this).btn_click1(unreadBtn, allMailBtn);
         selectFragment = new ReadFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, selectFragment);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        //  transaction.addToBackStack(AllMail.class.getName());
+        //  transaction.addToBackStack(AllMailFragment.class.getName());
         transaction.commit();
-
     }
-
 
     @OnClick(R.id.unreadBtn)
     public void setUnreadBtn() {
         AppCommon.getInstance(this).btn_click(unreadBtn);
-
         AppCommon.getInstance(this).btn_click1(readBtn, allMailBtn);
 
         selectFragment = new UnReadFragment();
@@ -212,27 +216,19 @@ public class HomeActivity extends AppCompatActivity {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         //   transaction.addToBackStack(ReadFragment.class.getName());
         transaction.commit();
-
     }
 
     @OnClick(R.id.allMailBtn)
     public void setAllMailBtn() {
         AppCommon.getInstance(this).btn_click(allMailBtn);
-       /* if (allMailBtn.isSelected()) {
-            allMailBtn.setPadding(0, 0, 0, 0);
-        } else {
-            unreadBtn.setPadding(0, 10, 0, 0);
-            readBtn.setPadding(0, 10, 0, 0);
-        }*/
         AppCommon.getInstance(this).btn_click1(unreadBtn, readBtn);
 
-        selectFragment = new AllMail();
+        selectFragment = new AllMailFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, selectFragment);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        // transaction.addToBackStack(AllMail.class.getName());
+        // transaction.addToBackStack(AllMailFragment.class.getName());
         transaction.commit();
-
     }
 
     @Override
@@ -244,6 +240,11 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getAllEmail();
+    }
 
     public void setClickAction(int position) {
         switch (position) {
@@ -343,6 +344,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void setEmailClickAction(int position) {
-
+        int verify = secondaryEmailResponseList.get(position).getVerify();
+        if (verify == 0) {
+        AppCommon.getInstance(this).showDialog(this,"Please Verify your Email");
+        } else {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+            textViewemail.setText(secondaryEmailResponseList.get(position).getEmail());
+            setReadBtn();
+        }
     }
 }

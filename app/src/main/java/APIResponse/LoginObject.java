@@ -16,7 +16,16 @@ public class LoginObject {
     int isPushNotificationsEnabled;
 
     @SerializedName("isVerify")
-    String isVerify;
+    int isVerify;
+
+    @SerializedName("notificationType")
+    int notificationType;
+
+    @SerializedName("isDailyReportEnabled")
+    int isDailyReportEnabled;
+
+    @SerializedName("dailyReportTime")
+    String dailyReportTime;
 
     public int getUserID() {
         return userID;
@@ -50,11 +59,37 @@ public class LoginObject {
         this.isPushNotificationsEnabled = isPushNotificationsEnabled;
     }
 
-    public String getIsVerify() {
+
+    public int getIsDailyReportEnabled() {
+        return isDailyReportEnabled;
+    }
+
+    public int getIsVerify() {
         return isVerify;
     }
 
-    public void setIsVerify(String isVerify) {
+    public int getNotificationType() {
+        return notificationType;
+    }
+
+    public void setIsDailyReportEnabled(int isDailyReportEnabled) {
+        this.isDailyReportEnabled = isDailyReportEnabled;
+    }
+
+    public void setIsVerify(int isVerify) {
         this.isVerify = isVerify;
     }
+
+    public void setNotificationType(int notificationType) {
+        this.notificationType = notificationType;
+    }
+
+    public String getDailyReportTime() {
+        return dailyReportTime;
+    }
+
+    public void setDailyReportTime(String dailyReportTime) {
+        this.dailyReportTime = dailyReportTime;
+    }
+
 }

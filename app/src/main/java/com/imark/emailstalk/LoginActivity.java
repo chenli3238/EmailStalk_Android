@@ -72,11 +72,11 @@ public class LoginActivity extends Activity {
 
     @OnClick(R.id.loginBtn)
     public void setLoginBtn() {
-        String email = emailEditText.getText().toString().trim();
+        final String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         if (email.isEmpty()) {
             emailEditText.setError("Email must be filled");
-        } else if (AppCommon.getInstance(LoginActivity.this).isEmailValid(email)) {
+        } else if (!AppCommon.getInstance(LoginActivity.this).isEmailValid(email)) {
             emailEditText.setError("Please enter valid Email");
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
@@ -94,13 +94,24 @@ public class LoginActivity extends Activity {
                         int success = response.body().getSuccess();
                         if (success == 1) {
                             int userId = response.body().getLoginObject().getUserID();
+                            int isVerify = response.body().getLoginObject().getIsVerify();
+                            int notificationType = response.body().getLoginObject().getNotificationType();
+                            int isDailyReportEnabled = response.body().getLoginObject().getIsDailyReportEnabled();
+                            int isPushNotificationsEnabled = response.body().getLoginObject().getIsPushNotificationsEnabled();
+                            String dailyReportTime = response.body().getLoginObject().getDailyReportTime();
+                            String userName = response.body().getLoginObject().getUserFirstName()+" "+response.body().getLoginObject().getUserLastName();
+                            AppCommon.getInstance(LoginActivity.this).savePreferences(isDailyReportEnabled,isPushNotificationsEnabled,dailyReportTime);
                             AppCommon.getInstance(LoginActivity.this).setUserId(userId);
                             AppCommon.getInstance(LoginActivity.this).setTokenId(token);
-                            callUpdateTokenAPI(token, userId);
+                            AppCommon.getInstance(LoginActivity.this).setUserName(userName);
+                            AppCommon.getInstance(LoginActivity.this).setEmail(email);
+                            AppCommon.getInstance(LoginActivity.this).setNotificationType(notificationType);
+                          //  callUpdateTokenAPI(token, userId);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             finish();
-                        } else {
                             Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,getResources().getString(R.string.network_error));
                         }
                     }
                 }
@@ -108,7 +119,8 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
                     progress.dismiss();
-                    Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                    AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,getResources().getString(R.string.network_error));
+
                 }
             });
         }
@@ -117,19 +129,19 @@ public class LoginActivity extends Activity {
     public void callUpdateTokenAPI(String refreshedToken, int userId) {
 
         if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-            TokenEntity tokenEntity = new TokenEntity(userId,refreshedToken);
+            TokenEntity tokenEntity = new TokenEntity(userId, refreshedToken);
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<UpdateDeviceTokenResponse> call = emailStalkService.updateDeviceTokenCall(tokenEntity);
             call.enqueue(new Callback<UpdateDeviceTokenResponse>() {
                 @Override
                 public void onResponse(Call<UpdateDeviceTokenResponse> call, Response<UpdateDeviceTokenResponse> response) {
-                   UpdateDeviceTokenResponse updateDeviceTokenResponse = response.body();
-                        //int success = response.body().getSuccess();
-                        if (updateDeviceTokenResponse.getSuccess() == 1) {
-                            Log.d("Email", "Updated");
-                        } else {
-                            Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
-                        }
+                    UpdateDeviceTokenResponse updateDeviceTokenResponse = response.body();
+                    //int success = response.body().getSuccess();
+                    if (updateDeviceTokenResponse.getSuccess() == 1) {
+                        Log.d("Email", "Updated");
+                    } else {
+                        Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 

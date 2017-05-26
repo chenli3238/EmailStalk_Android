@@ -2,13 +2,9 @@ package APIResponse;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by User on 5/19/2017.
- */
-
 public class RegistrationObject {
     @SerializedName("userID")
-    int userID;
+    private int userID;
 
    @SerializedName("userFirstName")
     String userFirstName;
@@ -21,6 +17,16 @@ public class RegistrationObject {
 
     @SerializedName("isVerify")
     int isVerify;
+
+    @SerializedName("notificationType")
+    int notificationType;
+
+    @SerializedName("isDailyReportEnabled")
+    int isDailyReportEnabled;
+
+    @SerializedName("dailyReportTime")
+    String dailyReportTime;
+
 
     public int getUserID() {
         return userID;
@@ -61,4 +67,29 @@ public class RegistrationObject {
     public void setIsVerify(int isVerify) {
         this.isVerify = isVerify;
     }
+
+    public int getNotificationType() {
+        return notificationType;
+    }
+
+    public int getIsDailyReportEnabled() {
+        return isDailyReportEnabled;
+    }
+
+    public String getDailyReportTime() {
+        return dailyReportTime;
+    }
+
+    public void setDailyReportTime(String dailyReportTime) {
+        this.dailyReportTime = dailyReportTime;
+    }
+
+    public void setNotificationType(int notificationType) {
+        this.notificationType = notificationType;
+    }
+
+    public void setIsDailyReportEnabled(int isDailyReportEnabled) {
+        this.isDailyReportEnabled = isDailyReportEnabled;
+    }
+
 }

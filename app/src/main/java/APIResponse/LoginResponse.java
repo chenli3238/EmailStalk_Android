@@ -2,10 +2,6 @@ package APIResponse;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by User on 5/19/2017.
- */
-
 public class LoginResponse {
     @SerializedName("success")
     int success;
