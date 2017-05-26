@@ -18,6 +18,7 @@ import APIResponse.PreferenceResponse;
 import APIResponse.ProfileResponse;
 import APIResponse.RegistrationResponse;
 import APIResponse.SecondaryEmailResponse;
+import APIResponse.TimeZoneResponse;
 import APIResponse.UnRegisterTokenResponse;
 import APIResponse.UpdateDeviceTokenResponse;
 import retrofit2.Call;
@@ -86,6 +87,11 @@ public interface EmailStalkService {
 
     @GET("getLinkedEmail/")
     Call<LinkedEmailResponse> getLinkedEmail(
+            @Query("userID") int userId
+    );
+
+    @GET("getListIOFTimeZone/")
+    Call<TimeZoneResponse> getListIOFTimeZone(
             @Query("userID") int userId
     );
 }

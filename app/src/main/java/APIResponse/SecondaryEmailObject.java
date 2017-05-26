@@ -10,6 +10,10 @@ public class SecondaryEmailObject {
     @SerializedName("verify")
     int verify;
 
+    public SecondaryEmailObject(String email) {
+        this.email = email;
+    }
+
     public String getEmail() {
         return email;
     }

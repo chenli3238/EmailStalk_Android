@@ -74,19 +74,28 @@ public class SettingActivity extends AppCompatActivity {
 
     private void setUpEventsData() {
 
-        PreferenceModel preferenceModel = new PreferenceModel("Account");
+        PreferenceModel preferenceModel = new PreferenceModel(getResources().getString(R.string.account));
         preferenceModelList.add(preferenceModel);
 
-        preferenceModel = new PreferenceModel("Change Password");
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.change_password));
         preferenceModelList.add(preferenceModel);
 
-        preferenceModel = new PreferenceModel("Add Secondary Email");
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.privacy));
         preferenceModelList.add(preferenceModel);
 
-        preferenceModel = new PreferenceModel("Single Push Notification");
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.terms_condition));
         preferenceModelList.add(preferenceModel);
 
-        preferenceModel = new PreferenceModel("Multiple Push Notification");
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.tutorials));
+        preferenceModelList.add(preferenceModel);
+
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.push_notification));
+        preferenceModelList.add(preferenceModel);
+
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.single_notification));
+        preferenceModelList.add(preferenceModel);
+
+        preferenceModel = new PreferenceModel(getResources().getString(R.string.multiple_notification));
         preferenceModelList.add(preferenceModel);
     }
 
@@ -99,13 +108,22 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ChangePassword.class));
                 break;
             case 2:
-                startActivity(new Intent(this, AddEmailActivity.class));
+                startActivity(new Intent(this, PrivacyActivity.class));
                 break;
             case 3:
-          //      enablePushNotification(1);
+                startActivity(new Intent(this, TermsConditionActivity.class));
                 break;
             case 4:
-           //     enablePushNotification(2);
+    //            startActivity(new Intent(this, TermsConditionActivity.class));
+                break;
+            case 5:
+                //     enablePushNotification(2);
+                break;
+            case 6:
+                //      enablePushNotification(1);
+                break;
+            case 7:
+                //     enablePushNotification(2);
                 break;
         }
     }
@@ -120,7 +138,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
                 int success = response.body().getSuccess();
                 if (success == 1) {
-                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                  //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
 
                 } else {
                     AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());

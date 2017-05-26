@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login);
         ButterKnife.bind(this);
         progress = new ProgressDialog(this);
-        progress.setMessage("Authenticating");
+        progress.setMessage(getResources().getString(R.string.authenticating));
         progress.setCancelable(false);
     }
 

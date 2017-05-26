@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -34,16 +35,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by User on 5/17/2017.
- */
-
 public class AllMailFragment extends Fragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
 
     @BindView(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefresh;
+
+    @BindView(R.id.noEmailFound)
+    RelativeLayout relativeLayoutNoEmail;
 
     ArrayList<CommonRowResponse> commonRowArray = new ArrayList<>();
     private List<EmailObject> emailObjectList = new ArrayList<>();
@@ -65,6 +65,13 @@ public class AllMailFragment extends Fragment {
 //        mailAdapter = new MailAdapter(AllMailFragment.this,commonRowArray);
 //        recycleView.setAdapter(mailAdapter);
      Log.i("tokenId:", FirebaseInstanceId.getInstance().getToken());
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setData();
+            }
+        });
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         return v;
     }
 
@@ -80,12 +87,18 @@ public class AllMailFragment extends Fragment {
                 progress.dismiss();
                 int success = response.body().getSuccess();
                 if(success ==1){
+                    swipeRefresh.setVisibility(View.VISIBLE);
+                    recycleView.setVisibility(View.VISIBLE);
                     emailObjectList = response.body().getEmailObjectList();
                     mailAdapter = new MailAdapter(AllMailFragment.this, emailObjectList);
                     recycleView.setAdapter(mailAdapter);
                     mailAdapter.notifyDataSetChanged();
+                    swipeRefresh.setRefreshing(false);
                 }else{
-                    AppCommon.getInstance(getContext()).showDialog(getActivity(),response.body().getError());
+               //     AppCommon.getInstance(getContext()).showDialog(getActivity(),response.body().getError());
+                    swipeRefresh.setVisibility(View.GONE);
+                    recycleView.setVisibility(View.GONE);
+                    relativeLayoutNoEmail.setVisibility(View.VISIBLE);
                 }
             }
 

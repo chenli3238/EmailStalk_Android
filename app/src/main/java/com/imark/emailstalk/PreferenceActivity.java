@@ -96,11 +96,11 @@ public class PreferenceActivity extends AppCompatActivity {
 
     private void setUpEventsData() {
         push = AppCommon.getInstance(PreferenceActivity.this).getpushNotification();
-        PreferenceModel preferenceModel = new PreferenceModel(getResources().getString(R.string.push_notification_header),
-                getResources().getString(R.string.push_notification_detail), (push == 1));
-        preferenceModelList.add(preferenceModel);
+//        PreferenceModel preferenceModel = new PreferenceModel(getResources().getString(R.string.push_notification_header),
+//                getResources().getString(R.string.push_notification_detail), (push == 1));
+//        preferenceModelList.add(preferenceModel);
         daily = AppCommon.getInstance(this).getDailyReport();
-        preferenceModel = new PreferenceModel(getResources().getString(R.string.daily_report_header),
+        PreferenceModel preferenceModel = new PreferenceModel(getResources().getString(R.string.daily_report_header),
                 getResources().getString(R.string.daily_report_detail), (daily == 1));
         preferenceModelList.add(preferenceModel);
         String reportTime = AppCommon.getInstance(this).getDailyReportTime();

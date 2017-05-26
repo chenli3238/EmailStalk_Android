@@ -55,7 +55,6 @@ public class ChangePassword extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
-
     }
 
     @OnClick(R.id.left)

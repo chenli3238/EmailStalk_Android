@@ -11,20 +11,8 @@ public class SecondaryEmailResponse {
     @SerializedName("result")
     String result;
 
-    @SerializedName("result")
-    List<SecondaryEmailObject> secondaryEmailObjects;
-
     @SerializedName("error")
     String error;
-
-    public List<SecondaryEmailObject> getSecondaryEmailObjects() {
-        return secondaryEmailObjects;
-    }
-
-    public void setSecondaryEmailObjects(List<SecondaryEmailObject> secondaryEmailObjects) {
-        this.secondaryEmailObjects = secondaryEmailObjects;
-    }
-
 
     public int getSuccess() {
         return success;

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.imark.emailstalk.Adapter.MailAdapter;
 import com.imark.emailstalk.Infrastructure.AppCommon;
@@ -40,6 +41,8 @@ public class UnReadFragment extends Fragment {
     @BindView(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefresh;
 
+    @BindView(R.id.noEmailFound)
+    RelativeLayout relativeLayoutNoEmail;
     ArrayList<CommonRowResponse> commonRowArray = new ArrayList<>();
     private List<EmailObject> emailObjectList = new ArrayList<>();
     MailAdapter mailAdapter;
@@ -58,8 +61,14 @@ public class UnReadFragment extends Fragment {
         setData();
         layoutManager = new LinearLayoutManager(getContext());
         recycleView.setLayoutManager(layoutManager);
-//        mailAdapter = new MailAdapter(UnReadFragment.this,commonRowArray);
-//        recycleView.setAdapter(mailAdapter);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                setData();
+            }
+        });
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         return v;
     }
 
@@ -75,12 +84,18 @@ public class UnReadFragment extends Fragment {
                 progress.dismiss();
                 int success = response.body().getSuccess();
                 if (success == 1) {
+                    swipeRefresh.setVisibility(View.VISIBLE);
+                    recycleView.setVisibility(View.VISIBLE);
                     emailObjectList = response.body().getEmailObjectList();
                     mailAdapter = new MailAdapter(UnReadFragment.this, emailObjectList);
                     recycleView.setAdapter(mailAdapter);
                     mailAdapter.notifyDataSetChanged();
+                    swipeRefresh.setRefreshing(false);
                 } else {
-                    AppCommon.getInstance(getContext()).showDialog(getActivity(), response.body().getError());
+         //           AppCommon.getInstance(getContext()).showDialog(getActivity(), response.body().getError());
+                    swipeRefresh.setVisibility(View.GONE);
+                    recycleView.setVisibility(View.GONE);
+                    relativeLayoutNoEmail.setVisibility(View.VISIBLE);
                 }
             }
 

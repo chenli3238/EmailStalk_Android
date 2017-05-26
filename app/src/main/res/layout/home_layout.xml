@@ -49,17 +49,17 @@
                     android:orientation="vertical">
 
                     <CustomControl.TextViewLatoBolt
+                        android:id="@+id/userName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/activity_vertical_margin"
                         android:text="James Bond"
-                        android:id="@+id/userName"
                         android:textColor="@color/black_font"
                         android:textSize="@dimen/heading_text_size" />
 
                     <CustomControl.TextViewLatoBolt
-                        android:layout_width="match_parent"
                         android:id="@+id/email"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/activity_vertical_margin"
                         android:text="ankit.chhabra@imarkinfotech.com"
@@ -67,14 +67,33 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="8dp"
+                <CustomControl.TextViewIconStyle
+                    android:id="@+id/downArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_marginRight="10dp"
                     android:layout_alignParentRight="true"
+                    android:text="@string/down_arrow"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:tint="@color/colorBlack"
-                    android:background="@drawable/down" />
+                    android:textStyle="bold"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="25sp" />
+
+
+                <CustomControl.TextViewIconStyle
+                    android:id="@+id/upArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="invisible"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/up_arrow"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="25sp" />
 
             </RelativeLayout>
 
@@ -84,62 +103,30 @@
                 android:layout_below="@+id/relativeLayoutEmail"
                 android:background="@color/colorBlack">
 
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewNavigation"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewEmail"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:id="@+id/addEmail"
-                    android:layout_below="@+id/recyclerViewEmail"
-                    android:layout_width="match_parent"
-                    android:visibility="visible"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:gravity="center_horizontal|center_vertical">
-
-                    <RelativeLayout
-                        android:id="@+id/plusLayout"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_centerVertical="true"
-                        android:layout_margin="7dp"
-                        android:layout_centerInParent="true"
-                        android:orientation="vertical">
-
-                        <CustomControl.TextViewIconStyle
-                            android:id="@+id/arrow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_alignParentRight="true"
-                            android:text="@string/plus"
-                            android:layout_centerVertical="true"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="24sp" />
-
-                    </RelativeLayout>
-
-                    <CustomControl.TextViewLatoBolt
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewEmail"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_centerInParent="true"
-                        android:layout_toRightOf="@+id/plusLayout"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/heading_text_size"
-                        android:text="@string/add_more" />
+                        android:visibility="visible" />
 
+                    <CustomControl.TextViewIconStyle
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                       />
 
-                </RelativeLayout>
-
+                </android.support.v4.widget.SwipeRefreshLayout>
 
                 />
             </RelativeLayout>

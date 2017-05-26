@@ -56,16 +56,17 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
         holder.reciverNameTextView.setText("To: "+android.text.TextUtils.join(",", ids));
         if (fragment instanceof ReadFragment) {
             holder.eyeImag.setSelected(true);
-            holder.emailTitleTextView.setTextColor(Color.GRAY);
+            holder.emailTitleTextView.setTextColor(Color.BLACK);
         } else if (fragment instanceof AllMailFragment) {
-            if (position % 2 == 0) {
+            int read = emailObject.getIsRead();
+            if (read == 1) {
                 holder.eyeImag.setSelected(true);
-                holder.emailTitleTextView.setTextColor(Color.GRAY);
-            } else {
                 holder.emailTitleTextView.setTextColor(Color.BLACK);
+            } else {
+                holder.emailTitleTextView.setTextColor(Color.GRAY);
             }
         } else if (fragment instanceof UnReadFragment) {
-            holder.emailTitleTextView.setTextColor(Color.BLACK);
+            holder.emailTitleTextView.setTextColor(Color.GRAY);
         }
     }
 

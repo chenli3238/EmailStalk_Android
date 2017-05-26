@@ -1,5 +1,6 @@
 package com.imark.emailstalk;
 
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -67,6 +69,12 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.left)
     ImageView imageViewLeft;
 
+    @BindView(R.id.upArrow)
+    TextView upArrow;
+
+    @BindView(R.id.downArrow)
+    TextView downArrow;
+
     @BindView(R.id.right)
     ImageView imageViewRight;
 
@@ -79,8 +87,8 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.allMailBtn)
     ImageView allMailBtn;
 
-    @BindView(R.id.addEmail)
-    RelativeLayout addEmail;
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeRefreshEmail;
 
     Fragment selectFragment = null;
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
@@ -112,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         setUpNavigationdrawer();
-        imageViewRight.setVisibility(View.VISIBLE);
+//        imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
         String email = AppCommon.getInstance(this).getEmail();
         String userName = AppCommon.getInstance(this).getUserName();
@@ -120,6 +128,13 @@ public class HomeActivity extends AppCompatActivity {
         textViewuserName.setText(userName);
         setReadBtn();
         getAllEmail();
+        swipeRefreshEmail.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getAllEmail();
+            }
+        });
+        swipeRefreshEmail.setColorSchemeResources(R.color.colorPrimary);
     }
 
     private void getAllEmail() {
@@ -132,9 +147,12 @@ public class HomeActivity extends AppCompatActivity {
                 int success = response.body().getSuccess();
                 if (success == 1) {
                     secondaryEmailResponseList = response.body().getSecondaryEmailObjects();
+                    SecondaryEmailObject secondaryEmailObject = new SecondaryEmailObject("Add Email");
+                    secondaryEmailResponseList.add(secondaryEmailResponseList.size(), secondaryEmailObject);
                     emailAdapter = new EmailAdapter(secondaryEmailResponseList, HomeActivity.this);
                     recyclerViewEmail.setAdapter(emailAdapter);
                     emailAdapter.notifyDataSetChanged();
+                    swipeRefreshEmail.setRefreshing(false);
                 }
             }
 
@@ -175,23 +193,33 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.right)
+    void Right() {
+        startActivity(new Intent(this, NotificationActivity.class));
+    }
+
     @OnClick(R.id.relativeLayoutEmail)
     void relativeLayoutEmail() {
         if (recyclerViewEmail.getVisibility() == View.VISIBLE) {
             recyclerViewEmail.setVisibility(View.GONE);
-            addEmail.setVisibility(View.GONE);
+            swipeRefreshEmail.setVisibility(View.GONE);
             recyclerViewNavigation.setVisibility(View.VISIBLE);
+            downArrow.setVisibility(View.VISIBLE);
+            upArrow.setVisibility(View.GONE);
+
         } else {
             recyclerViewEmail.setVisibility(View.VISIBLE);
-            addEmail.setVisibility(View.VISIBLE);
+            swipeRefreshEmail.setVisibility(View.VISIBLE);
             recyclerViewNavigation.setVisibility(View.GONE);
+            downArrow.setVisibility(View.GONE);
+            upArrow.setVisibility(View.VISIBLE);
         }
     }
 
-    @OnClick(R.id.addEmail)
-    void addEmail() {
-        startActivity(new Intent(HomeActivity.this, AddEmailActivity.class));
-    }
+//    @OnClick(R.id.addEmail)
+//    void addEmail() {
+//
+//    }
 
     @OnClick(R.id.readBtn)
     public void setReadBtn() {
@@ -243,7 +271,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getAllEmail();
+        // getAllEmail();
     }
 
     public void setClickAction(int position) {
@@ -344,15 +372,19 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void setEmailClickAction(int position) {
-        int verify = secondaryEmailResponseList.get(position).getVerify();
-        if (verify == 0) {
-        AppCommon.getInstance(this).showDialog(this,"Please Verify your Email");
+        if (position == secondaryEmailResponseList.size() - 1) {
+            startActivity(new Intent(HomeActivity.this, AddEmailActivity.class));
         } else {
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
+            int verify = secondaryEmailResponseList.get(position).getVerify();
+            if (verify == 0) {
+                AppCommon.getInstance(this).showDialog(this, "Please Verify your Email");
+            } else {
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                textViewemail.setText(secondaryEmailResponseList.get(position).getEmail());
+                setReadBtn();
             }
-            textViewemail.setText(secondaryEmailResponseList.get(position).getEmail());
-            setReadBtn();
         }
     }
 }

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,10 +17,18 @@ import android.widget.Toast;
 
 import com.imark.emailstalk.Infrastructure.AppCommon;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import API.EmailStalkService;
 import API.ServiceGenerator;
 import APIEntity.ProfileEntity;
 import APIResponse.ProfileResponse;
+import APIResponse.TimeZoneResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -56,14 +65,78 @@ public class AccountsActivity extends AppCompatActivity {
         textViewToolbar.setText(R.string.account);
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewLeft.setImageResource(R.drawable.left);
-
-        ArrayAdapter<CharSequence> adaptertime = ArrayAdapter.createFromResource(this, R.array.timeZone, R.layout.spinner_layout);
-        spinnerTimeZone.setAdapter(adaptertime);
-        ArrayAdapter<CharSequence> adaptercoun = ArrayAdapter.createFromResource(this, R.array.country, R.layout.spinner_layout);
-        spinnerCountry.setAdapter(adaptercoun);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
         progressDialog.setCancelable(false);
+        getRegionAndTimeZone();
+    }
+
+    private void getRegionAndTimeZone() {
+        int userId = AppCommon.getInstance(this).getUserId();
+        final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+        final Call<TimeZoneResponse> timeZoneResponseCall = emailStalkService.getListIOFTimeZone(userId);
+        timeZoneResponseCall.enqueue(new Callback<TimeZoneResponse>() {
+            @Override
+            public void onResponse(Call<TimeZoneResponse> call, Response<TimeZoneResponse> response) {
+                int success = response.body().getSuccess();
+                if (success == 1) {
+                    //  timeZoneObjectList = response.body().getTimeZoneObjectList();
+                    SetRegionTimeZone(response.body().getTimeZoneList());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TimeZoneResponse> call, Throwable t) {
+//                AppCommon.getInstance(HomeActivity.this).showDialog(HomeActivity.this, "No Network Connection");
+            }
+        });
+    }
+
+    private void SetRegionTimeZone(final ArrayList<String> timeZoneObjectList) {
+        final ArrayList<String> arrayList = new ArrayList<String>();
+        Set<String> hs = new HashSet<>();
+        for (int i = 0; i < timeZoneObjectList.size(); i++) {
+            String regionTimeZone = timeZoneObjectList.get(i);
+            String[] split = regionTimeZone.split("/");
+            String firstSubString = split[0];
+            hs.add(firstSubString);
+        }
+        arrayList.addAll(hs);
+        Collections.sort(arrayList, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.compareToIgnoreCase(s2);
+            }
+        });
+        arrayList.add(0, "Select Region");
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, arrayList);
+        spinnerCountry.setAdapter(stringArrayAdapter);
+        spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                List<String> listClone = new ArrayList<String>();
+                if (position == 0) {
+                    listClone.add(0, "Select TimeZone");
+                } else {
+                    String s = arrayList.get(position);
+                    for (String string : timeZoneObjectList) {
+                        if (string.matches("(?i)(" + s + ").*")) {
+                            listClone.add(string);
+                        }
+                    }
+                    listClone.add(0, "Select TimeZone");
+                }
+                ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(AccountsActivity.this, R.layout.spinner_layout, listClone);
+                spinnerTimeZone.setAdapter(stringArrayAdapter);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     @OnClick(R.id.left)

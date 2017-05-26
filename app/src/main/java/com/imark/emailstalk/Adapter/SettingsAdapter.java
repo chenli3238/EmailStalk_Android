@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -37,8 +38,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ListVi
     @Override
     public void onBindViewHolder(SettingsAdapter.ListViewHolder holder, int position) {
         holder.textViewTitle.setText(preferenceModelList.get(position).getHeading());
-        if (position == preferenceModelList.size() - 1 || position == preferenceModelList.size() - 2) {
+        if (position == preferenceModelList.size() - 3) {
             holder.notificationSwitch.setVisibility(View.VISIBLE);
+            holder.textViewArrow.setVisibility(View.INVISIBLE);
+            holder.buttonPrefIndicator.setVisibility(View.GONE);
+        }
+        if(position == preferenceModelList.size()-1 || position == preferenceModelList.size()-2){
+            holder.buttonPrefIndicator.setVisibility(View.VISIBLE);
+            holder.notificationSwitch.setVisibility(View.GONE);
             holder.textViewArrow.setVisibility(View.INVISIBLE);
         }
     }
@@ -56,6 +63,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ListVi
         Switch notificationSwitch;
         @BindView(R.id.arrow)
         TextView textViewArrow;
+        @BindView(R.id.prefIndicator)
+        Button buttonPrefIndicator;
 
         public ListViewHolder(View itemView) {
             super(itemView);

@@ -42,7 +42,9 @@
         <activity android:name=".SettingActivity" />
         <activity android:name=".ChangePassword" />
         <activity android:name=".AddEmailActivity" />
-
+        <activity android:name=".NotificationActivity"/>
+        <activity android:name=".PrivacyActivity"/>
+        <activity android:name=".TermsConditionActivity"/>
         <service android:name=".FirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

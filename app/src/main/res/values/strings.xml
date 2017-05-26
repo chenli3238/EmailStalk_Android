@@ -10,6 +10,8 @@
     <string name="rightArrow">&#xf105;</string>
     <string name="plus">&#xf055;</string>
     <string name="home">Home</string>
+    <string name="up_arrow">&#xf106;</string>
+    <string name="down_arrow">&#xf107;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="delivery_time">Delivery time</string>
@@ -69,17 +71,30 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="logout_text">Do you really want to logout this Application ?</string>
     <string name="secondary_email">Add Secondary Email</string>
+    <string name="single_notification">Single Email Notification</string>
+    <string name="multiple_notification">Multiple Email Notification</string>
+    <string name="push_notification">Push Notification</string>
+    <string name="privacy">Privacy Policy</string>
+    <string name="terms_condition">Terms &amp; Conditions</string>
     <string name="enter_email">Enter Email</string>
     <string name="connectionFail">Connection Failed !</string>
     <string name="serverError">Server Error</string>
     <string name="android">android</string>
     <string name="please_wait">Please Wait...</string>
     <string name="authenticating">Authenticating...</string>
+    <string name="notification">Notifications</string>
     <string name="network_error">Please Check your network connection</string>
     <string name="push_notification_header">Email notification enabled by default</string>
     <string name="push_notification_detail">Receive email alert straight in your inbox by default (it can be deactivated in each individual message).</string>
     <string name="daily_report_header">Daily report</string>
     <string name="daily_report_detail">Get analysis everyday on your email opens. See what strategies works best and get rid of the ones that don"'"t.</string>
     <string name="add_more">Add Email</string>
+    <string name="no_email">No Email Found</string>
+    <string name="notification_delete_text">Do you want delete the Notification ?</string>
+    <string name="terms_and_condition">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry"'"s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</string>
+    <string name="privacy_policy">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry"'"s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="tutorials">Tutorials</string>
+
 
 </resources>

@@ -41,13 +41,60 @@
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
-        android:text="@string/rightArrow"
         android:layout_centerVertical="true"
-        android:textStyle="bold"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:text="@string/rightArrow"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/addEmailLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorBlack"
+        android:visibility="invisible">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <CustomControl.TextViewIconStyle
+                android:id="@+id/plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="@string/plus"
+                android:textColor="@color/colorWhite"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <CustomControl.TextViewLatoBolt
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/plusLayout"
+                android:text="@string/add_more"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/heading_text_size" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

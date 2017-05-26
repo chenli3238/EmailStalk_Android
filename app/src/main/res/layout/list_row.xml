@@ -27,7 +27,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="90"
+            android:layout_weight="83"
             android:orientation="vertical">
 
             <LinearLayout
@@ -39,7 +39,7 @@
                     android:id="@+id/emailTitleTextView"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5.5"
+                    android:layout_weight="6"
                     android:gravity="center_vertical"
                     android:text="TextEmail"
                     android:textColor="@android:color/black"
@@ -49,23 +49,13 @@
                     android:id="@+id/datetextView"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="4"
                     android:gravity="center_vertical"
                     android:singleLine="true"
                     android:text="10:10 Feb 22"
                     android:textColor="@color/grayFount"
                     android:textSize="12sp" />
 
-                <CustomControl.TextViewIconStyle
-                    android:id="@+id/rightArrow"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:text="@string/rightArrow"
-                    android:textStyle="bold"
-                    android:textColor="@color/grayFount"
-                    android:textSize="17sp" />
 
             </LinearLayout>
 
@@ -106,6 +96,25 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/line" />
             </RelativeLayout>
+
+        </LinearLayout>
+        <LinearLayout
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7">
+
+            <CustomControl.TextViewIconStyle
+                android:id="@+id/rightArrow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/rightArrow"
+                android:textStyle="bold"
+                android:textColor="@color/grayFount"
+                android:textSize="30sp" />
+
 
         </LinearLayout>
     </LinearLayout>

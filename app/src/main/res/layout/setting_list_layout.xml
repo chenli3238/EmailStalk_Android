@@ -50,4 +50,16 @@
         android:textColor="@color/grayFount"
         android:textSize="20sp" />
 
+    <Button
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:textColor="@color/colorBlack"
+        android:id="@+id/prefIndicator"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:visibility="invisible"
+        android:background="@drawable/prefernces_button"
+        android:layout_alignParentRight="true"/>
+
 </RelativeLayout>

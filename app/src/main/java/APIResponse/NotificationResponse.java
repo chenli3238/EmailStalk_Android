@@ -2,12 +2,14 @@ package APIResponse;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class NotificationResponse {
     @SerializedName("success")
     int success;
 
     @SerializedName("result")
-    String result;
+    List<NotificationObject> notificationObjectList;
 
     @SerializedName("error")
     String error;
@@ -20,12 +22,12 @@ public class NotificationResponse {
         this.success = success;
     }
 
-    public String getResult() {
-        return result;
+    public List<NotificationObject> getNotificationObjectList() {
+        return notificationObjectList;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setNotificationObjectList(List<NotificationObject> notificationObjectList) {
+        this.notificationObjectList = notificationObjectList;
     }
 
     public String getError() {
