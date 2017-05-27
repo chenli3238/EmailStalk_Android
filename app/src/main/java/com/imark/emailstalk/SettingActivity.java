@@ -34,16 +34,25 @@ import retrofit2.Response;
 public class SettingActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.toolbarText)
     TextView textViewToolbar;
+
     @BindView(R.id.left)
     ImageView imageViewLeft;
+
     @BindView(R.id.right)
     ImageView imageViewRight;
+
     @BindView(R.id.recyclerViewSetting)
+
     RecyclerView recyclerViewSetting;
+
     private List<PreferenceModel> preferenceModelList = new ArrayList<>();
+
     SettingsAdapter settingsAdapter;
+
+    FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,7 +126,12 @@ public class SettingActivity extends AppCompatActivity {
     //            startActivity(new Intent(this, TermsConditionActivity.class));
                 break;
             case 5:
-                //     enablePushNotification(2);
+                if (notificationSwitch.isChecked()) {
+                    final String token = firebaseInstanceIDService.getDeviceToken();
+                    AppCommon.getInstance(this).callUpdateTokenAPI(token, AppCommon.getInstance(this).getUserId());
+                } else {
+                    AppCommon.getInstance(this).callUnRegisterToken();
+                }
                 break;
             case 6:
                 //      enablePushNotification(1);

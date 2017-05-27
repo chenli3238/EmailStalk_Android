@@ -69,6 +69,11 @@ public class AccountsActivity extends AppCompatActivity {
         progressDialog.setMessage(getResources().getString(R.string.please_wait));
         progressDialog.setCancelable(false);
         getRegionAndTimeZone();
+        String userName = AppCommon.getInstance(this).getUserName();
+        String[] split = userName.split(" ");
+        editTextFirstName.setText(split[0]);
+        editTextLastName.setText(split[1]);
+
     }
 
     private void getRegionAndTimeZone() {
@@ -109,8 +114,10 @@ public class AccountsActivity extends AppCompatActivity {
             }
         });
         arrayList.add(0, "Select Region");
+        int regionIndex = getIndexRegion(arrayList, AppCommon.getInstance(this).getRegion());
         ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, arrayList);
         spinnerCountry.setAdapter(stringArrayAdapter);
+        spinnerCountry.setSelection(regionIndex);
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -126,8 +133,10 @@ public class AccountsActivity extends AppCompatActivity {
                     }
                     listClone.add(0, "Select TimeZone");
                 }
+                int timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
                 ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(AccountsActivity.this, R.layout.spinner_layout, listClone);
                 spinnerTimeZone.setAdapter(stringArrayAdapter);
+                spinnerTimeZone.setSelection(timeZoneIndex);
 
             }
 
@@ -137,6 +146,26 @@ public class AccountsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private int getIndexRegion(ArrayList<String> arrayList, String region) {
+        int i;
+        for (i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i).equals(region)) {
+                break;
+            }
+        }
+        return i;
+    }
+
+    private int getIndexRegion(List<String> arrayList, String region) {
+        int i;
+        for (i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i).equals(region)) {
+                break;
+            }
+        }
+        return i;
     }
 
     @OnClick(R.id.left)
@@ -151,10 +180,10 @@ public class AccountsActivity extends AppCompatActivity {
 
     @OnClick(R.id.saveProfile)
     void setButtonSaveprofile() {
-        String fName = editTextFirstName.getText().toString().trim();
-        String lName = editTextLastName.getText().toString().trim();
-        String region = spinnerCountry.getSelectedItem().toString().trim();
-        String timeZone = spinnerTimeZone.getSelectedItem().toString().trim();
+        final String fName = editTextFirstName.getText().toString().trim();
+        final String lName = editTextLastName.getText().toString().trim();
+        final String region = spinnerCountry.getSelectedItem().toString().trim();
+        final String timeZone = spinnerTimeZone.getSelectedItem().toString().trim();
         if (fName.isEmpty()) {
             editTextFirstName.setError("First Name must be filled");
         } else if (lName.isEmpty()) {
@@ -176,6 +205,9 @@ public class AccountsActivity extends AppCompatActivity {
                     int success = response.body().getSuccess();
                     if (success == 1) {
                         Toast.makeText(AccountsActivity.this, response.body().getResult(), Toast.LENGTH_SHORT).show();
+                        AppCommon.getInstance(AccountsActivity.this).setRegion(region);
+                        AppCommon.getInstance(AccountsActivity.this).setTimeZone(timeZone);
+                        AppCommon.getInstance(AccountsActivity.this).setUserName(fName + " " + lName);
                         finish();
                     } else {
                         AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, response.body().getError());

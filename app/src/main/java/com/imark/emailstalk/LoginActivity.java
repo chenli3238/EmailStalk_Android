@@ -100,12 +100,16 @@ public class LoginActivity extends Activity {
                             int isPushNotificationsEnabled = response.body().getLoginObject().getIsPushNotificationsEnabled();
                             String dailyReportTime = response.body().getLoginObject().getDailyReportTime();
                             String userName = response.body().getLoginObject().getUserFirstName()+" "+response.body().getLoginObject().getUserLastName();
+                            String region = response.body().getLoginObject().getRegion();
+                            String timezone = response.body().getLoginObject().getTimezone();
                             AppCommon.getInstance(LoginActivity.this).savePreferences(isDailyReportEnabled,isPushNotificationsEnabled,dailyReportTime);
                             AppCommon.getInstance(LoginActivity.this).setUserId(userId);
                             AppCommon.getInstance(LoginActivity.this).setTokenId(token);
                             AppCommon.getInstance(LoginActivity.this).setUserName(userName);
                             AppCommon.getInstance(LoginActivity.this).setEmail(email);
                             AppCommon.getInstance(LoginActivity.this).setNotificationType(notificationType);
+                            AppCommon.getInstance(LoginActivity.this).setRegion(region);
+                            AppCommon.getInstance(LoginActivity.this).setTimeZone(timezone);
                           //  callUpdateTokenAPI(token, userId);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             finish();
@@ -126,30 +130,5 @@ public class LoginActivity extends Activity {
         }
     }
 
-    public void callUpdateTokenAPI(String refreshedToken, int userId) {
 
-        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-            TokenEntity tokenEntity = new TokenEntity(userId, refreshedToken);
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<UpdateDeviceTokenResponse> call = emailStalkService.updateDeviceTokenCall(tokenEntity);
-            call.enqueue(new Callback<UpdateDeviceTokenResponse>() {
-                @Override
-                public void onResponse(Call<UpdateDeviceTokenResponse> call, Response<UpdateDeviceTokenResponse> response) {
-                    UpdateDeviceTokenResponse updateDeviceTokenResponse = response.body();
-                    //int success = response.body().getSuccess();
-                    if (updateDeviceTokenResponse.getSuccess() == 1) {
-                        Log.d("Email", "Updated");
-                    } else {
-                        Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<UpdateDeviceTokenResponse> call, Throwable t) {
-
-                }
-            });
-        }
-    }
 }

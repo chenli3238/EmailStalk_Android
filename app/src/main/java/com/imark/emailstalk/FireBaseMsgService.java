@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -15,6 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.List;
+import java.util.Map;
 
 public class FireBaseMsgService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
@@ -29,51 +31,33 @@ public class FireBaseMsgService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
 
         //Calling method to generate notification
-        sendNotification(remoteMessage.getNotification().getBody());
+        sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getData());
     }
 
-    private void sendNotification(String body) {
+    private void sendNotification(String body, Map<String, String> data) {
 
-        /*if (isApplicationSentToBackground(getApplicationContext())) {
-            Intent intent = new Intent(this, MyActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-             pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-        }else
-        {
-            // its for alert box
+//        if (isApplicationSentToBackground(getApplicationContext())) {
+//            Intent intent = new Intent(this, EmailDetailActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//             pendingIntent = PendingIntent.getActivity(this, 0, intent,
+//                    PendingIntent.FLAG_ONE_SHOT);
+//        }else
+//        {
+//            Intent push = new Intent();
+//            push.putExtra("default", body);
+//            push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            push.setClass(this, EmailDetailActivity.class);
+//            this.startActivity(push);
+//        }
 
-
-            Intent push = new Intent();
-            push.putExtra("default", body);
-            push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            push.setClass(this, MyActivity.class);
-            this.startActivity(push);
-        }*/
-
-
-        // its use only Token person
-
-        /*Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Firebase Push Notification")
-                .setContentText(body)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0, notificationBuilder.build());*/
-
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, EmailDetailActivity.class);
+        intent.putExtra("MessageId", data.get("message-id"));
+        intent.putExtra("Type", "Notification");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Email Stalk")

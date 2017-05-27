@@ -1,16 +1,24 @@
 package com.imark.emailstalk.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.BundleCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.imark.emailstalk.AllMailFragment;
+import com.imark.emailstalk.EmailDetailActivity;
 import com.imark.emailstalk.R;
 import com.imark.emailstalk.ReadFragment;
 import com.imark.emailstalk.UnReadFragment;
@@ -22,6 +30,7 @@ import APIResponse.EmailObject;
 import APIResponse.ToCcResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
@@ -94,12 +103,28 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
         @BindView(R.id.reciverNameTextView)
         TextView reciverNameTextView;
 
+        @BindView(R.id.emailLayout)
+        LinearLayout linearLayout;
+        private Context context;
+
         public MailHolder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
             ButterKnife.bind(this, itemView);
             if (fragment instanceof ReadFragment) {
                 emailTitleTextView.setTextColor(R.color.black_font);
             }
+        }
+
+        @OnClick(R.id.emailLayout)
+        void emaillayout() {
+            Intent intent = new Intent(context, EmailDetailActivity.class);
+            EmailObject emailObject = commonRowArray.get(getAdapterPosition());
+            Gson gson = new Gson();
+            intent.putExtra("EmailList", gson.toJson(emailObject, EmailObject.class));
+            intent.putExtra("Type", "Local");
+            context.startActivity(intent);
+
         }
     }
 }

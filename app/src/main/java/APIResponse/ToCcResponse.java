@@ -2,10 +2,6 @@ package APIResponse;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Imark on 5/25/2017.
- */
-
 public class ToCcResponse {
 
     @SerializedName("userName")
@@ -13,17 +9,21 @@ public class ToCcResponse {
     @SerializedName("emailID")
     String emailID;
     @SerializedName("EmailOpen")
-    int EmailOpen;
+    String EmailOpen;
     @SerializedName("LastEmailOpen")
     String LastEmailOpen;
+
+    public ToCcResponse(String userName, String emailID, String emailOpen, String lastEmailOpen) {
+        this.userName = userName;
+        this.emailID = emailID;
+        this.EmailOpen = emailOpen;
+        this.LastEmailOpen = lastEmailOpen;
+    }
 
     public String getEmailID() {
         return emailID;
     }
 
-    public int getEmailOpen() {
-        return EmailOpen;
-    }
 
     public String getLastEmailOpen() {
         return LastEmailOpen;
@@ -37,9 +37,14 @@ public class ToCcResponse {
         this.emailID = emailID;
     }
 
-    public void setEmailOpen(int emailOpen) {
+    public String getEmailOpen() {
+        return EmailOpen;
+    }
+
+    public void setEmailOpen(String emailOpen) {
         EmailOpen = emailOpen;
     }
+
 
     public void setLastEmailOpen(String lastEmailOpen) {
         LastEmailOpen = lastEmailOpen;

@@ -14,5 +14,6 @@ public class MYPerference {
     public static String isDailyReportEnabled = "isDailyReportEnabled";
     public static String dailyReportTime = "dailyReportTime";
     public static String isPushNotificationsEnabled = "isPushNotificationsEnabled";
-
+    public static String region = "region";
+    public static String timezone = "timezone";
 }

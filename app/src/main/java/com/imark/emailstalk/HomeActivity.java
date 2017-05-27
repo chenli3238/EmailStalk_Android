@@ -317,7 +317,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        boolean flag = callUnRegisterToken();
+                        boolean flag = AppCommon.getInstance(HomeActivity.this).callUnRegisterToken();
                         if (flag) {
                             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                             startActivity(intent);
@@ -341,35 +341,7 @@ public class HomeActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public boolean callUnRegisterToken() {
-        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-            TokenEntity tokenEntity = new TokenEntity(AppCommon.getInstance(this).getUserId());
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<UnRegisterTokenResponse> call = emailStalkService.unRegisterTokenResponseCall(tokenEntity);
-            call.enqueue(new Callback<UnRegisterTokenResponse>() {
-                @Override
-                public void onResponse(Call<UnRegisterTokenResponse> call, Response<UnRegisterTokenResponse> response) {
-                    UnRegisterTokenResponse unRegisterTokenResponse = response.body();
-                    //int success = response.body().getSuccess();
-                    if (unRegisterTokenResponse.getSuccess() == 1) {
-                        Log.d("Email", "Updated");
-                    } else {
-                        //                     AppCommon.getInstance(this).showDialog(activity, response.body().getError());
-                    }
 
-                }
-
-                @Override
-                public void onFailure(Call<UnRegisterTokenResponse> call, Throwable t) {
-
-                }
-            });
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 
     public void setEmailClickAction(int position) {
         if (position == secondaryEmailResponseList.size() - 1) {

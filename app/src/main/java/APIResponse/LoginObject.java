@@ -27,6 +27,12 @@ public class LoginObject {
     @SerializedName("dailyReportTime")
     String dailyReportTime;
 
+    @SerializedName("region")
+    String region;
+
+    @SerializedName("timezone")
+    String timezone;
+
     public int getUserID() {
         return userID;
     }
@@ -90,6 +96,22 @@ public class LoginObject {
 
     public void setDailyReportTime(String dailyReportTime) {
         this.dailyReportTime = dailyReportTime;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
     }
 
 }

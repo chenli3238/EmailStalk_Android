@@ -9,6 +9,7 @@ import APIEntity.PreferencesEntity;
 import APIEntity.ProfileEntity;
 import APIEntity.RegistrationEntity;
 import APIEntity.TokenEntity;
+import APIResponse.EmailObject;
 import APIResponse.EmailResponse;
 import APIResponse.LinkedEmailResponse;
 import APIResponse.NotificationResponse;
@@ -93,5 +94,10 @@ public interface EmailStalkService {
     @GET("getListIOFTimeZone/")
     Call<TimeZoneResponse> getListIOFTimeZone(
             @Query("userID") int userId
+    );
+
+    @GET("getEmailDetail/")
+    Call<EmailObject> getEmailDetail(
+            @Query("userID") int userId, @Query("messageID") String messageId
     );
 }

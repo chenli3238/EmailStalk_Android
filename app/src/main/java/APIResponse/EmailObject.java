@@ -19,8 +19,8 @@ public class EmailObject {
     int isRead;
     @SerializedName("to")
     List<ToCcResponse> toResponses;
-//    @SerializedName("cc")
-//    List<ToCcResponse> ccResponses;
+    @SerializedName("cc")
+    List<ToCcResponse> ccResponses;
 
     public int getEmailID() {
         return emailID;
@@ -69,4 +69,14 @@ public class EmailObject {
     public void setToResponses(List<ToCcResponse> toResponses) {
         this.toResponses = toResponses;
     }
+
+    public List<ToCcResponse> getCcResponses() {
+        return ccResponses;
+    }
+
+    public void setCcResponses(List<ToCcResponse> ccResponses) {
+        this.ccResponses = ccResponses;
+    }
+
 }
+
