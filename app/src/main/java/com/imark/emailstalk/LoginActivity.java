@@ -102,8 +102,9 @@ public class LoginActivity extends Activity {
                             String userName = response.body().getLoginObject().getUserFirstName()+" "+response.body().getLoginObject().getUserLastName();
                             String region = response.body().getLoginObject().getRegion();
                             String timezone = response.body().getLoginObject().getTimezone();
-                            AppCommon.getInstance(LoginActivity.this).savePreferences(isDailyReportEnabled,isPushNotificationsEnabled,dailyReportTime);
+                            AppCommon.getInstance(LoginActivity.this).savePreferences(isDailyReportEnabled,dailyReportTime);
                             AppCommon.getInstance(LoginActivity.this).setUserId(userId);
+                            AppCommon.getInstance(LoginActivity.this).setNotificationEnabled(isPushNotificationsEnabled);
                             AppCommon.getInstance(LoginActivity.this).setTokenId(token);
                             AppCommon.getInstance(LoginActivity.this).setUserName(userName);
                             AppCommon.getInstance(LoginActivity.this).setEmail(email);
@@ -115,7 +116,7 @@ public class LoginActivity extends Activity {
                             finish();
                             Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
                         } else {
-                            AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,getResources().getString(R.string.network_error));
+                            AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,response.body().getError());
                         }
                     }
                 }

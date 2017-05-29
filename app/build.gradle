@@ -9,12 +9,11 @@ buildscript {
         classpath 'com.trello:victor:0.1.4'
 
     }
-
 }
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "com.imark.emailstalk"

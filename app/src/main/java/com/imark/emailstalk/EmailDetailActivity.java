@@ -23,6 +23,7 @@ import java.util.List;
 import API.EmailStalkService;
 import API.ServiceGenerator;
 import APIResponse.EmailObject;
+import APIResponse.EmailResponse;
 import APIResponse.ToCcResponse;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -108,21 +109,22 @@ public class EmailDetailActivity extends AppCompatActivity {
         }
         if (type.equals("Notification")) {
             final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<EmailObject> emailObjectCall = emailStalkService.getEmailDetail(AppCommon.getInstance(this).getUserId(), getIntent().getStringExtra("MessageId"));
-            emailObjectCall.enqueue(new Callback<EmailObject>() {
+            Call<EmailResponse> emailObjectCall = emailStalkService.getEmailDetail(AppCommon.getInstance(this).getUserId(), getIntent().getStringExtra("MessageId"));
+            emailObjectCall.enqueue(new Callback<EmailResponse>() {
                 @Override
-                public void onResponse(Call<EmailObject> call, Response<EmailObject> response) {
-                    toResponseList = response.body().getToResponses();
+                public void onResponse(Call<EmailResponse> call, Response<EmailResponse> response) {
+                    if(response.body().getSuccess() == 1){
+                    toResponseList = response.body().getEmailObjectList().get(0).getToResponses();
                     toCCAdapter = new ToCCAdapter(toResponseList, EmailDetailActivity.this);
                     toRecyclerView.setAdapter(toCCAdapter);
-                    ccResponseList = response.body().getCcResponses();
+                    ccResponseList = response.body().getEmailObjectList().get(0).getCcResponses();
                     toCCAdapter = new ToCCAdapter(ccResponseList, EmailDetailActivity.this);
                     ccRecyclerView.setAdapter(toCCAdapter);
                     toCCAdapter.notifyDataSetChanged();
-                    String title = response.body().getEmailTitle();
+                    String title = response.body().getEmailObjectList().get(0).getEmailTitle();
                     textViewEmailTitle.setText(title);
 
-                    int read = response.body().getIsRead();
+                    int read = response.body().getEmailObjectList().get(0).getIsRead();
                     if (read == 1) {
                         imageVieweyeImag.setSelected(true);
                         imageVieweyeImag1.setSelected(true);
@@ -130,10 +132,10 @@ public class EmailDetailActivity extends AppCompatActivity {
                         imageVieweyeImag.setSelected(false);
                         imageVieweyeImag1.setSelected(false);
                     }
-                }
+                }}
 
                 @Override
-                public void onFailure(Call<EmailObject> call, Throwable t) {
+                public void onFailure(Call<EmailResponse> call, Throwable t) {
 
                 }
             });

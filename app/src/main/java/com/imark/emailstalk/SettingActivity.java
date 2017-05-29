@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -45,8 +46,13 @@ public class SettingActivity extends AppCompatActivity {
     ImageView imageViewRight;
 
     @BindView(R.id.recyclerViewSetting)
-
     RecyclerView recyclerViewSetting;
+
+    @BindView(R.id.singleIndicator)
+    Button singleIndicator;
+
+    @BindView(R.id.multipleIndicator)
+    Button multipleIndicator;
 
     private List<PreferenceModel> preferenceModelList = new ArrayList<>();
 
@@ -101,11 +107,13 @@ public class SettingActivity extends AppCompatActivity {
         preferenceModel = new PreferenceModel(getResources().getString(R.string.push_notification));
         preferenceModelList.add(preferenceModel);
 
-        preferenceModel = new PreferenceModel(getResources().getString(R.string.single_notification));
-        preferenceModelList.add(preferenceModel);
+        int type = AppCommon.getInstance(this).getNotificationType();
+        if (type == 1) {
+            singleIndicator.setSelected(true);
+        } else {
+            multipleIndicator.setSelected(true);
+        }
 
-        preferenceModel = new PreferenceModel(getResources().getString(R.string.multiple_notification));
-        preferenceModelList.add(preferenceModel);
     }
 
     public void setClickAction(int position, Switch notificationSwitch) {
@@ -123,7 +131,7 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(new Intent(this, TermsConditionActivity.class));
                 break;
             case 4:
-    //            startActivity(new Intent(this, TermsConditionActivity.class));
+                //            startActivity(new Intent(this, TermsConditionActivity.class));
                 break;
             case 5:
                 if (notificationSwitch.isChecked()) {
@@ -133,16 +141,25 @@ public class SettingActivity extends AppCompatActivity {
                     AppCommon.getInstance(this).callUnRegisterToken();
                 }
                 break;
-            case 6:
-                //      enablePushNotification(1);
-                break;
-            case 7:
-                //     enablePushNotification(2);
-                break;
         }
     }
 
-    private void enablePushNotification(int type) {
+    @OnClick(R.id.singleIndicator)
+    void SingleClick() {
+        singleIndicator.setSelected(true);
+        multipleIndicator.setSelected(false);
+        enablePushNotification(1);
+    }
+
+    @OnClick(R.id.multipleIndicator)
+    void MultipleClick() {
+        singleIndicator.setSelected(false);
+        multipleIndicator.setSelected(true);
+        enablePushNotification(2);
+    }
+
+
+    private void enablePushNotification(final int type) {
         int userId = AppCommon.getInstance(this).getUserId();
         NotificationEntity notificationEntity = new NotificationEntity(userId, type);
         EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
@@ -152,7 +169,8 @@ public class SettingActivity extends AppCompatActivity {
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
                 int success = response.body().getSuccess();
                 if (success == 1) {
-                  //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                    //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                    AppCommon.getInstance(SettingActivity.this).setNotificationType(type);
 
                 } else {
                     AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());

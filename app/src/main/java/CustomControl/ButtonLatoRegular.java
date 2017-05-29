@@ -5,9 +5,6 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-/**
- * Created by navneet on 5/18/2017.
- */
 
 public class ButtonLatoRegular extends Button {
     public ButtonLatoRegular(Context context) {

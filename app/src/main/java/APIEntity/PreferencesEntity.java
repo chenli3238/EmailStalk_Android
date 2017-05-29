@@ -14,9 +14,8 @@ public class PreferencesEntity {
     @SerializedName("deliveryTime")
     String deliveryTime;
 
-    public PreferencesEntity(int userId,int onEmailNotifications, int onDailyReport, String deliveryTime){
+    public PreferencesEntity(int userId, int onDailyReport, String deliveryTime){
         this.userId = userId;
-        this.onEmailNotifications = onEmailNotifications;
         this.onDailyReport = onDailyReport;
         this.deliveryTime = deliveryTime;
     }

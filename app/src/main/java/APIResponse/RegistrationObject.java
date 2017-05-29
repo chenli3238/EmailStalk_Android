@@ -27,6 +27,12 @@ public class RegistrationObject {
     @SerializedName("dailyReportTime")
     String dailyReportTime;
 
+    @SerializedName("region")
+    String region;
+
+    @SerializedName("timezone")
+    String timezone;
+
 
     public int getUserID() {
         return userID;
@@ -92,4 +98,19 @@ public class RegistrationObject {
         this.isDailyReportEnabled = isDailyReportEnabled;
     }
 
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
 }

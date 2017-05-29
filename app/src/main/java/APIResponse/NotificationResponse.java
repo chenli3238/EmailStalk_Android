@@ -9,7 +9,7 @@ public class NotificationResponse {
     int success;
 
     @SerializedName("result")
-    List<NotificationObject> notificationObjectList;
+    String result;
 
     @SerializedName("error")
     String error;
@@ -22,12 +22,12 @@ public class NotificationResponse {
         this.success = success;
     }
 
-    public List<NotificationObject> getNotificationObjectList() {
-        return notificationObjectList;
+    public String getResult() {
+        return result;
     }
 
-    public void setNotificationObjectList(List<NotificationObject> notificationObjectList) {
-        this.notificationObjectList = notificationObjectList;
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public String getError() {

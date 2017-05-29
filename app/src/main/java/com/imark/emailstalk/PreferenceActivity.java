@@ -152,7 +152,7 @@ public class PreferenceActivity extends AppCompatActivity {
         progress.show();
         int userId = AppCommon.getInstance(this).getUserId();
         final String reportTime = textViewDailyReport.getText().toString().trim();
-        PreferencesEntity preferencesEntity = new PreferencesEntity(userId, push, daily, reportTime);
+        PreferencesEntity preferencesEntity = new PreferencesEntity(userId, daily, reportTime);
         EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
         Call<PreferenceResponse> preferenceResponseCall = emailStalkService.savePreferences(preferencesEntity);
         preferenceResponseCall.enqueue(new Callback<PreferenceResponse>() {
@@ -163,7 +163,7 @@ public class PreferenceActivity extends AppCompatActivity {
                 if (success == 1) {
 
                     AppCommon.getInstance(PreferenceActivity.this).showDialog(PreferenceActivity.this, response.body().getResult());
-                    AppCommon.getInstance(PreferenceActivity.this).savePreferences(daily, push, reportTime);
+                    AppCommon.getInstance(PreferenceActivity.this).savePreferences(daily,reportTime);
                 } else {
                     AppCommon.getInstance(PreferenceActivity.this).showDialog(PreferenceActivity.this, response.body().getError());
                 }

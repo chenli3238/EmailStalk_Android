@@ -112,11 +112,17 @@ public class SignUpActivity extends Activity {
                             int isDailyReportEnabled = response.body().getRegistrationObject().getIsDailyReportEnabled();
                             String dailyReportTime = response.body().getRegistrationObject().getDailyReportTime();
                             String userName = response.body().getRegistrationObject().getUserFirstName()+" "+response.body().getRegistrationObject().getUserLastName();
-                            AppCommon.getInstance(SignUpActivity.this).savePreferences(isDailyReportEnabled, isPushNotificationsEnabled, dailyReportTime);
+                            String region = response.body().getRegistrationObject().getRegion();
+                            String timezone = response.body().getRegistrationObject().getTimezone();
+                            AppCommon.getInstance(SignUpActivity.this).savePreferences(isDailyReportEnabled, dailyReportTime);
                             AppCommon.getInstance(SignUpActivity.this).setUserId(userId);
+                            AppCommon.getInstance(SignUpActivity.this).setNotificationEnabled(isPushNotificationsEnabled);
                             AppCommon.getInstance(SignUpActivity.this).setTokenId(token);
                             AppCommon.getInstance(SignUpActivity.this).setUserName(userName);
                             AppCommon.getInstance(SignUpActivity.this).setEmail(email);
+                            AppCommon.getInstance(SignUpActivity.this).setNotificationType(notificationType);
+                            AppCommon.getInstance(SignUpActivity.this).setRegion(region);
+                            AppCommon.getInstance(SignUpActivity.this).setTimeZone(timezone);
                             showDialog(response.body().getError());
 
                         } else {

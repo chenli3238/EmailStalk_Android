@@ -97,7 +97,7 @@ public interface EmailStalkService {
     );
 
     @GET("getEmailDetail/")
-    Call<EmailObject> getEmailDetail(
+    Call<EmailResponse> getEmailDetail(
             @Query("userID") int userId, @Query("messageID") String messageId
     );
 }

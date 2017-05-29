@@ -91,10 +91,15 @@ public class HomeActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshEmail;
 
     Fragment selectFragment = null;
+
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
+
     NavigationAdapter navigationAdapter;
+
     private List<SecondaryEmailObject> secondaryEmailResponseList = new ArrayList<>();
+
     EmailAdapter emailAdapter;
+
     FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
     @Override
@@ -355,6 +360,7 @@ public class HomeActivity extends AppCompatActivity {
                     drawer.closeDrawer(GravityCompat.START);
                 }
                 textViewemail.setText(secondaryEmailResponseList.get(position).getEmail());
+                AppCommon.getInstance(this).setEmail(secondaryEmailResponseList.get(position).getEmail());
                 setReadBtn();
             }
         }

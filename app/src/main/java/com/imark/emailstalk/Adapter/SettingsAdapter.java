@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.imark.emailstalk.Infrastructure.AppCommon;
 import com.imark.emailstalk.Model.PreferenceModel;
 import com.imark.emailstalk.R;
 import com.imark.emailstalk.SettingActivity;
@@ -38,16 +39,18 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ListVi
     @Override
     public void onBindViewHolder(SettingsAdapter.ListViewHolder holder, int position) {
         holder.textViewTitle.setText(preferenceModelList.get(position).getHeading());
-        if (position == preferenceModelList.size() - 3) {
+        if (position == preferenceModelList.size() - 1) {
+            int push = AppCommon.getInstance(activity).getpushNotification();
+            if (push == 1){
+            holder.notificationSwitch.setChecked(true);
+            }else {
+                holder.notificationSwitch.setChecked(false);
+            }
             holder.notificationSwitch.setVisibility(View.VISIBLE);
             holder.textViewArrow.setVisibility(View.INVISIBLE);
             holder.buttonPrefIndicator.setVisibility(View.GONE);
         }
-        if(position == preferenceModelList.size()-1 || position == preferenceModelList.size()-2){
-            holder.buttonPrefIndicator.setVisibility(View.VISIBLE);
-            holder.notificationSwitch.setVisibility(View.GONE);
-            holder.textViewArrow.setVisibility(View.INVISIBLE);
-        }
+
     }
 
     @Override

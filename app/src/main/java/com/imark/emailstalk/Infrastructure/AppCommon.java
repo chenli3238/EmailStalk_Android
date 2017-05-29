@@ -140,11 +140,17 @@ public class AppCommon {
         return isValid;
     }
 
-    public void savePreferences(int isDailyReportEnabled, int isPushNotificationsEnabled, String dailyReportTime) {
+    public void savePreferences(int isDailyReportEnabled, String dailyReportTime) {
         SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE).edit();
         editor.putInt(MYPerference.isDailyReportEnabled, isDailyReportEnabled);
-        editor.putInt(MYPerference.isPushNotificationsEnabled, isPushNotificationsEnabled);
         editor.putString(MYPerference.dailyReportTime, dailyReportTime);
+        editor.apply();
+    }
+
+
+    public void setNotificationEnabled(int isPushNotificationsEnabled) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mPreferences, MODE_PRIVATE).edit();
+        editor.putInt(MYPerference.isPushNotificationsEnabled, isPushNotificationsEnabled);
         editor.apply();
     }
 
@@ -274,4 +280,5 @@ public class AppCommon {
             });
         }
     }
+
 }
