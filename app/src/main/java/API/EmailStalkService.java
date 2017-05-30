@@ -9,7 +9,7 @@ import APIEntity.PreferencesEntity;
 import APIEntity.ProfileEntity;
 import APIEntity.RegistrationEntity;
 import APIEntity.TokenEntity;
-import APIResponse.EmailObject;
+import APIResponse.EmailDetailResponse;
 import APIResponse.EmailResponse;
 import APIResponse.LinkedEmailResponse;
 import APIResponse.NotificationResponse;
@@ -81,6 +81,11 @@ public interface EmailStalkService {
             @Body NotificationEntity notificationEntity
     );
 
+    @POST("enablePushNotification/")
+    Call<NotificationResponse> enablePushNotification(
+            @Query("userID") int userId, @Query("Status") int type
+    );
+
     @POST("addNewEmailAccount/")
     Call<SecondaryEmailResponse> addNewEmailAccount(
             @Body EmailEntity emailEntity
@@ -97,7 +102,7 @@ public interface EmailStalkService {
     );
 
     @GET("getEmailDetail/")
-    Call<EmailResponse> getEmailDetail(
+    Call<EmailDetailResponse> getEmailDetail(
             @Query("userID") int userId, @Query("messageID") String messageId
     );
 }

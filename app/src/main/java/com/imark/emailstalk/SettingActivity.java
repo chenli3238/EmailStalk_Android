@@ -135,10 +135,16 @@ public class SettingActivity extends AppCompatActivity {
                 break;
             case 5:
                 if (notificationSwitch.isChecked()) {
-                    final String token = firebaseInstanceIDService.getDeviceToken();
-                    AppCommon.getInstance(this).callUpdateTokenAPI(token, AppCommon.getInstance(this).getUserId());
+                    notificationSwitch.setChecked(false);
+                 //   AppCommon.getInstance(this).callUnRegisterToken();
+                 //   AppCommon.getInstance(this).setNotificationEnabled(0);
+                    setPushNotification(0);
                 } else {
-                    AppCommon.getInstance(this).callUnRegisterToken();
+                    notificationSwitch.setChecked(true);
+                    final String token = firebaseInstanceIDService.getDeviceToken();
+                 //   AppCommon.getInstance(this).callUpdateTokenAPI(token, AppCommon.getInstance(this).getUserId());
+                    setPushNotification(1);
+                 //   AppCommon.getInstance(this).setNotificationEnabled(1);
                 }
                 break;
         }
@@ -171,6 +177,30 @@ public class SettingActivity extends AppCompatActivity {
                 if (success == 1) {
                     //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
                     AppCommon.getInstance(SettingActivity.this).setNotificationType(type);
+
+                } else {
+                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void setPushNotification(final int type) {
+        int userId = AppCommon.getInstance(this).getUserId();
+        EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+        Call<NotificationResponse> notificationResponseCall = emailStalkService.enablePushNotification(userId,type);
+        notificationResponseCall.enqueue(new Callback<NotificationResponse>() {
+            @Override
+            public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                int success = response.body().getSuccess();
+                if (success == 1) {
+                    //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                    AppCommon.getInstance(SettingActivity.this).setNotificationEnabled(type);
 
                 } else {
                     AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());

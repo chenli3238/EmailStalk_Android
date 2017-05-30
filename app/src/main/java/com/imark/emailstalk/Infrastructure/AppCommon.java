@@ -281,4 +281,13 @@ public class AppCommon {
         }
     }
 
+    public void updateRefreshToken(String refreshedToken) {
+        if(isUserLogIn()){
+           if(getTokenId().equals(refreshedToken)){
+
+           }else{
+               updateRefreshToken(refreshedToken);
+           }
+        }
+    }
 }

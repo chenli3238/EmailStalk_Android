@@ -1,5 +1,6 @@
 package com.imark.emailstalk;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import API.EmailStalkService;
 import API.ServiceGenerator;
+import APIResponse.EmailDetailResponse;
 import APIResponse.EmailObject;
 import APIResponse.EmailResponse;
 import APIResponse.ToCcResponse;
@@ -65,6 +67,8 @@ public class EmailDetailActivity extends AppCompatActivity {
     List<ToCcResponse> toResponseList = new ArrayList<>();
     List<ToCcResponse> ccResponseList = new ArrayList<>();
 
+    private ProgressDialog progress;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +83,9 @@ public class EmailDetailActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManagerCC = new LinearLayoutManager(this);
         layoutManagerCC.setOrientation(LinearLayoutManager.VERTICAL);
         ccRecyclerView.setLayoutManager(layoutManagerCC);
+        progress = new ProgressDialog(this);
+        progress.setMessage(getResources().getString(R.string.authenticating));
+        progress.setCancelable(false);
         SetupToCCList();
     }
 
@@ -108,23 +115,25 @@ public class EmailDetailActivity extends AppCompatActivity {
             }
         }
         if (type.equals("Notification")) {
+            progress.show();
             final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<EmailResponse> emailObjectCall = emailStalkService.getEmailDetail(AppCommon.getInstance(this).getUserId(), getIntent().getStringExtra("MessageId"));
-            emailObjectCall.enqueue(new Callback<EmailResponse>() {
+            Call<EmailDetailResponse> emailObjectCall = emailStalkService.getEmailDetail(AppCommon.getInstance(this).getUserId(), getIntent().getStringExtra("MessageId"));
+            emailObjectCall.enqueue(new Callback<EmailDetailResponse>() {
                 @Override
-                public void onResponse(Call<EmailResponse> call, Response<EmailResponse> response) {
+                public void onResponse(Call<EmailDetailResponse> call, Response<EmailDetailResponse> response) {
+                    progress.dismiss();
                     if(response.body().getSuccess() == 1){
-                    toResponseList = response.body().getEmailObjectList().get(0).getToResponses();
+                    toResponseList = response.body().getEmailObject().getToResponses();
                     toCCAdapter = new ToCCAdapter(toResponseList, EmailDetailActivity.this);
                     toRecyclerView.setAdapter(toCCAdapter);
-                    ccResponseList = response.body().getEmailObjectList().get(0).getCcResponses();
+                    ccResponseList = response.body().getEmailObject().getCcResponses();
                     toCCAdapter = new ToCCAdapter(ccResponseList, EmailDetailActivity.this);
                     ccRecyclerView.setAdapter(toCCAdapter);
                     toCCAdapter.notifyDataSetChanged();
-                    String title = response.body().getEmailObjectList().get(0).getEmailTitle();
+                    String title = response.body().getEmailObject().getEmailTitle();
                     textViewEmailTitle.setText(title);
 
-                    int read = response.body().getEmailObjectList().get(0).getIsRead();
+                    int read = response.body().getEmailObject().getIsRead();
                     if (read == 1) {
                         imageVieweyeImag.setSelected(true);
                         imageVieweyeImag1.setSelected(true);
@@ -135,8 +144,8 @@ public class EmailDetailActivity extends AppCompatActivity {
                 }}
 
                 @Override
-                public void onFailure(Call<EmailResponse> call, Throwable t) {
-
+                public void onFailure(Call<EmailDetailResponse> call, Throwable t) {
+                progress.dismiss();
                 }
             });
         }

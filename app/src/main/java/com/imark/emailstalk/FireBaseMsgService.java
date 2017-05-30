@@ -1,12 +1,15 @@
 package com.imark.emailstalk;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,60 +29,57 @@ import retrofit2.http.Body;
 public class FireBaseMsgService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
     NotificationManager mManager;
-    PendingIntent pendingIntent;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        //Displaying data in log
-        //It is optional 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
-
-        //Calling method to generate notification
         sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getData());
-    }
+     }
 
     private void sendNotification(String body, Map<String, String> data) {
 
-//        if (isApplicationSentToBackground(getApplicationContext())) {
-//            Intent intent = new Intent(this, EmailDetailActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//             pendingIntent = PendingIntent.getActivity(this, 0, intent,
-//                    PendingIntent.FLAG_ONE_SHOT);
-//        }else
-//        {
-//            Intent push = new Intent();
-//            push.putExtra("default", body);
-//            push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            push.setClass(this, EmailDetailActivity.class);
-//            this.startActivity(push);
-//        }
+        if (isApplicationSentToBackground(getApplicationContext())) {
+            mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
+            Intent intent = new Intent(this, EmailDetailActivity.class);
+            intent.putExtra("MessageId", data.get("message-id"));
+            intent.putExtra("Type", "Notification");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent intent = new Intent(this, EmailDetailActivity.class);
-        intent.putExtra("MessageId", data.get("message-id"));
-        intent.putExtra("Type", "Notification");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(getResources().getString(R.string.app_name))
+                    .setContentText(body)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Email Stalk")
-                .setContentText(body)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, notificationBuilder.build());
+        }else{
+            Intent intent = new Intent(this, EmailDetailActivity.class);
+            intent.putExtra("MessageId", data.get("message-id"));
+            intent.putExtra("Type", "Notification");
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingNotificationIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        notificationManager.notify(0, notificationBuilder.build());
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(getResources().getString(R.string.app_name))
+                    .setContentText(body)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingNotificationIntent);
 
-
-        if(!isApplicationSentToBackground(this)){
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            notificationManager.notify(0, notificationBuilder.build());
             Intent push = new Intent();
-            push.putExtra("Body",body);
+            push.putExtra("Body", body);
             push.putExtra("ID", data.get("message-id"));
             push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             push.setClass(this, NotificationPopupActivity.class);
@@ -88,7 +88,8 @@ public class FireBaseMsgService extends FirebaseMessagingService {
     }
 
 
-    public boolean isApplicationSentToBackground(Context mcontext) {
+    private boolean isApplicationSentToBackground(Context mcontext) {
+        // TODO Auto-generated method stub
         ActivityManager am = (ActivityManager) mcontext
                 .getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
@@ -101,33 +102,4 @@ public class FireBaseMsgService extends FirebaseMessagingService {
         return false;
     }
 
-    void NotificationPopup(String body, final String s) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-        builder.setTitle("Email Stalk");
-        builder.setMessage(body);
-        builder.setMessage("Do you wanted to see Email Detail")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(getApplicationContext(), EmailDetailActivity.class);
-                        intent.putExtra("MessageId", s );
-                        intent.putExtra("Type", "Notification");
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent,
-                                PendingIntent.FLAG_ONE_SHOT);
-                            dialog.cancel();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //  Action for 'NO' Button
-                        dialog.cancel();
-                    }
-                });
-        //Creating dialog box
-        AlertDialog alert = builder.create();
-        //Setting the title manually
-        alert.setTitle(this.getResources().getString(R.string.app_name));
-        alert.show();
-    }
 }

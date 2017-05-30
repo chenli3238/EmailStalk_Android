@@ -9,6 +9,7 @@ public class NotificationEntity {
     @SerializedName("type")
     int type;
 
+
     public NotificationEntity(int userid, int type) {
         this.userid = userid;
         this.type = type;

@@ -20,10 +20,10 @@ public class NotificationPopupActivity extends Activity {
         setContentView(R.layout.activity_notification_popup);
         ButterKnife.bind(this);
         String mTextmessage = getIntent().getStringExtra("Body");
-        String id = getIntent().getStringExtra("ID");
-        showDialog(this, mTextmessage,id);
+        String messageid = getIntent().getStringExtra("ID");
+        showDialog(this, mTextmessage,messageid);
     }
-    public void showDialog(Activity mactivity, String body, String id) {
+    public void showDialog(Activity mactivity, String body, final String messageid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mactivity);
         builder.setTitle(getResources().getString(R.string.app_name));
         builder.setMessage(body);
@@ -31,7 +31,7 @@ public class NotificationPopupActivity extends Activity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent intent = new Intent(getApplicationContext(), EmailDetailActivity.class);
-                intent.putExtra("MessageId", id );
+                intent.putExtra("MessageId", messageid );
                 intent.putExtra("Type", "Notification");
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

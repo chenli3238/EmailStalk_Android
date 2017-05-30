@@ -18,8 +18,16 @@ public class SplashActivity extends AppCompatActivity {
                     sleep(2000);
                     Boolean login = AppCommon.getInstance(SplashActivity.this).isUserLogIn();
                     if (login) {
-                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                        finish();
+                        if(SplashActivity.this.getIntent().getExtras().getString("message-id")!=null){
+                            Intent intent = new Intent(SplashActivity.this, EmailDetailActivity.class);
+                            intent.putExtra("MessageId", SplashActivity.this.getIntent().getExtras().getString("message-id"));
+                            intent.putExtra("Type", "Notification");
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                            finish();
+                        }
                     } else {
                         startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         finish();
