@@ -60,6 +60,9 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
         List<String> ids = new ArrayList<String>();
         for (int i = 0; i < toCcResponseList.size(); i++) {
             toNames = toCcResponseList.get(i).getUserName();
+            if (toNames.equals("")) {
+                toNames = toCcResponseList.get(i).getEmailID();
+            }
             ids.add(toNames);
         }
         holder.reciverNameTextView.setText("To: "+android.text.TextUtils.join(",", ids));

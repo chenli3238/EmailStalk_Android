@@ -114,10 +114,15 @@ public class AccountsActivity extends AppCompatActivity {
             }
         });
         arrayList.add(0, "Select Region");
-        int regionIndex = getIndexRegion(arrayList, AppCommon.getInstance(this).getRegion());
+
         ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, arrayList);
         spinnerCountry.setAdapter(stringArrayAdapter);
-        spinnerCountry.setSelection(regionIndex);
+
+        if (!AppCommon.getInstance(this).getRegion().equals("")) {
+            int regionIndex = getIndexRegion(arrayList, AppCommon.getInstance(this).getRegion());
+            spinnerCountry.setSelection(regionIndex);
+        }
+
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -133,11 +138,12 @@ public class AccountsActivity extends AppCompatActivity {
                     }
                     listClone.add(0, "Select TimeZone");
                 }
-                int timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
                 ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(AccountsActivity.this, R.layout.spinner_layout, listClone);
                 spinnerTimeZone.setAdapter(stringArrayAdapter);
-                spinnerTimeZone.setSelection(timeZoneIndex);
-
+                if (!AppCommon.getInstance(AccountsActivity.this).getTimezone().equals("")) {
+                    int timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
+                    spinnerTimeZone.setSelection(timeZoneIndex);
+                }
             }
 
             @Override

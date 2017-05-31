@@ -39,7 +39,11 @@ public class ToCCAdapter extends RecyclerView.Adapter<ToCCAdapter.ListViewHolder
     public void onBindViewHolder(ToCCAdapter.ListViewHolder holder, int position) {
         String emailOpen = toCcResponseList.get(position).getEmailOpen();
         String userName = toCcResponseList.get(position).getUserName();
+        String email = toCcResponseList.get(position).getEmailID();
         String lastEmailOpen = toCcResponseList.get(position).getLastEmailOpen();
+        if (userName.equals("")) {
+            userName = email;
+        }
         if (emailOpen.equals("0")) {
             holder.textViewTitle.setText(userName);
             holder.textViewDateTime.setText(emailOpen + " times " + lastEmailOpen);

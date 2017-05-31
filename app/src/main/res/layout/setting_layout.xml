@@ -60,7 +60,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="@drawable/prefernces_button"
+                android:background="@drawable/radiobutton"
                 android:clickable="true"
                 android:textColor="@color/colorBlack" />
 
@@ -106,7 +106,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="@drawable/prefernces_button"
+                android:background="@drawable/radiobutton"
                 android:clickable="true"
                 android:textColor="@color/colorBlack" />
 
