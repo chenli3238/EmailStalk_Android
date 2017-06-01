@@ -320,6 +320,7 @@ public class HomeActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.logout_text)
                 .setCancelable(false)
+                .setIcon(R.drawable.appicon)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         boolean flag = AppCommon.getInstance(HomeActivity.this).callUnRegisterToken();

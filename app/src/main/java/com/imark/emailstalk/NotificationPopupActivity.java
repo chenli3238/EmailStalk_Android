@@ -27,6 +27,7 @@ public class NotificationPopupActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(mactivity);
         builder.setTitle(getResources().getString(R.string.app_name));
         builder.setMessage(body);
+        builder.setIcon(R.drawable.appicon);
         builder.setCancelable(false);
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

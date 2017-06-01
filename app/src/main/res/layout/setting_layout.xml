@@ -6,116 +6,223 @@
 
     <include layout="@layout/toolbar_layout" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewSetting"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin">
-
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorDarkGrey" />
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/child_information_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_toLeftOf="@+id/singleIndicator"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <CustomControl.TextViewLatoBolt
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="@string/single_notification"
-                    android:textColor="@color/black_font"
-                    android:textSize="@dimen/detail_text_size" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/singleIndicator"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="@drawable/radiobutton"
-                android:clickable="true"
-                android:textColor="@color/colorBlack" />
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorDarkGrey" />
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="vertical">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_toLeftOf="@+id/multipleIndicator"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
 
-                <CustomControl.TextViewLatoBolt
-                    android:id="@+id/settingTitle"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="@string/multiple_notification"
-                    android:textColor="@color/black_font"
-                    android:textSize="@dimen/detail_text_size" />
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
 
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/child_information_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_toLeftOf="@+id/singleIndicator"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <CustomControl.TextViewLatoBolt
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:text="@string/single_notification"
+                            android:textColor="@color/black_font"
+                            android:textSize="@dimen/detail_text_size" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/singleIndicator"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/radiobutton"
+                        android:clickable="true"
+                        android:textColor="@color/colorBlack" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_toLeftOf="@+id/multipleIndicator"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <CustomControl.TextViewLatoBolt
+                            android:id="@+id/settingTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:text="@string/multiple_notification"
+                            android:textColor="@color/black_font"
+                            android:textSize="@dimen/detail_text_size" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/multipleIndicator"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/radiobutton"
+                        android:clickable="true"
+                        android:textColor="@color/colorBlack" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_toLeftOf="@+id/arrow"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <CustomControl.TextViewLatoBolt
+                            android:layout_width="match_parent"
+                            android:id="@+id/closeAccount"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:text="@string/close_account"
+                            android:textColor="@color/black_font"
+                            android:textSize="@dimen/detail_text_size" />
+
+                    </LinearLayout>
+
+                    <CustomControl.TextViewIconStyle
+                        android:id="@+id/arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:text="@string/rightArrow"
+                        android:textColor="@color/grayFount"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_toLeftOf="@+id/arrow2"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <CustomControl.TextViewLatoBolt
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/logout"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:text="@string/logout"
+                            android:textColor="@color/black_font"
+                            android:textSize="@dimen/detail_text_size" />
+
+                    </LinearLayout>
+
+
+                    <CustomControl.TextViewIconStyle
+                        android:id="@+id/arrow2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:text="@string/rightArrow"
+                        android:textColor="@color/grayFount"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/multipleIndicator"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="@drawable/radiobutton"
-                android:clickable="true"
-                android:textColor="@color/colorBlack" />
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorDarkGrey" />
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -38,7 +38,9 @@
     <string name="browser_text">Browser and Operating System</string>
     <string name="submit_bug">SUBMIT BUG REPORT</string>
     <string name="php">php echo $browser></string>
+    <string name="enter_first_name">Enter First Name</string>
     <string name="first_name">First Name</string>
+    <string name="enter_last_name">Enter Last Name</string>
     <string name="last_name">Last Name</string>
     <string name="time_zone">Time Zone</string>
     <string name="preferred_lang">Preferred language</string>
@@ -70,6 +72,7 @@
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="logout_text">Do you really want to logout this Application ?</string>
+    <string name="close_text">Do you really want to close your account ?</string>
     <string name="secondary_email">Add Secondary Email</string>
     <string name="single_notification">Single Email Notification</string>
     <string name="multiple_notification">Multiple Email Notification</string>
@@ -95,6 +98,7 @@
     <string name="privacy_policy">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry"'"s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
     <string name="enter_password">Enter Password</string>
     <string name="tutorials">Tutorials</string>
+    <string name="close_account">Close Account</string>
 
 
 </resources>

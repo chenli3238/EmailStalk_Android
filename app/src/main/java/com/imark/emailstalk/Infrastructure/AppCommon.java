@@ -115,6 +115,7 @@ public class AppCommon {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setCancelable(false);
             builder.setTitle(error);
+            builder.setIcon(R.drawable.appicon);
             builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {

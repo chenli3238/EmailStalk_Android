@@ -9,6 +9,7 @@ import APIEntity.PreferencesEntity;
 import APIEntity.ProfileEntity;
 import APIEntity.RegistrationEntity;
 import APIEntity.TokenEntity;
+import APIResponse.CloseAccountResponse;
 import APIResponse.EmailDetailResponse;
 import APIResponse.EmailResponse;
 import APIResponse.LinkedEmailResponse;
@@ -104,5 +105,10 @@ public interface EmailStalkService {
     @GET("getEmailDetail/")
     Call<EmailDetailResponse> getEmailDetail(
             @Query("userID") int userId, @Query("messageID") String messageId
+    );
+
+    @GET("closeAccount/")
+    Call<CloseAccountResponse> closeAccount(
+            @Query("userID") int userId
     );
 }
