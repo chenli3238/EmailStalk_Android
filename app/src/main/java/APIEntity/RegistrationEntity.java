@@ -5,10 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.TimeZone;
 
-/**
- * Created by User on 5/19/2017.
- */
-
 public class RegistrationEntity {
     @SerializedName("first_name")
     String first_name;
@@ -20,7 +16,7 @@ public class RegistrationEntity {
     String emailID;
 
     @SerializedName("timezone")
-    TimeZone timezone;
+    String timezone;
 
     @SerializedName("password")
     String password;
@@ -31,7 +27,7 @@ public class RegistrationEntity {
     @SerializedName("deviceType")
     String deviceType;
 
-    public RegistrationEntity(String first_name, String last_name, String emailID, TimeZone timezone, String password, String tokenID, String deviceType) {
+    public RegistrationEntity(String first_name, String last_name, String emailID, String timezone, String password, String tokenID, String deviceType) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.emailID = emailID;
@@ -65,13 +61,14 @@ public class RegistrationEntity {
         this.emailID = emailID;
     }
 
-    public TimeZone getTimezone() {
+    public String getTimezone() {
         return timezone;
     }
 
-    public void setTimezone(TimeZone timezone) {
+    public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
+
 
     public String getPassword() {
         return password;

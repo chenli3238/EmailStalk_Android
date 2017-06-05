@@ -11,9 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.imark.emailstalk.Adapter.EmailAdapter;
 import com.imark.emailstalk.Adapter.MailAdapter;
 import com.imark.emailstalk.Infrastructure.AppCommon;
 import com.imark.emailstalk.Response.CommonRowResponse;
@@ -41,11 +41,21 @@ public class ReadFragment extends Fragment {
     @BindView(R.id.noEmailFound)
     RelativeLayout relativeLayoutNoEmail;
 
-    ArrayList<CommonRowResponse> commonRowArray = new ArrayList<>();
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    @BindView(R.id.bottomProgressBar)
+    ProgressBar bottomProgressBar;
+
     private List<EmailObject> emailObjectList = new ArrayList<>();
+
     MailAdapter mailAdapter;
+
     RecyclerView.LayoutManager layoutManager;
+
     ProgressDialog progress;
+
+    int offset = 1;
 
     @Nullable
     @Override
@@ -55,55 +65,69 @@ public class ReadFragment extends Fragment {
         progress = new ProgressDialog(getContext());
         progress.setMessage(getResources().getString(R.string.please_wait));
         progress.setCancelable(false);
-        setData();
         layoutManager = new LinearLayoutManager(getContext());
         recycleView.setLayoutManager(layoutManager);
+        emailObjectList = new ArrayList<EmailObject>();
+        mailAdapter = new MailAdapter(ReadFragment.this, emailObjectList);
+        recycleView.setAdapter(mailAdapter);
+
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                setData();
+                offset = 1;
+                emailObjectList.clear();
+                callGetListOfEmailAPI();
             }
         });
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        progressBar.setVisibility(View.VISIBLE);
+        callGetListOfEmailAPI();
         return v;
     }
 
 
-    private void setData() {
-        progress.show();
+    private void callGetListOfEmailAPI() {
         int userid = AppCommon.getInstance(getContext()).getUserId();
         String email = AppCommon.getInstance(getContext()).getEmail();
         final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<EmailResponse> emailResponseCall = emailStalkService.getListOfEmails(userid, 0, 0, email);
+        Call<EmailResponse> emailResponseCall = emailStalkService.getListOfEmails(userid, 0, offset, email);
         emailResponseCall.enqueue(new Callback<EmailResponse>() {
             @Override
             public void onResponse(Call<EmailResponse> call, Response<EmailResponse> response) {
-                progress.dismiss();
+                progressBar.setVisibility(View.GONE);
                 int success = response.body().getSuccess();
-                if(success ==1){
-                    swipeRefresh.setVisibility(View.VISIBLE);
-                    recycleView.setVisibility(View.VISIBLE);
+                if (success == 1) {
                     relativeLayoutNoEmail.setVisibility(View.GONE);
-                    emailObjectList = response.body().getEmailObjectList();
-                    mailAdapter = new MailAdapter(ReadFragment.this, emailObjectList);
-                    recycleView.setAdapter(mailAdapter);
-                    mailAdapter.notifyDataSetChanged();
                     swipeRefresh.setRefreshing(false);
-
-                }else{
-                    swipeRefresh.setVisibility(View.GONE);
-                    recycleView.setVisibility(View.GONE);
+                    if (emailObjectList != null || emailObjectList.size() > 0) {
+                        for (EmailObject emailObject : response.body().getEmailObjectList()) {
+                            emailObjectList.add(emailObject);
+                        }
+                    }
+                } else {
+                    progressBar.setVisibility(View.GONE);
                     relativeLayoutNoEmail.setVisibility(View.VISIBLE);
- //                   AppCommon.getInstance(getContext()).showDialog(getActivity(),response.body().getError());
+                    swipeRefresh.setRefreshing(false);
                 }
+                mailAdapter.updateList(emailObjectList, offset);
             }
 
             @Override
             public void onFailure(Call<EmailResponse> call, Throwable t) {
-                Log.d("EmailStalk",t.toString());
-                progress.dismiss();
+                progressBar.setVisibility(View.GONE);
+                bottomProgressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
+                if (emailObjectList == null || emailObjectList.size() == 0) {
+                    relativeLayoutNoEmail.setVisibility(View.VISIBLE);
+                }
             }
         });
 
+    }
+
+    public void fetchMoreData() {
+        bottomProgressBar.setVisibility(View.VISIBLE);
+        offset = offset + 1;
+        callGetListOfEmailAPI();
     }
 }

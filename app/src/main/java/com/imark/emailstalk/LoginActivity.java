@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -81,7 +82,7 @@ public class LoginActivity extends Activity {
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
         } else {
-            progress.show();
+          progressBar.setVisibility(View.VISIBLE);
             final String token = firebaseInstanceIDService.getDeviceToken();
             LoginEntity loginEntity = new LoginEntity(email, password, token, getResources().getString(R.string.android));
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
@@ -90,7 +91,7 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     if (response.code() == 200) {
-                        progress.dismiss();
+                        progressBar.setVisibility(View.GONE);
                         int success = response.body().getSuccess();
                         if (success == 1) {
                             int userId = response.body().getLoginObject().getUserID();
@@ -108,6 +109,7 @@ public class LoginActivity extends Activity {
                             AppCommon.getInstance(LoginActivity.this).setTokenId(token);
                             AppCommon.getInstance(LoginActivity.this).setUserName(userName);
                             AppCommon.getInstance(LoginActivity.this).setEmail(email);
+                            AppCommon.getInstance(LoginActivity.this).setPrimaryEmail(email);
                             AppCommon.getInstance(LoginActivity.this).setNotificationType(notificationType);
                             AppCommon.getInstance(LoginActivity.this).setRegion(region);
                             AppCommon.getInstance(LoginActivity.this).setTimeZone(timezone);
@@ -123,7 +125,7 @@ public class LoginActivity extends Activity {
 
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    progress.dismiss();
+                   progressBar.setVisibility(View.GONE);
                     AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,getResources().getString(R.string.network_error));
 
                 }

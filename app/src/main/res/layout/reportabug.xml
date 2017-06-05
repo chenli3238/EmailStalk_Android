@@ -35,20 +35,20 @@
         <CustomControl.EditTextRegular
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:hint="@string/reuired_error"
             android:textSize="@dimen/detail_text_size" />
 
         <CustomControl.EditTextRegular
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/detail_text_size" />
 
         <CustomControl.EditTextRegular
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/detail_text_size" />
 
         <CustomControl.TextViewLatoBolt
@@ -63,7 +63,7 @@
         <CustomControl.EditTextRegular
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:hint="@string/full_name"
             android:textSize="@dimen/detail_text_size" />
 
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/detail_text_size" />
 
         <CustomControl.TextViewLatoBolt
@@ -86,14 +86,14 @@
         <CustomControl.EditTextRegular
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:hint="@string/php"
             android:textSize="@dimen/detail_text_size" />
 
         <CustomControl.EditTextRegular
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_font"
+            android:textColor="@color/colorBlack"
             android:hint="@string/php"
             android:textSize="@dimen/detail_text_size" />
 

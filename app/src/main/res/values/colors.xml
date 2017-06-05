@@ -11,4 +11,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorNavDevider">#27282C</color>
     <color name="colorDarkGrey">#bdc1c9</color>
+    <color name="black_text">#555555</color>
 </resources>

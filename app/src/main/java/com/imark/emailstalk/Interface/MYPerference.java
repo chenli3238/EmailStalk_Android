@@ -8,6 +8,7 @@ public class MYPerference {
     public static String userId = "userId";
     public static String Login = "login";
     public static String email = "email";
+    public static String primaryEmail = "primaryEmail";
     public static String userName = "userName";
     public static String tokenId = "tokenId";
     public static String notificationType = "notificationType";

@@ -37,6 +37,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
     Context context;
     Fragment fragment;
     List<EmailObject> commonRowArray;
+    int offset = 19;
 
     public MailAdapter(Fragment fragment, List<EmailObject> commonRowArray) {
         this.fragment = fragment;
@@ -69,6 +70,10 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
         if (fragment instanceof ReadFragment) {
             holder.eyeImag.setSelected(true);
             holder.emailTitleTextView.setTextColor(Color.BLACK);
+
+            if(position == offset){
+                ((ReadFragment)fragment).fetchMoreData();
+            }
         } else if (fragment instanceof AllMailFragment) {
             int read = emailObject.getIsRead();
             if (read == 1) {
@@ -77,14 +82,26 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
             } else {
                 holder.emailTitleTextView.setTextColor(Color.GRAY);
             }
+            if(position == offset){
+                ((AllMailFragment)fragment).fetchMoreData();
+            }
         } else if (fragment instanceof UnReadFragment) {
             holder.emailTitleTextView.setTextColor(Color.GRAY);
+            if(position == offset){
+                ((UnReadFragment)fragment).fetchMoreData();
+            }
         }
     }
 
     @Override
     public int getItemCount() {
         return commonRowArray.size();
+    }
+
+    public void updateList(List<EmailObject> emailObjectList, int offset) {
+        this.offset = 19 * (offset);
+        this.commonRowArray = emailObjectList;
+        notifyDataSetChanged();
     }
 
     public class MailHolder extends RecyclerView.ViewHolder {
@@ -115,7 +132,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
             if (fragment instanceof ReadFragment) {
-                emailTitleTextView.setTextColor(R.color.black_font);
+                emailTitleTextView.setTextColor(context.getResources().getColor(R.color.black_font));
             }
         }
 
@@ -127,7 +144,6 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
             intent.putExtra("EmailList", gson.toJson(emailObject, EmailObject.class));
             intent.putExtra("Type", "Local");
             context.startActivity(intent);
-
         }
     }
 }

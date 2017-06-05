@@ -6,23 +6,47 @@
     android:background="@android:color/white"
     android:clickable="true">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeContainer"
+    <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="vertical"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycleView"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="0dp"
+            android:layout_weight="8">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycleView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+            android:id="@+id/bottomProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
 
     <RelativeLayout
         android:id="@+id/noEmailFound"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:background="@color/colorWhite">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:layout_centerInParent="true"
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="300dp"
@@ -34,8 +58,8 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:background="@drawable/sad"
-                android:layout_margin="@dimen/activity_horizontal_margin" />
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:background="@drawable/sad" />
 
             <View
                 android:layout_width="match_parent"
@@ -51,6 +75,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-
 
 </RelativeLayout>

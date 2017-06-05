@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,19 +29,29 @@ import butterknife.OnClick;
 public class FAQ extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.toolbarText)
     TextView textViewToolbar;
+
     @BindView(R.id.left)
     ImageView imageViewLeft;
+
     @BindView(R.id.right)
     ImageView imageViewRight;
+
     @BindView(R.id.expandableListView)
     ExpandableListView expandableListView;
+
     @BindView(R.id.webViewFAQ)
     WebView webViewFAQ;
-    private ProgressDialog progressBar;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     ExpandableListAdapter expandableListAdapter;
+
     List<String> expandableListTitle;
+
     HashMap<String, List<String>> expandableListDetail;
 
     @Override
@@ -48,9 +59,6 @@ public class FAQ extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.faq_layout);
         ButterKnife.bind(this);
-        progressBar = new ProgressDialog(this);
-        progressBar.setMessage(getResources().getString(R.string.please_wait));
-        progressBar.setCancelable(false);
         textViewToolbar.setText(R.string.faq);
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewLeft.setImageResource(R.drawable.left);
@@ -64,13 +72,13 @@ public class FAQ extends AppCompatActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                progressBar.show();
+                progressBar.setVisibility(View.VISIBLE);
             }
 
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                progressBar.dismiss();
+                progressBar.setVisibility(View.GONE);
                 //String webUrl = mWebview.getUrl();
             }
         });

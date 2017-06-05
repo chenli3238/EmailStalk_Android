@@ -109,6 +109,6 @@ public interface EmailStalkService {
 
     @GET("closeAccount/")
     Call<CloseAccountResponse> closeAccount(
-            @Query("userID") int userId
+            @Query("userID") int userId, @Query("emailID") String email
     );
 }

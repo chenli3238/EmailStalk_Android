@@ -94,7 +94,7 @@ public class AppCommon {
 
     public boolean isUserLogIn() {
         SharedPreferences prefs = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
-        return prefs.getBoolean("login", false);
+        return prefs.getBoolean(MYPerference.Login, false);
     }
 
     public boolean isConnectingToInternet(Context context) {
@@ -190,6 +190,17 @@ public class AppCommon {
     public String getEmail(){
         SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
         return mSharedPreferences.getString(MYPerference.email, null);
+    }
+
+    public String getPrimaryEmail(){
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE);
+        return mSharedPreferences.getString(MYPerference.primaryEmail, null);
+    }
+
+    public void setPrimaryEmail(String email) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(MYPerference.mUserLogin, MODE_PRIVATE).edit();
+        editor.putString(MYPerference.primaryEmail, email);
+        editor.apply();
     }
 
     public String getRegion() {
@@ -291,4 +302,6 @@ public class AppCommon {
            }
         }
     }
+
+
 }

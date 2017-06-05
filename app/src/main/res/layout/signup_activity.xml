@@ -51,12 +51,15 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:background="@android:color/transparent"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                         android:drawableLeft="@drawable/user"
                         android:drawablePadding="10dip"
                         android:hint="@string/first_name"
+                        android:inputType="text"
                         android:singleLine="true"
-                        android:textColor="@color/black_font"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/black_font"
+                        android:textCursorDrawable="@null"
                         android:textSize="15sp" />
 
                     <TextView
@@ -81,13 +84,15 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:background="@android:color/transparent"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                         android:drawableLeft="@drawable/user"
                         android:drawablePadding="10dip"
                         android:hint="@string/last_name"
-                        android:inputType="textEmailAddress"
+                        android:inputType="text"
                         android:singleLine="true"
-                        android:textColor="@color/black_font"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/black_font"
+                        android:textCursorDrawable="@null"
                         android:textSize="15sp" />
 
                     <TextView
@@ -117,8 +122,9 @@
                         android:hint="@string/email"
                         android:inputType="textEmailAddress"
                         android:singleLine="true"
-                        android:textColor="@color/black_font"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/black_font"
+                        android:textCursorDrawable="@null"
                         android:textSize="15sp" />
 
                     <TextView
@@ -148,8 +154,9 @@
                         android:hint="@string/password"
                         android:inputType="textPassword"
                         android:singleLine="true"
-                        android:textColor="@color/black_font"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/black_font"
+                        android:textCursorDrawable="@null"
                         android:textSize="15sp" />
 
                     <TextView
@@ -208,10 +215,12 @@
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/colorWhite"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +57,8 @@ public class AccountsActivity extends AppCompatActivity {
     @BindView(R.id.saveProfile)
     Button buttonSaveprofile;
     ProgressDialog progressDialog;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,6 +103,7 @@ public class AccountsActivity extends AppCompatActivity {
     private void SetRegionTimeZone(final ArrayList<String> timeZoneObjectList) {
         final ArrayList<String> arrayList = new ArrayList<String>();
         Set<String> hs = new HashSet<>();
+        int regionIndex = 0;
         for (int i = 0; i < timeZoneObjectList.size(); i++) {
             String regionTimeZone = timeZoneObjectList.get(i);
             String[] split = regionTimeZone.split("/");
@@ -119,7 +123,7 @@ public class AccountsActivity extends AppCompatActivity {
         spinnerCountry.setAdapter(stringArrayAdapter);
 
         if (!AppCommon.getInstance(this).getRegion().equals("")) {
-            int regionIndex = getIndexRegion(arrayList, AppCommon.getInstance(this).getRegion());
+            regionIndex = getIndexRegion(arrayList, AppCommon.getInstance(this).getRegion());
             spinnerCountry.setSelection(regionIndex);
         }
 
@@ -127,6 +131,7 @@ public class AccountsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> listClone = new ArrayList<String>();
+                int timeZoneIndex = 0;
                 if (position == 0) {
                     listClone.add(0, "Select TimeZone");
                 } else {
@@ -137,13 +142,15 @@ public class AccountsActivity extends AppCompatActivity {
                         }
                     }
                     listClone.add(0, "Select TimeZone");
+                    timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
                 }
+
                 ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(AccountsActivity.this, R.layout.spinner_layout, listClone);
                 spinnerTimeZone.setAdapter(stringArrayAdapter);
-                if (!AppCommon.getInstance(AccountsActivity.this).getTimezone().equals("")) {
-                    int timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
+                if (arrayList.get(position).equals(AppCommon.getInstance(AccountsActivity.this).getRegion())) {
                     spinnerTimeZone.setSelection(timeZoneIndex);
                 }
+
             }
 
             @Override
@@ -151,7 +158,20 @@ public class AccountsActivity extends AppCompatActivity {
 
             }
         });
-
+//        if (!AppCommon.getInstance(AccountsActivity.this).getTimezone().equals("")) {
+//            String s = arrayList.get(regionIndex);
+//            List<String> listClone = new ArrayList<String>();
+//            for (String string : timeZoneObjectList) {
+//                if (string.matches("(?i)(" + s + ").*")) {
+//                    listClone.add(string);
+//                }
+//            }
+//            listClone.add(0, "Select TimeZone");
+//            ArrayAdapter<String> ArrayAdapter = new ArrayAdapter<String>(AccountsActivity.this, R.layout.spinner_layout, listClone);
+//            spinnerTimeZone.setAdapter(ArrayAdapter);
+//            int timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
+//            spinnerTimeZone.setSelection(timeZoneIndex);
+//        }
     }
 
     private int getIndexRegion(ArrayList<String> arrayList, String region) {
@@ -199,7 +219,7 @@ public class AccountsActivity extends AppCompatActivity {
         } else if (timeZone.equals("Select TimeZone")) {
             Toast.makeText(this, "Please Select TimeZone", Toast.LENGTH_SHORT).show();
         } else {
-            progressDialog.show();
+            progressBar.setVisibility(View.VISIBLE);
             int userId = AppCommon.getInstance(this).getUserId();
             ProfileEntity profileEntity = new ProfileEntity(userId, fName, lName, region, timeZone);
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
@@ -207,14 +227,13 @@ public class AccountsActivity extends AppCompatActivity {
             profileResponseCall.enqueue(new Callback<ProfileResponse>() {
                 @Override
                 public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                    progressDialog.dismiss();
+                    progressBar.setVisibility(View.GONE);
                     int success = response.body().getSuccess();
                     if (success == 1) {
-                        Toast.makeText(AccountsActivity.this, response.body().getResult(), Toast.LENGTH_SHORT).show();
                         AppCommon.getInstance(AccountsActivity.this).setRegion(region);
                         AppCommon.getInstance(AccountsActivity.this).setTimeZone(timeZone);
                         AppCommon.getInstance(AccountsActivity.this).setUserName(fName + " " + lName);
-                        finish();
+                        AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, getResources().getString(R.string.account_alert));
                     } else {
                         AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, response.body().getError());
                     }
@@ -222,7 +241,7 @@ public class AccountsActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                    progressDialog.dismiss();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
 

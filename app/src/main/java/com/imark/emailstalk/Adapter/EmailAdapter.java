@@ -1,6 +1,7 @@
 package com.imark.emailstalk.Adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,12 +41,17 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ListViewHold
     @Override
     public void onBindViewHolder(EmailAdapter.ListViewHolder holder, int position) {
         holder.textViewTitle.setText(secondaryEmailObjectList.get(position).getEmail());
-        if(position == secondaryEmailObjectList.size()-1){
-        holder.relativeLayout.setVisibility(View.VISIBLE);
-        }else{
-            holder.relativeLayout.setVisibility(View.GONE);
+        if(activity instanceof SettingActivity){
+            holder.textViewTitle.setTextColor(activity.getResources().getColor(R.color.black_text));
+            holder.textViewArrow.setTextColor(activity.getResources().getColor(R.color.black_text));
         }
-
+        if(activity instanceof HomeActivity) {
+            if (position == secondaryEmailObjectList.size() - 1) {
+                holder.relativeLayout.setVisibility(View.VISIBLE);
+            } else {
+                holder.relativeLayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -72,7 +78,12 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ListViewHold
         @OnClick(R.id.settingTitle)
         void clickOnNavItems() {
             int position = getAdapterPosition();
-            ((HomeActivity) context).setEmailClickAction(position);
+            if (context instanceof HomeActivity) {
+                ((HomeActivity) context).setEmailClickAction(position);
+            }
+            else {
+                ((SettingActivity) activity).setEmailClickAction(position);
+            }
         }
     }
 }

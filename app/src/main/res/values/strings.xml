@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EmailStalk</string>
+    <string name="app_name">Email Stalk</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -99,6 +99,8 @@
     <string name="enter_password">Enter Password</string>
     <string name="tutorials">Tutorials</string>
     <string name="close_account">Close Account</string>
-
+    <string name="remove_account">Remove Secondary Account</string>
+    <string name="account_alert">Account Updated Successfully</string>
+    <string name="preference_alert">Preferences Saved Successfully</string>
 
 </resources>

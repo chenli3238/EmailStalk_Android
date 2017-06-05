@@ -29,6 +29,9 @@ public class ForgotPassword extends Activity {
     @BindView(R.id.submitBtn)
     TextView submitBtn;
 
+    @BindView(R.id.loginBtn)
+    TextView loginBtn;
+
     ProgressDialog progress;
 
     @Override
@@ -39,6 +42,11 @@ public class ForgotPassword extends Activity {
         progress = new ProgressDialog(this);
         progress.setMessage("Please Wait...");
         progress.setCancelable(false);
+    }
+
+    @OnClick(R.id.loginBtn)
+    void loginBtn(){
+        finish();
     }
 
     @OnClick(R.id.submitBtn)

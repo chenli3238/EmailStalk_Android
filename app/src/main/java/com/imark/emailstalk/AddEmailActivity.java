@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.imark.emailstalk.Infrastructure.AppCommon;
@@ -38,6 +39,8 @@ public class AddEmailActivity extends AppCompatActivity {
     @BindView(R.id.email)
     EditText emailEditText;
     ProgressDialog progress;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,26 +73,27 @@ public class AddEmailActivity extends AppCompatActivity {
         } else if (!AppCommon.getInstance(AddEmailActivity.this).isEmailValid(email)) {
             emailEditText.setError("Please enter valid Email");
         } else {
-            progress.show();
-            EmailEntity emailEntity = new EmailEntity(AppCommon.getInstance(this).getUserId(),email);
+            progressBar.setVisibility(View.VISIBLE);
+            EmailEntity emailEntity = new EmailEntity(AppCommon.getInstance(this).getUserId(), email);
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<SecondaryEmailResponse> secondaryEmailResponseCall = emailStalkService.addNewEmailAccount(emailEntity);
             secondaryEmailResponseCall.enqueue(new Callback<SecondaryEmailResponse>() {
                 @Override
                 public void onResponse(Call<SecondaryEmailResponse> call, Response<SecondaryEmailResponse> response) {
-                    progress.dismiss();
+                    progressBar.setVisibility(View.GONE);
                     int success = response.body().getSuccess();
-                    if(success == 1){
-                        AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this,response.body().getResult());
-                     //   finish();
-                    }else {
-                        AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this,response.body().getError());
+                    if (success == 1) {
+                        emailEditText.setText("");
+                        AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this, response.body().getResult());
+                        //   finish();
+                    } else {
+                        AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this, response.body().getError());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<SecondaryEmailResponse> call, Throwable t) {
-progress.dismiss();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
 

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -62,9 +63,7 @@ public class SignUpActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_activity);
         ButterKnife.bind(this);
-        Calendar cal = Calendar.getInstance();
-        tz = cal.getTimeZone();
-        Log.d("Time zone", "tz" + tz.getID());
+
         progress = new ProgressDialog(this);
         progress.setMessage(getResources().getString(R.string.please_wait));
         progress.setCancelable(false);
@@ -93,16 +92,18 @@ public class SignUpActivity extends Activity {
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
         } else {
-            progress.show();
+            Calendar cal = Calendar.getInstance();
+            tz = cal.getTimeZone();
+           progressBar.setVisibility(View.VISIBLE);
             final String token = firebaseInstanceIDService.getDeviceToken();
-            RegistrationEntity registrationEntity = new RegistrationEntity(fName, lName, email, tz, password, token, getResources().getString(R.string.android));
+            RegistrationEntity registrationEntity = new RegistrationEntity(fName, lName, email, tz.getID(), password, token, getResources().getString(R.string.android));
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<RegistrationResponse> responseModelCall = emailStalkService.registrationResponseCall(registrationEntity);
             responseModelCall.enqueue(new Callback<RegistrationResponse>() {
                 @Override
                 public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
                     if (response.code() == 200) {
-                        progress.dismiss();
+                      progressBar.setVisibility(View.GONE);
                         int success = response.body().getSuccess();
                         if (success == 1) {
                             int userId = response.body().getRegistrationObject().getUserID();
@@ -120,6 +121,7 @@ public class SignUpActivity extends Activity {
                             AppCommon.getInstance(SignUpActivity.this).setTokenId(token);
                             AppCommon.getInstance(SignUpActivity.this).setUserName(userName);
                             AppCommon.getInstance(SignUpActivity.this).setEmail(email);
+                            AppCommon.getInstance(SignUpActivity.this).setPrimaryEmail(email);
                             AppCommon.getInstance(SignUpActivity.this).setNotificationType(notificationType);
                             AppCommon.getInstance(SignUpActivity.this).setRegion(region);
                             AppCommon.getInstance(SignUpActivity.this).setTimeZone(timezone);
@@ -133,7 +135,7 @@ public class SignUpActivity extends Activity {
 
                 @Override
                 public void onFailure(Call<RegistrationResponse> call, Throwable t) {
-                    progress.dismiss();
+                  progressBar.setVisibility(View.GONE);
                     AppCommon.getInstance(SignUpActivity.this).showDialog(SignUpActivity.this, getResources().getString(R.string.network_error));
                 }
             });

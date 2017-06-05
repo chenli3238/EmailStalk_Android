@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,9 +57,10 @@
                         android:drawableLeft="@drawable/email"
                         android:drawablePadding="10dip"
                         android:hint="@string/email"
+                        android:textCursorDrawable="@null"
                         android:inputType="textEmailAddress"
                         android:singleLine="true"
-                        android:textColor="@color/black_font"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/black_font"
                         android:textSize="15sp" />
 
@@ -86,9 +89,10 @@
                         android:drawableLeft="@drawable/password"
                         android:drawablePadding="10dip"
                         android:hint="@string/password"
+                        android:textCursorDrawable="@null"
                         android:inputType="textPassword"
                         android:singleLine="true"
-                        android:textColor="@color/black_font"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/black_font"
                         android:textSize="15sp" />
 
@@ -162,9 +166,11 @@
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/colorWhite"
+        android:visibility="gone"/>
 </RelativeLayout>

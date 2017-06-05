@@ -112,21 +112,13 @@ public class PreferenceActivity extends AppCompatActivity {
             case 0:
                 if (button.isSelected()) {
                     button.setSelected(false);
-                    push = 0;
-                } else {
-                    button.setSelected(true);
-                    push = 1;
-                }
-                break;
-            case 1:
-                if (button.isSelected()) {
-                    button.setSelected(false);
                     daily = 0;
                 } else {
                     button.setSelected(true);
                     daily = 1;
                 }
                 break;
+
         }
     }
 
@@ -150,9 +142,15 @@ public class PreferenceActivity extends AppCompatActivity {
     @OnClick(R.id.buttonSavePreference)
     void buttonSavePreference() {
         progress.show();
+        String dailyReport;
+        if (daily == 1) {
+            dailyReport = "1";
+        } else {
+            dailyReport = "0";
+        }
         int userId = AppCommon.getInstance(this).getUserId();
         final String reportTime = textViewDailyReport.getText().toString().trim();
-        PreferencesEntity preferencesEntity = new PreferencesEntity(userId, daily, reportTime);
+        PreferencesEntity preferencesEntity = new PreferencesEntity(userId, dailyReport, reportTime);
         EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
         Call<PreferenceResponse> preferenceResponseCall = emailStalkService.savePreferences(preferencesEntity);
         preferenceResponseCall.enqueue(new Callback<PreferenceResponse>() {
@@ -162,8 +160,8 @@ public class PreferenceActivity extends AppCompatActivity {
                 progress.dismiss();
                 if (success == 1) {
 
-                    AppCommon.getInstance(PreferenceActivity.this).showDialog(PreferenceActivity.this, response.body().getResult());
-                    AppCommon.getInstance(PreferenceActivity.this).savePreferences(daily,reportTime);
+                    AppCommon.getInstance(PreferenceActivity.this).showDialog(PreferenceActivity.this, getResources().getString(R.string.preference_alert));
+                    AppCommon.getInstance(PreferenceActivity.this).savePreferences(daily, reportTime);
                 } else {
                     AppCommon.getInstance(PreferenceActivity.this).showDialog(PreferenceActivity.this, response.body().getError());
                 }
