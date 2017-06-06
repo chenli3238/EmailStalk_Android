@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.preference.Preference;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -300,6 +301,19 @@ public class AppCommon {
            }else{
                updateRefreshToken(refreshedToken);
            }
+        }
+    }
+
+    public void setNonTouchableFlags(Activity activity) {
+        if (activity != null) {
+            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+    }
+
+    public void clearNonTouchableFlags(Activity mActivity) {
+        if (mActivity != null) {
+            mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 

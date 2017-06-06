@@ -31,10 +31,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by User on 5/18/2017.
- */
-
 public class UnReadFragment extends Fragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -58,7 +54,7 @@ public class UnReadFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
 
     int offset = 1;
-
+    Call emailResponseCall;
     ProgressDialog progress;
 
     @Nullable
@@ -97,42 +93,59 @@ public class UnReadFragment extends Fragment {
     }
 
     private void callGetListOfEmailAPI() {
-        int userid = AppCommon.getInstance(getContext()).getUserId();
-        String email = AppCommon.getInstance(getContext()).getEmail();
-        final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<EmailResponse> emailResponseCall = emailStalkService.getListOfEmails(userid, 2, offset, email);
-        emailResponseCall.enqueue(new Callback<EmailResponse>() {
-            @Override
-            public void onResponse(Call<EmailResponse> call, Response<EmailResponse> response) {
-                progressBar.setVisibility(View.GONE);
-                int success = response.body().getSuccess();
-                bottomProgressBar.setVisibility(View.GONE);
-                if (success == 1) {
-                    swipeRefresh.setRefreshing(false);
-                    relativeLayoutNoEmail.setVisibility(View.GONE);
-                    if (emailObjectList != null || emailObjectList.size() > 0) {
-                        for (EmailObject emailObject : response.body().getEmailObjectList()) {
-                            emailObjectList.add(emailObject);
-                        }
-                    }
-                } else {
+        AppCommon.getInstance(getActivity()).setNonTouchableFlags(getActivity());
+        if (AppCommon.getInstance(getContext()).isConnectingToInternet(getContext())) {
+            int userid = AppCommon.getInstance(getContext()).getUserId();
+            String email = AppCommon.getInstance(getContext()).getEmail();
+            final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            emailResponseCall = emailStalkService.getListOfEmails(userid, 2, offset, email);
+            emailResponseCall.enqueue(new Callback<EmailResponse>() {
+                @Override
+                public void onResponse(Call<EmailResponse> call, Response<EmailResponse> response) {
+                    AppCommon.getInstance(getActivity()).clearNonTouchableFlags(getActivity());
                     progressBar.setVisibility(View.GONE);
-                    relativeLayoutNoEmail.setVisibility(View.VISIBLE);
+                    int success = response.body().getSuccess();
+                    bottomProgressBar.setVisibility(View.GONE);
+                    if (success == 1) {
+                        swipeRefresh.setRefreshing(false);
+                        relativeLayoutNoEmail.setVisibility(View.GONE);
+                        if (emailObjectList != null || emailObjectList.size() > 0) {
+                            for (EmailObject emailObject : response.body().getEmailObjectList()) {
+                                emailObjectList.add(emailObject);
+                            }
+                        }
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        relativeLayoutNoEmail.setVisibility(View.VISIBLE);
+                        swipeRefresh.setRefreshing(false);
+                    }
+                    mailAdapter.updateList(emailObjectList, offset);
+                }
+
+                @Override
+                public void onFailure(Call<EmailResponse> call, Throwable t) {
+                    AppCommon.getInstance(getActivity()).clearNonTouchableFlags(getActivity());
+                    progressBar.setVisibility(View.GONE);
+                    bottomProgressBar.setVisibility(View.GONE);
                     swipeRefresh.setRefreshing(false);
+                    if (emailObjectList == null || emailObjectList.size() == 0) {
+                        relativeLayoutNoEmail.setVisibility(View.VISIBLE);
+                    }
                 }
-                mailAdapter.updateList(emailObjectList, offset);
-            }
+            });
 
-            @Override
-            public void onFailure(Call<EmailResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                bottomProgressBar.setVisibility(View.GONE);
-                swipeRefresh.setRefreshing(false);
-                if (emailObjectList == null || emailObjectList.size() == 0) {
-                    relativeLayoutNoEmail.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        } else {
+            AppCommon.getInstance(getActivity()).clearNonTouchableFlags(getActivity());
+            progressBar.setVisibility(View.GONE);
+            AppCommon.getInstance(getContext()).showDialog(getActivity(), getResources().getString(R.string.network_alert));
+        }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (emailResponseCall != null) {
+            emailResponseCall.cancel();
+        }
     }
 }

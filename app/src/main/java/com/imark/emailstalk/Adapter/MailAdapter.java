@@ -66,7 +66,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailHolder> {
             }
             ids.add(toNames);
         }
-        holder.reciverNameTextView.setText("To: "+android.text.TextUtils.join(",", ids));
+        holder.reciverNameTextView.setText("To: " + android.text.TextUtils.join(", ", ids));
         if (fragment instanceof ReadFragment) {
             holder.eyeImag.setSelected(true);
             holder.emailTitleTextView.setTextColor(Color.BLACK);

@@ -40,6 +40,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:id="@+id/singlePush"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -72,7 +73,7 @@
                         android:layout_centerVertical="true"
                         android:layout_margin="@dimen/activity_horizontal_margin"
                         android:background="@drawable/radiobutton"
-                        android:clickable="true"
+                        android:clickable="false"
                         android:textColor="@color/colorBlack" />
 
                 </RelativeLayout>
@@ -86,6 +87,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:id="@+id/multiplePush"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -118,7 +120,7 @@
                         android:layout_centerVertical="true"
                         android:layout_margin="@dimen/activity_horizontal_margin"
                         android:background="@drawable/radiobutton"
-                        android:clickable="true"
+                        android:clickable="false"
                         android:textColor="@color/colorBlack" />
 
                 </RelativeLayout>
@@ -205,6 +207,102 @@
 
                     <CustomControl.TextViewIconStyle
                         android:id="@+id/arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:text="@string/rightArrow"
+                        android:textColor="@color/grayFount"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_toLeftOf="@+id/arrow3"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <CustomControl.TextViewLatoBolt
+                            android:id="@+id/terms"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:text="@string/terms_condition"
+                            android:textColor="@color/black_font"
+                            android:textSize="@dimen/detail_text_size" />
+
+                    </LinearLayout>
+
+
+                    <CustomControl.TextViewIconStyle
+                        android:id="@+id/arrow3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:text="@string/rightArrow"
+                        android:textColor="@color/grayFount"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDarkGrey" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_toLeftOf="@+id/arrow4"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <CustomControl.TextViewLatoBolt
+                            android:id="@+id/privacy"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:text="@string/privacy"
+                            android:textColor="@color/black_font"
+                            android:textSize="@dimen/detail_text_size" />
+
+                    </LinearLayout>
+
+
+                    <CustomControl.TextViewIconStyle
+                        android:id="@+id/arrow4"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"

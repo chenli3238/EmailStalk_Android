@@ -10,6 +10,7 @@
     <string name="rightArrow">&#xf105;</string>
     <string name="plus">&#xf055;</string>
     <string name="home">Home</string>
+    <string name="email_detail">Email Detail</string>
     <string name="up_arrow">&#xf106;</string>
     <string name="down_arrow">&#xf107;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -100,7 +101,13 @@
     <string name="tutorials">Tutorials</string>
     <string name="close_account">Close Account</string>
     <string name="remove_account">Remove Secondary Account</string>
-    <string name="account_alert">Account Updated Successfully</string>
-    <string name="preference_alert">Preferences Saved Successfully</string>
+    <string name="account_alert">Account updated successfully</string>
+    <string name="preference_alert">Preferences saved successfully</string>
+    <string name="network_alert">Please check your network connection</string>
+    <string name="notification_alert">Notification changed successfully</string>
+    <string name="close_alert">Account has been successfully removed</string>
+    <string name="secondary_alert">Secondary email removed</string>
+    <string name="password_alert">Password changed successfully</string>
+    <string name="verify_email">Please verify your email</string>
 
 </resources>

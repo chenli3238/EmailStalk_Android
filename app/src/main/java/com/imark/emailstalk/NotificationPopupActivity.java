@@ -29,7 +29,7 @@ public class NotificationPopupActivity extends Activity {
         builder.setMessage(body);
         builder.setIcon(R.drawable.appicon);
         builder.setCancelable(false);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent intent = new Intent(getApplicationContext(), EmailDetailActivity.class);
                 intent.putExtra("MessageId", messageid );
@@ -39,14 +39,14 @@ public class NotificationPopupActivity extends Activity {
                 dialog.dismiss();
                 NotificationPopupActivity.this.finish();
             }
-        })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //  Action for 'NO' Button
-                        dialog.cancel();
-                        NotificationPopupActivity.this.finish();
-                    }
-                });
+        });
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        //  Action for 'NO' Button
+//                        dialog.cancel();
+//                        NotificationPopupActivity.this.finish();
+//                    }
+//                });
         builder.show();
     }
 

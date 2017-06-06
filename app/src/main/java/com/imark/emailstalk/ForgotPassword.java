@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +34,12 @@ public class ForgotPassword extends Activity {
     @BindView(R.id.loginBtn)
     TextView loginBtn;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     ProgressDialog progress;
+
+    Call<PasswordResponse> forgotPasswordResponseCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +52,7 @@ public class ForgotPassword extends Activity {
     }
 
     @OnClick(R.id.loginBtn)
-    void loginBtn(){
+    void loginBtn() {
         finish();
     }
 
@@ -57,29 +64,47 @@ public class ForgotPassword extends Activity {
         } else if (!AppCommon.getInstance(this).isEmailValid(email)) {
             emailEditText.setError("please enter valid email");
         } else {
-            progress.show();
-            ForgotPasswordEntity forgotPasswordEntity = new ForgotPasswordEntity(email);
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<PasswordResponse> forgotPasswordResponseCall = emailStalkService.forgotPasswordCall(forgotPasswordEntity);
-            forgotPasswordResponseCall.enqueue(new Callback<PasswordResponse>() {
-                @Override
-                public void onResponse(Call<PasswordResponse> call, Response<PasswordResponse> response) {
-                    if (response.code() == 200) {
-                        progress.dismiss();
-                        int success = response.body().getSuccess();
-                        if (success == 1) {
-                            AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,response.body().getResult());
-                        } else {
-                            AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,response.body().getError());
+            AppCommon.getInstance(this).setNonTouchableFlags(this);
+            if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                ForgotPasswordEntity forgotPasswordEntity = new ForgotPasswordEntity(email);
+                EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+                forgotPasswordResponseCall = emailStalkService.forgotPasswordCall(forgotPasswordEntity);
+                forgotPasswordResponseCall.enqueue(new Callback<PasswordResponse>() {
+                    @Override
+                    public void onResponse(Call<PasswordResponse> call, Response<PasswordResponse> response) {
+                        AppCommon.getInstance(ForgotPassword.this).clearNonTouchableFlags(ForgotPassword.this);
+                        if (response.code() == 200) {
+                            progressBar.setVisibility(View.GONE);
+                            int success = response.body().getSuccess();
+                            if (success == 1) {
+                                AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this, response.body().getResult());
+                            } else {
+                                AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this, response.body().getError());
+                            }
                         }
                     }
-                }
-                @Override
-                public void onFailure(Call<PasswordResponse> call, Throwable t) {
-                    progress.dismiss();
-                    AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this,getResources().getString(R.string.network_error));
 
-                }
-            });
+                    @Override
+                    public void onFailure(Call<PasswordResponse> call, Throwable t) {
+                        AppCommon.getInstance(ForgotPassword.this).clearNonTouchableFlags(ForgotPassword.this);
+                        progressBar.setVisibility(View.GONE);
+                        AppCommon.getInstance(ForgotPassword.this).showDialog(ForgotPassword.this, getResources().getString(R.string.network_error));
+
+                    }
+                });
+            } else {
+                AppCommon.getInstance(ForgotPassword.this).clearNonTouchableFlags(ForgotPassword.this);
+                AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+            }
         }
-}}
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (forgotPasswordResponseCall != null) {
+            forgotPasswordResponseCall.cancel();
+        }
+    }
+}

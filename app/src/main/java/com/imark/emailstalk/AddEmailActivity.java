@@ -1,6 +1,9 @@
 package com.imark.emailstalk;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +44,7 @@ public class AddEmailActivity extends AppCompatActivity {
     ProgressDialog progress;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    Call<SecondaryEmailResponse> secondaryEmailResponseCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,30 +77,54 @@ public class AddEmailActivity extends AppCompatActivity {
         } else if (!AppCommon.getInstance(AddEmailActivity.this).isEmailValid(email)) {
             emailEditText.setError("Please enter valid Email");
         } else {
-            progressBar.setVisibility(View.VISIBLE);
-            EmailEntity emailEntity = new EmailEntity(AppCommon.getInstance(this).getUserId(), email);
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<SecondaryEmailResponse> secondaryEmailResponseCall = emailStalkService.addNewEmailAccount(emailEntity);
-            secondaryEmailResponseCall.enqueue(new Callback<SecondaryEmailResponse>() {
-                @Override
-                public void onResponse(Call<SecondaryEmailResponse> call, Response<SecondaryEmailResponse> response) {
-                    progressBar.setVisibility(View.GONE);
-                    int success = response.body().getSuccess();
-                    if (success == 1) {
-                        emailEditText.setText("");
-                        AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this, response.body().getResult());
-                        //   finish();
-                    } else {
-                        AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this, response.body().getError());
+            AppCommon.getInstance(this).setNonTouchableFlags(this);
+            if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                EmailEntity emailEntity = new EmailEntity(AppCommon.getInstance(this).getUserId(), email);
+                EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+                secondaryEmailResponseCall = emailStalkService.addNewEmailAccount(emailEntity);
+                secondaryEmailResponseCall.enqueue(new Callback<SecondaryEmailResponse>() {
+                    @Override
+                    public void onResponse(Call<SecondaryEmailResponse> call, Response<SecondaryEmailResponse> response) {
+                        AppCommon.getInstance(AddEmailActivity.this).clearNonTouchableFlags(AddEmailActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                        int success = response.body().getSuccess();
+                        if (success == 1) {
+                            emailEditText.setText("");
+                            showDialog();
+                            //   finish();
+                        } else {
+                            AppCommon.getInstance(AddEmailActivity.this).showDialog(AddEmailActivity.this, response.body().getError());
+                        }
                     }
-                }
 
+                    @Override
+                    public void onFailure(Call<SecondaryEmailResponse> call, Throwable t) {
+                        AppCommon.getInstance(AddEmailActivity.this).clearNonTouchableFlags(AddEmailActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+
+            } else {
+                AppCommon.getInstance(this).clearNonTouchableFlags(this);
+                AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+            }
+        }
+    }
+
+    public void showDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle(getResources().getString(R.string.verify_email));
+        builder.setIcon(R.drawable.appicon);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
-                public void onFailure(Call<SecondaryEmailResponse> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    finish();
                 }
             });
-
-        }
+        builder.show();
     }
 }

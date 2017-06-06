@@ -102,6 +102,8 @@ public class HomeActivity extends AppCompatActivity {
 
     FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
+    Call<LinkedEmailResponse> secondaryEmailResponseCall;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,9 +130,8 @@ public class HomeActivity extends AppCompatActivity {
 //        imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
         String email = AppCommon.getInstance(this).getEmail();
-        String userName = AppCommon.getInstance(this).getUserName();
+
         textViewemail.setText(email);
-        textViewuserName.setText(userName);
         setReadBtn();
         getAllEmail();
         swipeRefreshEmail.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -142,13 +143,17 @@ public class HomeActivity extends AppCompatActivity {
         swipeRefreshEmail.setColorSchemeResources(R.color.colorPrimary);
     }
 
+
     private void getAllEmail() {
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
         int userId = AppCommon.getInstance(this).getUserId();
         final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<LinkedEmailResponse> secondaryEmailResponseCall = emailStalkService.getLinkedEmail(userId);
+            secondaryEmailResponseCall = emailStalkService.getLinkedEmail(userId);
         secondaryEmailResponseCall.enqueue(new Callback<LinkedEmailResponse>() {
             @Override
             public void onResponse(Call<LinkedEmailResponse> call, Response<LinkedEmailResponse> response) {
+                AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
                 int success = response.body().getSuccess();
                 if (success == 1) {
                     secondaryEmailResponseList = response.body().getSecondaryEmailObjects();
@@ -158,14 +163,21 @@ public class HomeActivity extends AppCompatActivity {
                     recyclerViewEmail.setAdapter(emailAdapter);
                     emailAdapter.notifyDataSetChanged();
                     swipeRefreshEmail.setRefreshing(false);
+                } else {
+                    swipeRefreshEmail.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
+                swipeRefreshEmail.setRefreshing(false);
+                AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
 //                AppCommon.getInstance(HomeActivity.this).showDialog(HomeActivity.this, "No Network Connection");
             }
         });
+        } else {
+            AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
+    }
     }
 
     private void setUpNavigationdrawer() {
@@ -276,7 +288,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // getAllEmail();
+        String userName = AppCommon.getInstance(this).getUserName();
+        textViewuserName.setText(userName);
     }
 
     public void setClickAction(int position) {
@@ -364,6 +377,14 @@ public class HomeActivity extends AppCompatActivity {
                 AppCommon.getInstance(this).setEmail(secondaryEmailResponseList.get(position).getEmail());
                 setReadBtn();
             }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (secondaryEmailResponseCall != null) {
+            secondaryEmailResponseCall.cancel();
         }
     }
 }

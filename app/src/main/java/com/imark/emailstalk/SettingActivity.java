@@ -90,6 +90,8 @@ public class SettingActivity extends AppCompatActivity {
 
     Dialog dialogEmails;
 
+    Call call;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,11 +130,11 @@ public class SettingActivity extends AppCompatActivity {
         preferenceModel = new PreferenceModel(getResources().getString(R.string.change_password));
         preferenceModelList.add(preferenceModel);
 
-        preferenceModel = new PreferenceModel(getResources().getString(R.string.privacy));
-        preferenceModelList.add(preferenceModel);
-
-        preferenceModel = new PreferenceModel(getResources().getString(R.string.terms_condition));
-        preferenceModelList.add(preferenceModel);
+//        preferenceModel = new PreferenceModel(getResources().getString(R.string.privacy));
+//        preferenceModelList.add(preferenceModel);
+//
+//        preferenceModel = new PreferenceModel(getResources().getString(R.string.terms_condition));
+//        preferenceModelList.add(preferenceModel);
 
         preferenceModel = new PreferenceModel(getResources().getString(R.string.tutorials));
         preferenceModelList.add(preferenceModel);
@@ -157,16 +159,16 @@ public class SettingActivity extends AppCompatActivity {
             case 1:
                 startActivity(new Intent(this, ChangePassword.class));
                 break;
-            case 2:
-                startActivity(new Intent(this, PrivacyActivity.class));
-                break;
+//            case 2:
+//                startActivity(new Intent(this, PrivacyActivity.class));
+//                break;
+//            case 3:
+//                startActivity(new Intent(this, TermsConditionActivity.class));
+//                break;
             case 3:
-                startActivity(new Intent(this, TermsConditionActivity.class));
-                break;
-            case 4:
                 //            startActivity(new Intent(this, TermsConditionActivity.class));
                 break;
-            case 5:
+            case 4:
                 if (notificationSwitch.isChecked()) {
                     notificationSwitch.setChecked(false);
                     //   AppCommon.getInstance(this).callUnRegisterToken();
@@ -183,14 +185,14 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.singleIndicator)
+    @OnClick(R.id.singlePush)
     void SingleClick() {
         singleIndicator.setSelected(true);
         multipleIndicator.setSelected(false);
         enablePushNotification(1);
     }
 
-    @OnClick(R.id.multipleIndicator)
+    @OnClick(R.id.multiplePush)
     void MultipleClick() {
         singleIndicator.setSelected(false);
         multipleIndicator.setSelected(true);
@@ -207,6 +209,16 @@ public class SettingActivity extends AppCompatActivity {
         buttonLogoutCloseAccount(getResources().getString(R.string.logout_text), 2);
     }
 
+    @OnClick(R.id.terms)
+    void terms() {
+        startActivity(new Intent(this, TermsConditionActivity.class));
+    }
+
+    @OnClick(R.id.privacy)
+    void privacy() {
+        startActivity(new Intent(this, PrivacyActivity.class));
+    }
+
     @OnClick(R.id.removeSecondary)
     void setTextViewRemoveSecondary() {
         // custom dialog
@@ -221,118 +233,149 @@ public class SettingActivity extends AppCompatActivity {
         layoutManagerEmail.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewEmail.setLayoutManager(layoutManagerEmail);
         recyclerViewEmail.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider));
-        int userId = AppCommon.getInstance(this).getUserId();
-        final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<LinkedEmailResponse> secondaryEmailResponseCall = emailStalkService.getLinkedEmail(userId);
-        secondaryEmailResponseCall.enqueue(new Callback<LinkedEmailResponse>() {
-            @Override
-            public void onResponse(Call<LinkedEmailResponse> call, Response<LinkedEmailResponse> response) {
-                progressBar.setVisibility(View.GONE);
-                int success = response.body().getSuccess();
-                if (success == 1) {
-                    secondaryEmailObjectArrayList = response.body().getSecondaryEmailObjects();
-                    secondaryEmailObjectArrayList.remove(0);
-                    if (secondaryEmailObjectArrayList.size() == 0) {
-                        relativeLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        relativeLayout.setVisibility(View.GONE);
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            int userId = AppCommon.getInstance(this).getUserId();
+            final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<LinkedEmailResponse> secondaryEmailResponseCall = emailStalkService.getLinkedEmail(userId);
+            secondaryEmailResponseCall.enqueue(new Callback<LinkedEmailResponse>() {
+                @Override
+                public void onResponse(Call<LinkedEmailResponse> call, Response<LinkedEmailResponse> response) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                    int success = response.body().getSuccess();
+                    if (success == 1) {
+                        secondaryEmailObjectArrayList = response.body().getSecondaryEmailObjects();
+                        secondaryEmailObjectArrayList.remove(0);
+                        if (secondaryEmailObjectArrayList.size() == 0) {
+                            relativeLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            relativeLayout.setVisibility(View.GONE);
+                        }
+                        emailAdapter = new EmailAdapter(secondaryEmailObjectArrayList, SettingActivity.this);
+                        recyclerViewEmail.setAdapter(emailAdapter);
+                        emailAdapter.notifyDataSetChanged();
                     }
-                    emailAdapter = new EmailAdapter(secondaryEmailObjectArrayList, SettingActivity.this);
-                    recyclerViewEmail.setAdapter(emailAdapter);
-                    emailAdapter.notifyDataSetChanged();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                @Override
+                public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
 //                AppCommon.getInstance(HomeActivity.this).showDialog(HomeActivity.this, "No Network Connection");
-            }
-        });
-        dialogEmails.show();
+                }
+            });
+            dialogEmails.show();
+        } else {
+            AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
     }
 
-
     private void enablePushNotification(final int type) {
-        int userId = AppCommon.getInstance(this).getUserId();
-        NotificationEntity notificationEntity = new NotificationEntity(userId, type);
-        EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<NotificationResponse> notificationResponseCall = emailStalkService.Notification(notificationEntity);
-        notificationResponseCall.enqueue(new Callback<NotificationResponse>() {
-            @Override
-            public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
-                int success = response.body().getSuccess();
-                if (success == 1) {
-                    //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
-                    AppCommon.getInstance(SettingActivity.this).setNotificationType(type);
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
 
-                } else {
-                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
+            int userId = AppCommon.getInstance(this).getUserId();
+            NotificationEntity notificationEntity = new NotificationEntity(userId, type);
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<NotificationResponse> notificationResponseCall = emailStalkService.Notification(notificationEntity);
+            notificationResponseCall.enqueue(new Callback<NotificationResponse>() {
+                @Override
+                public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    int success = response.body().getSuccess();
+                    if (success == 1) {
+                        //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                        AppCommon.getInstance(SettingActivity.this).setNotificationType(type);
+
+                    } else {
+                        AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<NotificationResponse> call, Throwable t) {
-
-            }
-        });
+                @Override
+                public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                }
+            });
+        } else {
+            AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
     }
 
     private void setPushNotification(final int type) {
-        int userId = AppCommon.getInstance(this).getUserId();
-        EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<NotificationResponse> notificationResponseCall = emailStalkService.enablePushNotification(userId, type);
-        notificationResponseCall.enqueue(new Callback<NotificationResponse>() {
-            @Override
-            public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
-                int success = response.body().getSuccess();
-                if (success == 1) {
-                    //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
-                    AppCommon.getInstance(SettingActivity.this).setNotificationEnabled(type);
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            int userId = AppCommon.getInstance(this).getUserId();
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<NotificationResponse> notificationResponseCall = emailStalkService.enablePushNotification(userId, type);
+            notificationResponseCall.enqueue(new Callback<NotificationResponse>() {
+                @Override
+                public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    int success = response.body().getSuccess();
+                    if (success == 1) {
+                        //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                        AppCommon.getInstance(SettingActivity.this).setNotificationEnabled(type);
 
-                } else {
-                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
+                    } else {
+                        AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<NotificationResponse> call, Throwable t) {
-
-            }
-        });
+                @Override
+                public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                }
+            });
+        } else {
+            AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
     }
 
     private void CloseAccount(String email, final int i) {
-        progressBar.setVisibility(View.VISIBLE);
-        int userId = AppCommon.getInstance(this).getUserId();
-        EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<CloseAccountResponse> notificationResponseCall = emailStalkService.closeAccount(userId, email);
-        notificationResponseCall.enqueue(new Callback<CloseAccountResponse>() {
-            @Override
-            public void onResponse(Call<CloseAccountResponse> call, Response<CloseAccountResponse> response) {
-                progressBar.setVisibility(View.GONE);
-                int success = response.body().getSuccess();
-                if (success == 1) {
-                    if (i == 1) {
-                        Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                        AppCommon.getInstance(SettingActivity.this).clearPreference();
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            progressBar.setVisibility(View.VISIBLE);
+            int userId = AppCommon.getInstance(this).getUserId();
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            call = emailStalkService.closeAccount(userId, email);
+            call.enqueue(new Callback<CloseAccountResponse>() {
+                @Override
+                public void onResponse(Call<CloseAccountResponse> call, Response<CloseAccountResponse> response) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                    int success = response.body().getSuccess();
+                    if (success == 1) {
+                        if (i == 1) {
+                            Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                            AppCommon.getInstance(SettingActivity.this).clearPreference();
+                        } else {
+                            dialogEmails.dismiss();
+                            AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, getResources().getString(R.string.secondary_alert));
+                        }
+
                     } else {
-                        dialogEmails.dismiss();
-                        AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
+                        AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
                     }
-
-                } else {
-                    AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
                 }
-            }
 
-            @Override
-            public void onFailure(Call<CloseAccountResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                @Override
+                public void onFailure(Call<CloseAccountResponse> call, Throwable t) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
     }
 
     void buttonLogoutCloseAccount(String string, final int i) {
@@ -374,7 +417,16 @@ public class SettingActivity extends AppCompatActivity {
     public void setEmailClickAction(int position) {
 
         String email = secondaryEmailObjectArrayList.get(position).getEmail();
+        dialogEmails.dismiss();
         CloseAccount(email, 2);
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (call != null) {
+            call.cancel();
+        }
     }
 }

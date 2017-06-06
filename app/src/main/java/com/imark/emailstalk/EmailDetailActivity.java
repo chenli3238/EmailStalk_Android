@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import APIResponse.EmailDetailResponse;
 import APIResponse.EmailObject;
 import APIResponse.EmailResponse;
 import APIResponse.ToCcResponse;
+import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -63,26 +66,39 @@ public class EmailDetailActivity extends AppCompatActivity {
     @BindView(R.id.ccRecyclerView)
     RecyclerView ccRecyclerView;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    @BindView(R.id.ccLayout)
+    LinearLayout linearLayoutCCLayout;
+
+    @BindView(R.id.ccView)
+    View viewCC;
+
     ToCCAdapter toCCAdapter;
     List<ToCcResponse> toResponseList = new ArrayList<>();
     List<ToCcResponse> ccResponseList = new ArrayList<>();
 
     private ProgressDialog progress;
 
+    Call<EmailDetailResponse> emailObjectCall;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.email_detail_layout);
         ButterKnife.bind(this);
-        textViewToolbar.setText(R.string.home);
+        textViewToolbar.setText(R.string.email_detail);
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewLeft.setImageResource(R.drawable.left);
         final LinearLayoutManager layoutManagerTo = new LinearLayoutManager(this);
         layoutManagerTo.setOrientation(LinearLayoutManager.VERTICAL);
         toRecyclerView.setLayoutManager(layoutManagerTo);
+        toRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this, R.drawable.line_devide));
         final LinearLayoutManager layoutManagerCC = new LinearLayoutManager(this);
         layoutManagerCC.setOrientation(LinearLayoutManager.VERTICAL);
         ccRecyclerView.setLayoutManager(layoutManagerCC);
+        ccRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this, R.drawable.line_devide));
         progress = new ProgressDialog(this);
         progress.setMessage(getResources().getString(R.string.authenticating));
         progress.setCancelable(false);
@@ -99,6 +115,13 @@ public class EmailDetailActivity extends AppCompatActivity {
             toCCAdapter = new ToCCAdapter(toResponseList, this);
             toRecyclerView.setAdapter(toCCAdapter);
             ccResponseList = emailObject.getCcResponses();
+            if (ccResponseList.size() == 0) {
+                linearLayoutCCLayout.setVisibility(View.GONE);
+                viewCC.setVisibility(View.GONE);
+            } else {
+                linearLayoutCCLayout.setVisibility(View.VISIBLE);
+                viewCC.setVisibility(View.VISIBLE);
+            }
             toCCAdapter = new ToCCAdapter(ccResponseList, this);
             ccRecyclerView.setAdapter(toCCAdapter);
             toCCAdapter.notifyDataSetChanged();
@@ -115,39 +138,55 @@ public class EmailDetailActivity extends AppCompatActivity {
             }
         }
         if (type.equals("Notification")) {
-            progress.show();
-            final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<EmailDetailResponse> emailObjectCall = emailStalkService.getEmailDetail(AppCommon.getInstance(this).getUserId(), getIntent().getStringExtra("MessageId"));
-            emailObjectCall.enqueue(new Callback<EmailDetailResponse>() {
-                @Override
-                public void onResponse(Call<EmailDetailResponse> call, Response<EmailDetailResponse> response) {
-                    progress.dismiss();
-                    if(response.body().getSuccess() == 1){
-                    toResponseList = response.body().getEmailObject().getToResponses();
-                    toCCAdapter = new ToCCAdapter(toResponseList, EmailDetailActivity.this);
-                    toRecyclerView.setAdapter(toCCAdapter);
-                    ccResponseList = response.body().getEmailObject().getCcResponses();
-                    toCCAdapter = new ToCCAdapter(ccResponseList, EmailDetailActivity.this);
-                    ccRecyclerView.setAdapter(toCCAdapter);
-                    toCCAdapter.notifyDataSetChanged();
-                    String title = response.body().getEmailObject().getEmailTitle();
-                    textViewEmailTitle.setText(title);
+            AppCommon.getInstance(this).setNonTouchableFlags(this);
+            if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+                emailObjectCall = emailStalkService.getEmailDetail(AppCommon.getInstance(this).getUserId(), getIntent().getStringExtra("MessageId"));
+                emailObjectCall.enqueue(new Callback<EmailDetailResponse>() {
+                    @Override
+                    public void onResponse(Call<EmailDetailResponse> call, Response<EmailDetailResponse> response) {
+                        AppCommon.getInstance(EmailDetailActivity.this).clearNonTouchableFlags(EmailDetailActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                        if (response.body().getSuccess() == 1) {
+                            toResponseList = response.body().getEmailObject().getToResponses();
+                            toCCAdapter = new ToCCAdapter(toResponseList, EmailDetailActivity.this);
+                            toRecyclerView.setAdapter(toCCAdapter);
+                            ccResponseList = response.body().getEmailObject().getCcResponses();
+                            if (ccResponseList.size() == 0) {
+                                linearLayoutCCLayout.setVisibility(View.GONE);
+                                viewCC.setVisibility(View.GONE);
+                            } else {
+                                linearLayoutCCLayout.setVisibility(View.VISIBLE);
+                                viewCC.setVisibility(View.VISIBLE);
+                            }
+                            toCCAdapter = new ToCCAdapter(ccResponseList, EmailDetailActivity.this);
+                            ccRecyclerView.setAdapter(toCCAdapter);
+                            toCCAdapter.notifyDataSetChanged();
+                            String title = response.body().getEmailObject().getEmailTitle();
+                            textViewEmailTitle.setText(title);
 
-                    int read = response.body().getEmailObject().getIsRead();
-                    if (read == 1) {
-                        imageVieweyeImag.setSelected(true);
-                        imageVieweyeImag1.setSelected(true);
-                    } else {
-                        imageVieweyeImag.setSelected(false);
-                        imageVieweyeImag1.setSelected(false);
+                            int read = response.body().getEmailObject().getIsRead();
+                            if (read == 1) {
+                                imageVieweyeImag.setSelected(true);
+                                imageVieweyeImag1.setSelected(true);
+                            } else {
+                                imageVieweyeImag.setSelected(false);
+                                imageVieweyeImag1.setSelected(false);
+                            }
+                        }
                     }
-                }}
 
-                @Override
-                public void onFailure(Call<EmailDetailResponse> call, Throwable t) {
-                progress.dismiss();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<EmailDetailResponse> call, Throwable t) {
+                        AppCommon.getInstance(EmailDetailActivity.this).clearNonTouchableFlags(EmailDetailActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+            } else {
+                AppCommon.getInstance(EmailDetailActivity.this).clearNonTouchableFlags(EmailDetailActivity.this);
+                AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+            }
         }
 
     }
@@ -162,4 +201,11 @@ public class EmailDetailActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (emailObjectCall != null) {
+            emailObjectCall.cancel();
+        }
+    }
 }

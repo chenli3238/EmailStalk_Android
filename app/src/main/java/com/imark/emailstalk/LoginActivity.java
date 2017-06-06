@@ -46,7 +46,7 @@ public class LoginActivity extends Activity {
 
     @BindView(R.id.forgotPasswordTextView)
     TextView forgotPasswordTextView;
-
+    Call<LoginResponse> responseModelCall;
     private ProgressDialog progress;
     FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
@@ -82,56 +82,72 @@ public class LoginActivity extends Activity {
         } else if (password.isEmpty()) {
             passwordEditText.setError("Password must be filled");
         } else {
-          progressBar.setVisibility(View.VISIBLE);
-            final String token = firebaseInstanceIDService.getDeviceToken();
-            LoginEntity loginEntity = new LoginEntity(email, password, token, getResources().getString(R.string.android));
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<LoginResponse> responseModelCall = emailStalkService.loginResponseCall(loginEntity);
-            responseModelCall.enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    if (response.code() == 200) {
-                        progressBar.setVisibility(View.GONE);
-                        int success = response.body().getSuccess();
-                        if (success == 1) {
-                            int userId = response.body().getLoginObject().getUserID();
-                            int isVerify = response.body().getLoginObject().getIsVerify();
-                            int notificationType = response.body().getLoginObject().getNotificationType();
-                            int isDailyReportEnabled = response.body().getLoginObject().getIsDailyReportEnabled();
-                            int isPushNotificationsEnabled = response.body().getLoginObject().getIsPushNotificationsEnabled();
-                            String dailyReportTime = response.body().getLoginObject().getDailyReportTime();
-                            String userName = response.body().getLoginObject().getUserFirstName()+" "+response.body().getLoginObject().getUserLastName();
-                            String region = response.body().getLoginObject().getRegion();
-                            String timezone = response.body().getLoginObject().getTimezone();
-                            AppCommon.getInstance(LoginActivity.this).savePreferences(isDailyReportEnabled,dailyReportTime);
-                            AppCommon.getInstance(LoginActivity.this).setUserId(userId);
-                            AppCommon.getInstance(LoginActivity.this).setNotificationEnabled(isPushNotificationsEnabled);
-                            AppCommon.getInstance(LoginActivity.this).setTokenId(token);
-                            AppCommon.getInstance(LoginActivity.this).setUserName(userName);
-                            AppCommon.getInstance(LoginActivity.this).setEmail(email);
-                            AppCommon.getInstance(LoginActivity.this).setPrimaryEmail(email);
-                            AppCommon.getInstance(LoginActivity.this).setNotificationType(notificationType);
-                            AppCommon.getInstance(LoginActivity.this).setRegion(region);
-                            AppCommon.getInstance(LoginActivity.this).setTimeZone(timezone);
-                          //  callUpdateTokenAPI(token, userId);
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                            finish();
-                            Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,response.body().getError());
+            AppCommon.getInstance(this).setNonTouchableFlags(this);
+            if (AppCommon.getInstance(LoginActivity.this).isConnectingToInternet(LoginActivity.this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                final String token = firebaseInstanceIDService.getDeviceToken();
+                LoginEntity loginEntity = new LoginEntity(email, password, token, getResources().getString(R.string.android));
+                EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+                responseModelCall = emailStalkService.loginResponseCall(loginEntity);
+                responseModelCall.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        AppCommon.getInstance(LoginActivity.this).clearNonTouchableFlags(LoginActivity.this);
+                        if (response.code() == 200) {
+
+                            progressBar.setVisibility(View.GONE);
+                            int success = response.body().getSuccess();
+                            if (success == 1) {
+                                int userId = response.body().getLoginObject().getUserID();
+                                int isVerify = response.body().getLoginObject().getIsVerify();
+                                int notificationType = response.body().getLoginObject().getNotificationType();
+                                int isDailyReportEnabled = response.body().getLoginObject().getIsDailyReportEnabled();
+                                int isPushNotificationsEnabled = response.body().getLoginObject().getIsPushNotificationsEnabled();
+                                String dailyReportTime = response.body().getLoginObject().getDailyReportTime();
+                                String userName = response.body().getLoginObject().getUserFirstName() + " " + response.body().getLoginObject().getUserLastName();
+                                String region = response.body().getLoginObject().getRegion();
+                                String timezone = response.body().getLoginObject().getTimezone();
+                                AppCommon.getInstance(LoginActivity.this).savePreferences(isDailyReportEnabled, dailyReportTime);
+                                AppCommon.getInstance(LoginActivity.this).setUserId(userId);
+                                AppCommon.getInstance(LoginActivity.this).setNotificationEnabled(isPushNotificationsEnabled);
+                                AppCommon.getInstance(LoginActivity.this).setTokenId(token);
+                                AppCommon.getInstance(LoginActivity.this).setUserName(userName);
+                                AppCommon.getInstance(LoginActivity.this).setEmail(email);
+                                AppCommon.getInstance(LoginActivity.this).setPrimaryEmail(email);
+                                AppCommon.getInstance(LoginActivity.this).setNotificationType(notificationType);
+                                AppCommon.getInstance(LoginActivity.this).setRegion(region);
+                                AppCommon.getInstance(LoginActivity.this).setTimeZone(timezone);
+                                //  callUpdateTokenAPI(token, userId);
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                finish();
+                                Toast.makeText(LoginActivity.this, response.body().getError(), Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this, response.body().getError());
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
-                   progressBar.setVisibility(View.GONE);
-                    AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this,getResources().getString(R.string.network_error));
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        AppCommon.getInstance(LoginActivity.this).clearNonTouchableFlags(LoginActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                        AppCommon.getInstance(LoginActivity.this).showDialog(LoginActivity.this, getResources().getString(R.string.network_error));
 
-                }
-            });
+                    }
+                });
+            } else {
+                AppCommon.getInstance(LoginActivity.this).clearNonTouchableFlags(LoginActivity.this);
+                AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+            }
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (responseModelCall != null) {
+            responseModelCall.cancel();
+        }
+    }
 }

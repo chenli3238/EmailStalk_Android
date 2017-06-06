@@ -40,25 +40,37 @@ import retrofit2.Response;
 public class AccountsActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.toolbarText)
     TextView textViewToolbar;
+
     @BindView(R.id.left)
     ImageView imageViewLeft;
+
     @BindView(R.id.right)
     ImageView imageViewRight;
+
     @BindView(R.id.spinnerTimeZone)
     Spinner spinnerTimeZone;
+
     @BindView(R.id.spinnerCountry)
     Spinner spinnerCountry;
+
     @BindView(R.id.firstName)
     EditText editTextFirstName;
+
     @BindView(R.id.lastName)
     EditText editTextLastName;
+
     @BindView(R.id.saveProfile)
     Button buttonSaveprofile;
+
     ProgressDialog progressDialog;
+
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+
+    Call profileResponseCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,12 +92,15 @@ public class AccountsActivity extends AppCompatActivity {
     }
 
     private void getRegionAndTimeZone() {
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            progressBar.setVisibility(View.VISIBLE);
         int userId = AppCommon.getInstance(this).getUserId();
         final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
         final Call<TimeZoneResponse> timeZoneResponseCall = emailStalkService.getListIOFTimeZone(userId);
         timeZoneResponseCall.enqueue(new Callback<TimeZoneResponse>() {
             @Override
             public void onResponse(Call<TimeZoneResponse> call, Response<TimeZoneResponse> response) {
+                progressBar.setVisibility(View.GONE);
                 int success = response.body().getSuccess();
                 if (success == 1) {
                     //  timeZoneObjectList = response.body().getTimeZoneObjectList();
@@ -98,6 +113,9 @@ public class AccountsActivity extends AppCompatActivity {
 //                AppCommon.getInstance(HomeActivity.this).showDialog(HomeActivity.this, "No Network Connection");
             }
         });
+        } else {
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
     }
 
     private void SetRegionTimeZone(final ArrayList<String> timeZoneObjectList) {
@@ -125,6 +143,7 @@ public class AccountsActivity extends AppCompatActivity {
         if (!AppCommon.getInstance(this).getRegion().equals("")) {
             regionIndex = getIndexRegion(arrayList, AppCommon.getInstance(this).getRegion());
             spinnerCountry.setSelection(regionIndex);
+            progressBar.setVisibility(View.GONE);
         }
 
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -158,20 +177,6 @@ public class AccountsActivity extends AppCompatActivity {
 
             }
         });
-//        if (!AppCommon.getInstance(AccountsActivity.this).getTimezone().equals("")) {
-//            String s = arrayList.get(regionIndex);
-//            List<String> listClone = new ArrayList<String>();
-//            for (String string : timeZoneObjectList) {
-//                if (string.matches("(?i)(" + s + ").*")) {
-//                    listClone.add(string);
-//                }
-//            }
-//            listClone.add(0, "Select TimeZone");
-//            ArrayAdapter<String> ArrayAdapter = new ArrayAdapter<String>(AccountsActivity.this, R.layout.spinner_layout, listClone);
-//            spinnerTimeZone.setAdapter(ArrayAdapter);
-//            int timeZoneIndex = getIndexRegion(listClone, AppCommon.getInstance(AccountsActivity.this).getTimezone());
-//            spinnerTimeZone.setSelection(timeZoneIndex);
-//        }
     }
 
     private int getIndexRegion(ArrayList<String> arrayList, String region) {
@@ -219,32 +224,47 @@ public class AccountsActivity extends AppCompatActivity {
         } else if (timeZone.equals("Select TimeZone")) {
             Toast.makeText(this, "Please Select TimeZone", Toast.LENGTH_SHORT).show();
         } else {
-            progressBar.setVisibility(View.VISIBLE);
-            int userId = AppCommon.getInstance(this).getUserId();
-            ProfileEntity profileEntity = new ProfileEntity(userId, fName, lName, region, timeZone);
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<ProfileResponse> profileResponseCall = emailStalkService.setProfile(profileEntity);
-            profileResponseCall.enqueue(new Callback<ProfileResponse>() {
-                @Override
-                public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                    progressBar.setVisibility(View.GONE);
-                    int success = response.body().getSuccess();
-                    if (success == 1) {
-                        AppCommon.getInstance(AccountsActivity.this).setRegion(region);
-                        AppCommon.getInstance(AccountsActivity.this).setTimeZone(timeZone);
-                        AppCommon.getInstance(AccountsActivity.this).setUserName(fName + " " + lName);
-                        AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, getResources().getString(R.string.account_alert));
-                    } else {
-                        AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, response.body().getError());
+            AppCommon.getInstance(this).setNonTouchableFlags(this);
+            if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                int userId = AppCommon.getInstance(this).getUserId();
+                ProfileEntity profileEntity = new ProfileEntity(userId, fName, lName, region, timeZone);
+                EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+                profileResponseCall = emailStalkService.setProfile(profileEntity);
+                profileResponseCall.enqueue(new Callback<ProfileResponse>() {
+                    @Override
+                    public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                        AppCommon.getInstance(AccountsActivity.this).clearNonTouchableFlags(AccountsActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                        int success = response.body().getSuccess();
+                        if (success == 1) {
+                            AppCommon.getInstance(AccountsActivity.this).setRegion(region);
+                            AppCommon.getInstance(AccountsActivity.this).setTimeZone(timeZone);
+                            AppCommon.getInstance(AccountsActivity.this).setUserName(fName + " " + lName);
+                            AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, getResources().getString(R.string.account_alert));
+                        } else {
+                            AppCommon.getInstance(AccountsActivity.this).showDialog(AccountsActivity.this, response.body().getError());
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
+                    @Override
+                    public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                        AppCommon.getInstance(AccountsActivity.this).clearNonTouchableFlags(AccountsActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+            } else {
+                AppCommon.getInstance(this).clearNonTouchableFlags(this);
+                AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+            }
+        }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (profileResponseCall != null) {
+            profileResponseCall.cancel();
         }
     }
 }

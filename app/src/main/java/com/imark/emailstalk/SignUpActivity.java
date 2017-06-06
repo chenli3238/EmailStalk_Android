@@ -55,6 +55,7 @@ public class SignUpActivity extends Activity {
     ProgressBar progressBar;
     TimeZone tz;
     private ProgressDialog progress;
+    Call<RegistrationResponse> responseModelCall;
 
     FirebaseInstanceIDService firebaseInstanceIDService = new FirebaseInstanceIDService();
 
@@ -94,58 +95,66 @@ public class SignUpActivity extends Activity {
         } else {
             Calendar cal = Calendar.getInstance();
             tz = cal.getTimeZone();
-           progressBar.setVisibility(View.VISIBLE);
-            final String token = firebaseInstanceIDService.getDeviceToken();
-            RegistrationEntity registrationEntity = new RegistrationEntity(fName, lName, email, tz.getID(), password, token, getResources().getString(R.string.android));
-            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-            Call<RegistrationResponse> responseModelCall = emailStalkService.registrationResponseCall(registrationEntity);
-            responseModelCall.enqueue(new Callback<RegistrationResponse>() {
-                @Override
-                public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
-                    if (response.code() == 200) {
-                      progressBar.setVisibility(View.GONE);
-                        int success = response.body().getSuccess();
-                        if (success == 1) {
-                            int userId = response.body().getRegistrationObject().getUserID();
-                            int isVerify = response.body().getRegistrationObject().getIsVerify();
-                            int notificationType = response.body().getRegistrationObject().getNotificationType();
-                            int isPushNotificationsEnabled = response.body().getRegistrationObject().getIsPushNotificationsEnabled();
-                            int isDailyReportEnabled = response.body().getRegistrationObject().getIsDailyReportEnabled();
-                            String dailyReportTime = response.body().getRegistrationObject().getDailyReportTime();
-                            String userName = response.body().getRegistrationObject().getUserFirstName()+" "+response.body().getRegistrationObject().getUserLastName();
-                            String region = response.body().getRegistrationObject().getRegion();
-                            String timezone = response.body().getRegistrationObject().getTimezone();
-                            AppCommon.getInstance(SignUpActivity.this).savePreferences(isDailyReportEnabled, dailyReportTime);
-                            AppCommon.getInstance(SignUpActivity.this).setUserId(userId);
-                            AppCommon.getInstance(SignUpActivity.this).setNotificationEnabled(isPushNotificationsEnabled);
-                            AppCommon.getInstance(SignUpActivity.this).setTokenId(token);
-                            AppCommon.getInstance(SignUpActivity.this).setUserName(userName);
-                            AppCommon.getInstance(SignUpActivity.this).setEmail(email);
-                            AppCommon.getInstance(SignUpActivity.this).setPrimaryEmail(email);
-                            AppCommon.getInstance(SignUpActivity.this).setNotificationType(notificationType);
-                            AppCommon.getInstance(SignUpActivity.this).setRegion(region);
-                            AppCommon.getInstance(SignUpActivity.this).setTimeZone(timezone);
-                            showDialog(response.body().getError());
+            AppCommon.getInstance(this).setNonTouchableFlags(this);
+            if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                final String token = firebaseInstanceIDService.getDeviceToken();
+                RegistrationEntity registrationEntity = new RegistrationEntity(fName, lName, email, tz.getID(), password, token, getResources().getString(R.string.android));
+                EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+                responseModelCall = emailStalkService.registrationResponseCall(registrationEntity);
+                responseModelCall.enqueue(new Callback<RegistrationResponse>() {
+                    @Override
+                    public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
+                        AppCommon.getInstance(SignUpActivity.this).clearNonTouchableFlags(SignUpActivity.this);
+                        if (response.code() == 200) {
+                            progressBar.setVisibility(View.GONE);
+                            int success = response.body().getSuccess();
+                            if (success == 1) {
+                                int userId = response.body().getRegistrationObject().getUserID();
+                                int isVerify = response.body().getRegistrationObject().getIsVerify();
+                                int notificationType = response.body().getRegistrationObject().getNotificationType();
+                                int isPushNotificationsEnabled = response.body().getRegistrationObject().getIsPushNotificationsEnabled();
+                                int isDailyReportEnabled = response.body().getRegistrationObject().getIsDailyReportEnabled();
+                                String dailyReportTime = response.body().getRegistrationObject().getDailyReportTime();
+                                String userName = response.body().getRegistrationObject().getUserFirstName() + " " + response.body().getRegistrationObject().getUserLastName();
+                                String region = response.body().getRegistrationObject().getRegion();
+                                String timezone = response.body().getRegistrationObject().getTimezone();
+                                AppCommon.getInstance(SignUpActivity.this).savePreferences(isDailyReportEnabled, dailyReportTime);
+                                AppCommon.getInstance(SignUpActivity.this).setUserId(userId);
+                                AppCommon.getInstance(SignUpActivity.this).setNotificationEnabled(isPushNotificationsEnabled);
+                                AppCommon.getInstance(SignUpActivity.this).setTokenId(token);
+                                AppCommon.getInstance(SignUpActivity.this).setUserName(userName);
+                                AppCommon.getInstance(SignUpActivity.this).setEmail(email);
+                                AppCommon.getInstance(SignUpActivity.this).setPrimaryEmail(email);
+                                AppCommon.getInstance(SignUpActivity.this).setNotificationType(notificationType);
+                                AppCommon.getInstance(SignUpActivity.this).setRegion(region);
+                                AppCommon.getInstance(SignUpActivity.this).setTimeZone(timezone);
+                                showDialog(response.body().getError());
 
-                        } else {
-                            AppCommon.getInstance(SignUpActivity.this).showDialog(SignUpActivity.this, response.body().getError());
+                            } else {
+                                AppCommon.getInstance(SignUpActivity.this).showDialog(SignUpActivity.this, response.body().getError());
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<RegistrationResponse> call, Throwable t) {
-                  progressBar.setVisibility(View.GONE);
-                    AppCommon.getInstance(SignUpActivity.this).showDialog(SignUpActivity.this, getResources().getString(R.string.network_error));
-                }
-            });
+                    @Override
+                    public void onFailure(Call<RegistrationResponse> call, Throwable t) {
+                        AppCommon.getInstance(SignUpActivity.this).clearNonTouchableFlags(SignUpActivity.this);
+                        progressBar.setVisibility(View.GONE);
+                        AppCommon.getInstance(SignUpActivity.this).showDialog(SignUpActivity.this, getResources().getString(R.string.network_error));
+                    }
+                });
+            } else {
+                AppCommon.getInstance(SignUpActivity.this).clearNonTouchableFlags(SignUpActivity.this);
+                AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+            }
         }
     }
 
     public void showDialog(String error) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-        setTitle("Registration Successful");
+        setTitle("Registration successful");
         builder.setMessage(error);
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -156,5 +165,13 @@ public class SignUpActivity extends Activity {
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (responseModelCall != null) {
+            responseModelCall.cancel();
+        }
     }
 }

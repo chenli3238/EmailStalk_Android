@@ -48,7 +48,7 @@ public class ToCCAdapter extends RecyclerView.Adapter<ToCCAdapter.ListViewHolder
             holder.textViewTitle.setText(userName);
             holder.textViewDateTime.setText(emailOpen + " times " + lastEmailOpen);
         } else {
-            holder.textViewTitle.setText(userName + " Open Email");
+            holder.textViewTitle.setText(userName);
             holder.textViewDateTime.setText(emailOpen + " times after " + lastEmailOpen);
         }
     }

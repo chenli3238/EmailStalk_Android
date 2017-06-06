@@ -54,6 +54,7 @@ public class ReadFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
 
     ProgressDialog progress;
+    Call emailResponseCall;
 
     int offset = 1;
 
@@ -87,13 +88,16 @@ public class ReadFragment extends Fragment {
 
 
     private void callGetListOfEmailAPI() {
+        AppCommon.getInstance(getActivity()).setNonTouchableFlags(getActivity());
+        if (AppCommon.getInstance(getContext()).isConnectingToInternet(getContext())) {
         int userid = AppCommon.getInstance(getContext()).getUserId();
         String email = AppCommon.getInstance(getContext()).getEmail();
         final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
-        Call<EmailResponse> emailResponseCall = emailStalkService.getListOfEmails(userid, 0, offset, email);
+            emailResponseCall = emailStalkService.getListOfEmails(userid, 0, offset, email);
         emailResponseCall.enqueue(new Callback<EmailResponse>() {
             @Override
             public void onResponse(Call<EmailResponse> call, Response<EmailResponse> response) {
+                AppCommon.getInstance(getActivity()).clearNonTouchableFlags(getActivity());
                 progressBar.setVisibility(View.GONE);
                 int success = response.body().getSuccess();
                 if (success == 1) {
@@ -114,6 +118,7 @@ public class ReadFragment extends Fragment {
 
             @Override
             public void onFailure(Call<EmailResponse> call, Throwable t) {
+                AppCommon.getInstance(getActivity()).clearNonTouchableFlags(getActivity());
                 progressBar.setVisibility(View.GONE);
                 bottomProgressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
@@ -123,11 +128,24 @@ public class ReadFragment extends Fragment {
             }
         });
 
+        } else {
+            AppCommon.getInstance(getActivity()).clearNonTouchableFlags(getActivity());
+            progressBar.setVisibility(View.GONE);
+            AppCommon.getInstance(getContext()).showDialog(getActivity(), getResources().getString(R.string.network_alert));
+        }
     }
 
     public void fetchMoreData() {
         bottomProgressBar.setVisibility(View.VISIBLE);
         offset = offset + 1;
         callGetListOfEmailAPI();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (emailResponseCall != null) {
+            emailResponseCall.cancel();
+        }
     }
 }

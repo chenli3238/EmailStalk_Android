@@ -2,17 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:orientation="vertical">
 
-    <CustomControl.TextViewRegular
-        android:layout_width="0dp"
+    <CustomControl.TextViewSemiBolt
+        android:layout_width="match_parent"
         android:id="@+id/emailTitle"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:textSize="16sp"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_weight="1" />
 
     <CustomControl.TextViewRegular
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:id="@+id/dateTime"
-        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_height="0dp"
         android:layout_weight="1" />
 </LinearLayout>
