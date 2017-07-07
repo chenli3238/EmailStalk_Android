@@ -299,7 +299,7 @@ public class AppCommon {
            if(getTokenId().equals(refreshedToken)){
 
            }else{
-               updateRefreshToken(refreshedToken);
+               callUpdateTokenAPI(refreshedToken,getUserId());
            }
         }
     }

@@ -8,133 +8,143 @@
         android:id="@+id/tool"
         layout="@layout/toolbar_layout" />
 
-    <CustomControl.TextViewLatoBolt
-        android:id="@+id/emailTitle"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tool"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:text="Contary To popular belief"
-        android:textColor="@color/black_font"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool">
 
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/emailTitle"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="50dp"
-        android:background="@color/colorDarkGrey" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/view"
-        android:id="@+id/toLayout"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/eyeImag"
-            android:layout_width="30dp"
-            android:layout_height="17dp"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:src="@drawable/eye_imag" />
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <CustomControl.TextViewLatoBolt
+                android:id="@+id/emailTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="50dp"
                 android:layout_marginRight="@dimen/activity_vertical_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:text="To"
-                android:textColor="@color/black_font"
-                android:textSize="20sp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/toRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/toLayout"
-        android:id="@+id/view2"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:background="@color/colorDarkGrey" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/view2"
-        android:id="@+id/ccLayout"
-        android:visibility="visible"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/eyeImag1"
-            android:layout_width="30dp"
-            android:layout_height="17dp"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:src="@drawable/eye_imag" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <CustomControl.TextViewLatoBolt
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:text="CC"
+                android:text=""
                 android:textColor="@color/black_font"
                 android:textSize="20sp" />
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/ccRecyclerView"
+            <View
+                android:id="@+id/view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="1dp"
+                android:layout_below="@+id/emailTitle"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="50dp"
+                android:background="@color/colorDarkGrey" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/toLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/eyeImag"
+                    android:layout_width="30dp"
+                    android:layout_height="17dp"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/eye_imag" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CustomControl.TextViewLatoBolt
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_vertical_margin"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:text="To"
+                        android:textColor="@color/black_font"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/toRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/toLayout"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:background="@color/colorDarkGrey" />
+
+            <LinearLayout
+                android:id="@+id/ccLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view2"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/eyeImag1"
+                    android:layout_width="30dp"
+                    android:layout_height="17dp"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/eye_imag" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CustomControl.TextViewLatoBolt
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_vertical_margin"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:text="CC"
+                        android:textColor="@color/black_font"
+                        android:textSize="20sp" />
 
 
-    </LinearLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/ccRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:id="@+id/ccView"
-        android:layout_below="@+id/ccLayout"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:background="@color/colorDarkGrey" />
+                </LinearLayout>
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/progressBar"
-        android:visibility="gone" />
 
+            </LinearLayout>
+
+            <View
+                android:id="@+id/ccView"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/ccLayout"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:background="@color/colorDarkGrey" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
