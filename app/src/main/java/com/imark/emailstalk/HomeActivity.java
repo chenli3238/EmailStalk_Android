@@ -26,6 +26,10 @@ import com.imark.emailstalk.Adapter.EmailAdapter;
 import com.imark.emailstalk.Adapter.NavigationAdapter;
 import com.imark.emailstalk.Infrastructure.AppCommon;
 import com.imark.emailstalk.Model.NavigationModel;
+import com.zendesk.sdk.model.access.AnonymousIdentity;
+import com.zendesk.sdk.model.access.Identity;
+import com.zendesk.sdk.network.impl.ZendeskConfig;
+import com.zendesk.sdk.support.SupportActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +113,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_layout);
         ButterKnife.bind(this);
+        ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zendesk_url),
+                getResources().getString(R.string.zendesk_appid), getResources().getString(R.string.zendesk_clientid));
+        Identity identity = new AnonymousIdentity.Builder().build();
+        ZendeskConfig.INSTANCE.setIdentity(identity);
         textViewtoolbar.setText(R.string.home);
         //firebaseInstanceIDService.onTokenRefresh();
         navigationAdapter = new NavigationAdapter(navigationModelArrayList, this);
@@ -117,7 +125,6 @@ public class HomeActivity extends AppCompatActivity {
         recyclerViewNavigation.setLayoutManager(layoutManager);
         recyclerViewNavigation.setAdapter(navigationAdapter);
         recyclerViewNavigation.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), R.drawable.line_divider_navigation));
-
         final LinearLayoutManager layoutManagerEmail = new LinearLayoutManager(this);
         layoutManagerEmail.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewEmail.setLayoutManager(layoutManagerEmail);
@@ -130,6 +137,8 @@ public class HomeActivity extends AppCompatActivity {
 //        imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
         String email = AppCommon.getInstance(this).getEmail();
+
+
 
         textViewemail.setText(email);
         setReadBtn();
@@ -147,37 +156,37 @@ public class HomeActivity extends AppCompatActivity {
     private void getAllEmail() {
         AppCommon.getInstance(this).setNonTouchableFlags(this);
         if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-        int userId = AppCommon.getInstance(this).getUserId();
-        final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            int userId = AppCommon.getInstance(this).getUserId();
+            final EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             secondaryEmailResponseCall = emailStalkService.getLinkedEmail(userId);
-        secondaryEmailResponseCall.enqueue(new Callback<LinkedEmailResponse>() {
-            @Override
-            public void onResponse(Call<LinkedEmailResponse> call, Response<LinkedEmailResponse> response) {
-                AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
-                int success = response.body().getSuccess();
-                if (success == 1) {
-                    secondaryEmailResponseList = response.body().getSecondaryEmailObjects();
-                    SecondaryEmailObject secondaryEmailObject = new SecondaryEmailObject("Add Email");
-                    secondaryEmailResponseList.add(secondaryEmailResponseList.size(), secondaryEmailObject);
-                    emailAdapter = new EmailAdapter(secondaryEmailResponseList, HomeActivity.this);
-                    recyclerViewEmail.setAdapter(emailAdapter);
-                    emailAdapter.notifyDataSetChanged();
-                    swipeRefreshEmail.setRefreshing(false);
-                } else {
-                    swipeRefreshEmail.setRefreshing(false);
+            secondaryEmailResponseCall.enqueue(new Callback<LinkedEmailResponse>() {
+                @Override
+                public void onResponse(Call<LinkedEmailResponse> call, Response<LinkedEmailResponse> response) {
+                    AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
+                    int success = response.body().getSuccess();
+                    if (success == 1) {
+                        secondaryEmailResponseList = response.body().getSecondaryEmailObjects();
+                        SecondaryEmailObject secondaryEmailObject = new SecondaryEmailObject("Add Email");
+                        secondaryEmailResponseList.add(secondaryEmailResponseList.size(), secondaryEmailObject);
+                        emailAdapter = new EmailAdapter(secondaryEmailResponseList, HomeActivity.this);
+                        recyclerViewEmail.setAdapter(emailAdapter);
+                        emailAdapter.notifyDataSetChanged();
+                        swipeRefreshEmail.setRefreshing(false);
+                    } else {
+                        swipeRefreshEmail.setRefreshing(false);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
-                swipeRefreshEmail.setRefreshing(false);
-                AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
+                @Override
+                public void onFailure(Call<LinkedEmailResponse> call, Throwable t) {
+                    swipeRefreshEmail.setRefreshing(false);
+                    AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
 //                AppCommon.getInstance(HomeActivity.this).showDialog(HomeActivity.this, "No Network Connection");
-            }
-        });
+                }
+            });
         } else {
             AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
-    }
+        }
     }
 
     private void setUpNavigationdrawer() {
@@ -315,7 +324,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intentNet);
                 break;
             case 5:
-//                    this.startActivity(new Intent(this, AccountsActivity.class));
+                new SupportActivity.Builder().show(HomeActivity.this);
                 break;
             case 6:
                 startActivity(new Intent(this, ReportaBugActivity.class));
@@ -359,7 +368,6 @@ public class HomeActivity extends AppCompatActivity {
         alert.setTitle(this.getResources().getString(R.string.app_name));
         alert.show();
     }
-
 
 
     public void setEmailClickAction(int position) {

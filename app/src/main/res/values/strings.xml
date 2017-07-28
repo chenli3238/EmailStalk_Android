@@ -110,4 +110,8 @@
     <string name="password_alert">Password changed successfully</string>
     <string name="verify_email">Please verify your email</string>
 
+    <string name="zendesk_url">https://emailstalk.zendesk.com</string>
+    <string name="zendesk_appid">394e14010db2a3763f568557cd78455b9967ccf6180cc21b</string>
+    <string name="zendesk_clientid">mobile_sdk_client_1774bd0a0870eaf93f83</string>
+
 </resources>

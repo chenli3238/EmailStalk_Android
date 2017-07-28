@@ -61,7 +61,13 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile (group: 'com.zendesk', name: 'sdk', version: '1.10.0.1'){
+        exclude module: 'appcompat-v7';
+        exclude module: 'support-v4';
+        exclude module: 'design';
+        exclude module: 'recyclerview-v7'
+    }
 
-
+   // compile 'com.urbanairship.android:urbanairship-sdk:8.3.1'
 }
 apply plugin: 'com.google.gms.google-services'

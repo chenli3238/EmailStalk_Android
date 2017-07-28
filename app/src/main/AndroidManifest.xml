@@ -3,6 +3,7 @@
     package="com.imark.emailstalk">
 
     <application
+        android:name=".EmailStalk"
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
@@ -17,37 +18,85 @@
             </intent-filter>
 
         </activity>
-        <service
-            android:name=".FireBaseMsgService">
+
+        <service android:name=".FireBaseMsgService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".FirebaseInstanceIDService">
+        <service android:name=".FirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".ForgotPassword" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".PreferenceActivity" />
-        <activity android:name=".ReportaBugActivity" />
-        <activity android:name=".HowItWorksActivity" />
-        <activity android:name=".AccountsActivity" />
-        <activity android:name=".FAQ" />
-        <activity android:name=".SettingActivity" />
-        <activity android:name=".ChangePassword" />
-        <activity android:name=".AddEmailActivity" />
-        <activity android:name=".NotificationActivity"/>
-        <activity android:name=".PrivacyActivity"/>
-        <activity android:name=".TermsConditionActivity"/>
-        <activity android:name=".EmailDetailActivity" />
-        <activity android:name=".NotificationPopupActivity"
-            android:theme="@style/Theme.Transparent"/>
+
+        <activity
+            android:name=".SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForgotPassword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PreferenceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ReportaBugActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HowItWorksActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AccountsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FAQ"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChangePassword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddEmailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NotificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PrivacyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TermsConditionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EmailDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NotificationPopupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent" />
+
+        <!--<receiver-->
+            <!--android:name=".IntentReceiver"-->
+            <!--android:exported="false">-->
+
+            <!--<intent-filter>-->
+                <!--<action android:name="com.urbanairship.push.CHANNEL_UPDATED" />-->
+                <!--<action android:name="com.urbanairship.push.OPENED" />-->
+                <!--<action android:name="com.urbanairship.push.RECEIVED" />-->
+                <!--<action android:name="com.urbanairship.push.DISMISSED" />-->
+
+                <!--<category android:name="${applicationId}" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>
