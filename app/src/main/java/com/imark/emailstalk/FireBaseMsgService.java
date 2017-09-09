@@ -90,6 +90,7 @@ public class FireBaseMsgService extends FirebaseMessagingService {
 
     private boolean isApplicationSentToBackground(Context mcontext) {
         // TODO Auto-generated method stub
+
         ActivityManager am = (ActivityManager) mcontext
                 .getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);

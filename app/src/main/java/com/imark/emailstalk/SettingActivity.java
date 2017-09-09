@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,10 +31,12 @@ import java.util.List;
 import API.EmailStalkService;
 import API.ServiceGenerator;
 import APIEntity.NotificationEntity;
+import APIEntity.TokenEntity;
 import APIResponse.CloseAccountResponse;
 import APIResponse.LinkedEmailResponse;
 import APIResponse.NotificationResponse;
 import APIResponse.SecondaryEmailObject;
+import APIResponse.UnRegisterTokenResponse;
 import CustomControl.SimpleDividerItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -159,27 +162,20 @@ public class SettingActivity extends AppCompatActivity {
             case 1:
                 startActivity(new Intent(this, ChangePassword.class));
                 break;
-//            case 2:
-//                startActivity(new Intent(this, PrivacyActivity.class));
-//                break;
+            case 2:
+                startActivity(new Intent(this, TutorialActivity.class));
+                break;
 //            case 3:
 //                startActivity(new Intent(this, TermsConditionActivity.class));
 //                break;
+//            case 3:
+//                //            startActivity(new Intent(this, TermsConditionActivity.class));
+//                break;
             case 3:
-                //            startActivity(new Intent(this, TermsConditionActivity.class));
-                break;
-            case 4:
                 if (notificationSwitch.isChecked()) {
-                    notificationSwitch.setChecked(false);
-                    //   AppCommon.getInstance(this).callUnRegisterToken();
-                    //   AppCommon.getInstance(this).setNotificationEnabled(0);
-                    setPushNotification(0);
+                    setPushNotification(0, notificationSwitch);
                 } else {
-                    notificationSwitch.setChecked(true);
-                    final String token = firebaseInstanceIDService.getDeviceToken();
-                    //   AppCommon.getInstance(this).callUpdateTokenAPI(token, AppCommon.getInstance(this).getUserId());
-                    setPushNotification(1);
-                    //   AppCommon.getInstance(this).setNotificationEnabled(1);
+                    setPushNotification(1, notificationSwitch);
                 }
                 break;
         }
@@ -275,7 +271,7 @@ public class SettingActivity extends AppCompatActivity {
     private void enablePushNotification(final int type) {
         AppCommon.getInstance(this).setNonTouchableFlags(this);
         if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
-
+            progressBar.setVisibility(View.VISIBLE);
             int userId = AppCommon.getInstance(this).getUserId();
             NotificationEntity notificationEntity = new NotificationEntity(userId, type);
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
@@ -285,10 +281,11 @@ public class SettingActivity extends AppCompatActivity {
                 public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
                     AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
                     int success = response.body().getSuccess();
+                    progressBar.setVisibility(View.GONE);
                     if (success == 1) {
                         //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
                         AppCommon.getInstance(SettingActivity.this).setNotificationType(type);
-
+                        AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
                     } else {
                         AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
                     }
@@ -297,17 +294,20 @@ public class SettingActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<NotificationResponse> call, Throwable t) {
                     AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         } else {
+            progressBar.setVisibility(View.GONE);
             AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
             AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
         }
     }
 
-    private void setPushNotification(final int type) {
+    private void setPushNotification(final int type, final Switch notificationSwitch) {
         AppCommon.getInstance(this).setNonTouchableFlags(this);
         if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            progressBar.setVisibility(View.VISIBLE);
             int userId = AppCommon.getInstance(this).getUserId();
             EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
             Call<NotificationResponse> notificationResponseCall = emailStalkService.enablePushNotification(userId, type);
@@ -315,10 +315,17 @@ public class SettingActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
                     AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
                     int success = response.body().getSuccess();
                     if (success == 1) {
+                        if (type == 0) {
+                            notificationSwitch.setChecked(false);
+                        } else {
+                            notificationSwitch.setChecked(true);
+                        }
                         //  AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
                         AppCommon.getInstance(SettingActivity.this).setNotificationEnabled(type);
+                        AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getResult());
 
                     } else {
                         AppCommon.getInstance(SettingActivity.this).showDialog(SettingActivity.this, response.body().getError());
@@ -327,10 +334,12 @@ public class SettingActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
                     AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
                 }
             });
         } else {
+            progressBar.setVisibility(View.GONE);
             AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
             AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
         }
@@ -338,7 +347,6 @@ public class SettingActivity extends AppCompatActivity {
 
     private void CloseAccount(String email, final int i) {
         AppCommon.getInstance(this).setNonTouchableFlags(this);
-
         if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
             progressBar.setVisibility(View.VISIBLE);
             int userId = AppCommon.getInstance(this).getUserId();
@@ -388,13 +396,7 @@ public class SettingActivity extends AppCompatActivity {
                         if (i == 1) {
                             CloseAccount(AppCommon.getInstance(SettingActivity.this).getPrimaryEmail(), i);
                         } else if (i == 2) {
-                            boolean flag = AppCommon.getInstance(SettingActivity.this).callUnRegisterToken();
-                            if (flag) {
-                                Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                                AppCommon.getInstance(SettingActivity.this).clearPreference();
-                            }
+                            callUnRegisterToken();
                         } else {
                             dialog.cancel();
                         }
@@ -411,6 +413,47 @@ public class SettingActivity extends AppCompatActivity {
         //Setting the title manually
         alert.setTitle(this.getResources().getString(R.string.app_name));
         alert.show();
+    }
+
+
+    public void callUnRegisterToken() {
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            progressBar.setVisibility(View.VISIBLE);
+            TokenEntity tokenEntity = new TokenEntity(AppCommon.getInstance(this).getUserId());
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<UnRegisterTokenResponse> call = emailStalkService.unRegisterTokenResponseCall(tokenEntity);
+            call.enqueue(new Callback<UnRegisterTokenResponse>() {
+                @Override
+                public void onResponse(Call<UnRegisterTokenResponse> call, Response<UnRegisterTokenResponse> response) {
+                    UnRegisterTokenResponse unRegisterTokenResponse = response.body();
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                    //int success = response.body().getSuccess();
+                    if (unRegisterTokenResponse.getSuccess() == 1) {
+                        Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        AppCommon.getInstance(SettingActivity.this).clearPreference();
+                        Log.d("Email", "Updated");
+                    } else {
+                        //                     AppCommon.getInstance(this).showDialog(activity, response.body().getError());
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<UnRegisterTokenResponse> call, Throwable t) {
+                    AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+
+        } else {
+            AppCommon.getInstance(SettingActivity.this).clearNonTouchableFlags(SettingActivity.this);
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
+
     }
 
 

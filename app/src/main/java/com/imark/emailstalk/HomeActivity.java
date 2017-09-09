@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -94,6 +95,9 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshEmail;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     Fragment selectFragment = null;
 
     private List<NavigationModel> navigationModelArrayList = new ArrayList<>();
@@ -137,8 +141,6 @@ public class HomeActivity extends AppCompatActivity {
 //        imageViewRight.setVisibility(View.VISIBLE);
         imageViewRight.setImageResource(R.drawable.notification);
         String email = AppCommon.getInstance(this).getEmail();
-
-
 
         textViewemail.setText(email);
         setReadBtn();
@@ -242,11 +244,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-//    @OnClick(R.id.addEmail)
-//    void addEmail() {
-//
-//    }
-
     @OnClick(R.id.readBtn)
     public void setReadBtn() {
         AppCommon.getInstance(this).btn_click(readBtn);
@@ -345,15 +342,9 @@ public class HomeActivity extends AppCompatActivity {
                 .setIcon(R.drawable.appicon)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        boolean flag = AppCommon.getInstance(HomeActivity.this).callUnRegisterToken();
-                        if (flag) {
-                            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                            AppCommon.getInstance(HomeActivity.this).clearPreference();
-                        } else {
-                            dialog.cancel();
-                        }
+                        callUnRegisterToken();
+                        drawer.closeDrawer(GravityCompat.START);
+                        dialog.cancel();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -369,10 +360,50 @@ public class HomeActivity extends AppCompatActivity {
         alert.show();
     }
 
+    public void callUnRegisterToken() {
+        AppCommon.getInstance(this).setNonTouchableFlags(this);
+        if (AppCommon.getInstance(this).isConnectingToInternet(this)) {
+            progressBar.setVisibility(View.VISIBLE);
+            TokenEntity tokenEntity = new TokenEntity(AppCommon.getInstance(this).getUserId());
+            EmailStalkService emailStalkService = ServiceGenerator.createService(EmailStalkService.class);
+            Call<UnRegisterTokenResponse> call = emailStalkService.unRegisterTokenResponseCall(tokenEntity);
+            call.enqueue(new Callback<UnRegisterTokenResponse>() {
+                @Override
+                public void onResponse(Call<UnRegisterTokenResponse> call, Response<UnRegisterTokenResponse> response) {
+                    UnRegisterTokenResponse unRegisterTokenResponse = response.body();
+                    AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                    //int success = response.body().getSuccess();
+                    if (unRegisterTokenResponse.getSuccess() == 1) {
+                        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        AppCommon.getInstance(HomeActivity.this).clearPreference();
+                        Log.d("Email", "Updated");
+                    } else {
+                        //                     AppCommon.getInstance(this).showDialog(activity, response.body().getError());
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<UnRegisterTokenResponse> call, Throwable t) {
+                    AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+
+        } else {
+            AppCommon.getInstance(HomeActivity.this).clearNonTouchableFlags(HomeActivity.this);
+            AppCommon.getInstance(this).showDialog(this, getResources().getString(R.string.network_alert));
+        }
+
+    }
+
 
     public void setEmailClickAction(int position) {
         if (position == secondaryEmailResponseList.size() - 1) {
-            startActivity(new Intent(HomeActivity.this, AddEmailActivity.class));
+            startActivityForResult(new Intent(HomeActivity.this, AddEmailActivity.class), 2);
         } else {
             int verify = secondaryEmailResponseList.get(position).getVerify();
             if (verify == 0) {
@@ -393,6 +424,20 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (secondaryEmailResponseCall != null) {
             secondaryEmailResponseCall.cancel();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            String message = data.getStringExtra("MESSAGE");
+            if (message.equals("1")) {
+                getAllEmail();
+                swipeRefreshEmail.setRefreshing(true);
+                drawer.openDrawer(GravityCompat.START);
+            }
+
         }
     }
 }

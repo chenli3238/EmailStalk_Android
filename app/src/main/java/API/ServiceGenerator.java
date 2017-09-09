@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator
 {
-    public static final String API_BASE_URL = "http://dashboard.emailstalk.com/api/";
+    public static final String API_BASE_URL = "https://dashboard.emailstalk.com/api/";
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS);
 

@@ -115,7 +115,8 @@ public class AppCommon {
         if (!mActivity.isFinishing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setCancelable(false);
-            builder.setTitle(error);
+            builder.setTitle(mActivity.getResources().getString(R.string.app_name));
+            builder.setMessage(error);
             builder.setIcon(R.drawable.appicon);
             builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override

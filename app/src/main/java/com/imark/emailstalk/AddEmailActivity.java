@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +67,10 @@ public class AddEmailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent intent = new Intent();
+        intent.putExtra("MESSAGE", "0");
+        setResult(2, intent);
+        finish();
     }
 
     @OnClick(R.id.submitAddEmail)
@@ -122,6 +126,9 @@ public class AddEmailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
+                    Intent intent = new Intent();
+                    intent.putExtra("MESSAGE", "1");
+                    setResult(2, intent);
                     finish();
                 }
             });
